@@ -137,8 +137,12 @@ def process_venue_data(rows):
     results['fun_avg'] = round(sum(results['fun_scores']) / len(results['fun_scores']), 1) if results['fun_scores'] else 0
     results['helpful_avg'] = round(sum(results['helpful_scores']) / len(results['helpful_scores']), 1) if results['helpful_scores'] else 0
     results['issues_pct'] = round((results['issues_count'] / len(rows)) * 100, 1) if rows else 0
-    results['resolution_avg'] = round(sum(results['resolution_scores']) / len(results['resolution_scores']), 1) if results['resolution_scores'] else 0
-    
+    # None (not 0) when nobody answered the resolution question - this is the
+    # normal case for a venue with no reported issues, not a bad score. See
+    # report_engine.py / venue-1page-browser.html for how "N/A" is rendered
+    # downstream instead of a misleading "0.0/5 - Weak".
+    results['resolution_avg'] = round(sum(results['resolution_scores']) / len(results['resolution_scores']), 1) if results['resolution_scores'] else None
+
     return results
 
 # Process all venues

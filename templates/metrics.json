@@ -1,0 +1,69 @@
+{
+  "_comment": "Standardized definition of each Performance Summary / Experience Metrics row. Edit thresholds here instead of in create_html_reports.py. 'higher_is_better' controls which end of 'assessment_thresholds' is 'good'. Each threshold tier carries its own 'class' (good/moderate/poor) for the status pill color - assessment is judged against a fixed quality bar for the metric itself, NOT against other venues (there is deliberately no network benchmark here - see below).",
+  "_no_benchmark_comment": "An earlier version of this file had a 'benchmark' (network average) per metric, used to show 'Above/On par/Below average' vs. other venues. That was removed: individual venue reports are usually generated from a single venue's data, so a hardcoded 'network average' constant was often stale or simply fictional for whatever CSV was actually being processed. Cross-venue comparison belongs in the separate Venue Rankings Weekly report (see templates/REPORT_TEMPLATES_VENUE_RANKINGS.md), which computes real averages/ranks from all venues present in that run's data. If a per-venue report ever needs a benchmark again, compute it live from the venues actually loaded in that run rather than reintroducing a static constant.",
+
+  "ltr": {
+    "label": "Likelihood to Recommend",
+    "data_field": "ltr_avg",
+    "unit_display": "/ 10",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 8.0, "level": "Excellent", "class": "good"},
+      {"min": 7.0, "level": "Strong", "class": "good"},
+      {"min": 6.0, "level": "Moderate", "class": "moderate"},
+      {"min": null, "level": "Weak", "class": "poor"}
+    ]
+  },
+
+  "fun": {
+    "label": "Fun",
+    "data_field": "fun_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.2, "level": "Excellent", "class": "good"},
+      {"min": 3.8, "level": "Strong", "class": "good"},
+      {"min": 3.4, "level": "Moderate", "class": "moderate"},
+      {"min": null, "level": "Weak", "class": "poor"}
+    ]
+  },
+
+  "helpful": {
+    "label": "Helpfulness",
+    "data_field": "helpful_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.2, "level": "Excellent", "class": "good"},
+      {"min": 3.8, "level": "Strong", "class": "good"},
+      {"min": 3.4, "level": "Moderate", "class": "moderate"},
+      {"min": null, "level": "Weak", "class": "poor"}
+    ]
+  },
+
+  "issues": {
+    "label": "Issues Reported",
+    "data_field": "issues_pct",
+    "unit_display": "%",
+    "higher_is_better": false,
+    "assessment_thresholds": [
+      {"max": 30, "level": "Low", "class": "good"},
+      {"max": 40, "level": "Moderate", "class": "moderate"},
+      {"max": 50, "level": "High", "class": "poor"},
+      {"max": null, "level": "Critical", "class": "poor"}
+    ]
+  },
+
+  "resolution": {
+    "label": "Issue Resolution",
+    "data_field": "resolution_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.0, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Strong", "class": "good"},
+      {"min": 3.0, "level": "Moderate", "class": "moderate"},
+      {"min": null, "level": "Weak", "class": "poor"}
+    ]
+  }
+}

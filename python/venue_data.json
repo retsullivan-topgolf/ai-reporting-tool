@@ -1,77 +1,427 @@
 {
-  "dallas": {
-    "venue": "Dallas",
-    "responses": 5,
+  "buford": {
+    "venue": "Buford",
+    "responses": 3,
     "date_range": [
-      "2026-08-03",
-      "2026-08-12"
+      "2026-08-27",
+      "2026-08-28"
     ],
     "ltr_scores": [
-      10,
       9,
-      7,
-      6,
-      3
+      10,
+      8
     ],
     "fun_scores": [
       5,
       5,
-      4,
-      3,
-      2
+      4
     ],
     "helpful_scores": [
       5,
-      4,
+      5,
+      4
+    ],
+    "issues_count": 0,
+    "resolution_scores": [],
+    "comments": [
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive."
+      },
+      {
+        "ltr": 10,
+        "fun": 5,
+        "text": "We had a fantastic time. The team was friendly, everything worked well, and the whole family wants to come back."
+      },
+      {
+        "ltr": 8,
+        "fun": 4,
+        "text": "Fun night with friends. Food was good and the games were easy to get started."
+      }
+    ],
+    "high_ltr_comments": [
+      "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive.",
+      "We had a fantastic time. The team was friendly, everything worked well, and the whole family wants to come back.",
+      "Fun night with friends. Food was good and the games were easy to get started."
+    ],
+    "low_ltr_comments": [],
+    "ltr_avg": 9.0,
+    "fun_avg": 4.7,
+    "helpful_avg": 4.7,
+    "issues_pct": 0.0,
+    "resolution_avg": 0
+  },
+  "gilbert": {
+    "venue": "Gilbert",
+    "responses": 3,
+    "date_range": [
+      "2026-08-25",
+      "2026-08-29"
+    ],
+    "ltr_scores": [
+      9,
+      10,
+      9
+    ],
+    "fun_scores": [
+      5,
+      5,
+      5
+    ],
+    "helpful_scores": [
       4,
       5,
-      2
+      4
+    ],
+    "issues_count": 2,
+    "resolution_scores": [
+      5,
+      5
+    ],
+    "comments": [
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+      },
+      {
+        "ltr": 10,
+        "fun": 5,
+        "text": "We had a fantastic time. The team was friendly, everything worked well, and the whole family wants to come back."
+      },
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+      }
+    ],
+    "high_ltr_comments": [
+      "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall.",
+      "We had a fantastic time. The team was friendly, everything worked well, and the whole family wants to come back.",
+      "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+    ],
+    "low_ltr_comments": [],
+    "ltr_avg": 9.3,
+    "fun_avg": 5.0,
+    "helpful_avg": 4.3,
+    "issues_pct": 66.7,
+    "resolution_avg": 5.0
+  },
+  "lake_mary": {
+    "venue": "Lake Mary",
+    "responses": 3,
+    "date_range": [
+      "2026-08-23",
+      "2026-08-28"
+    ],
+    "ltr_scores": [
+      9,
+      9,
+      7
+    ],
+    "fun_scores": [
+      5,
+      5,
+      4
+    ],
+    "helpful_scores": [
+      4,
+      4,
+      4
+    ],
+    "issues_count": 2,
+    "resolution_scores": [
+      5,
+      5
+    ],
+    "comments": [
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+      },
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+      },
+      {
+        "ltr": 7,
+        "fun": 4,
+        "text": "Golf was fun and the staff was nice. Food took longer than expected, but we still had a good time."
+      }
+    ],
+    "high_ltr_comments": [
+      "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall.",
+      "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+    ],
+    "low_ltr_comments": [],
+    "ltr_avg": 8.3,
+    "fun_avg": 4.7,
+    "helpful_avg": 4.0,
+    "issues_pct": 66.7,
+    "resolution_avg": 5.0
+  },
+  "myrtle_beach": {
+    "venue": "Myrtle Beach",
+    "responses": 4,
+    "date_range": [
+      "2026-08-24",
+      "2026-08-27"
+    ],
+    "ltr_scores": [
+      7,
+      4,
+      8,
+      9
+    ],
+    "fun_scores": [
+      4,
+      2,
+      4,
+      5
+    ],
+    "helpful_scores": [
+      3,
+      3,
+      5,
+      4
     ],
     "issues_count": 3,
     "resolution_scores": [
+      4,
+      2,
+      5
+    ],
+    "comments": [
+      {
+        "ltr": 7,
+        "fun": 4,
+        "text": "We had trouble getting one of the games to start. It took a little while to get help, but the issue was resolved."
+      },
+      {
+        "ltr": 4,
+        "fun": 2,
+        "text": "We waited quite a while for assistance when the bay equipment stopped working. It was eventually fixed, but we lost playing time."
+      },
+      {
+        "ltr": 8,
+        "fun": 4,
+        "text": "We had a good time and the staff was especially helpful explaining the games to the newer golfers in our group."
+      },
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+      }
+    ],
+    "high_ltr_comments": [
+      "We had a good time and the staff was especially helpful explaining the games to the newer golfers in our group.",
+      "The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall."
+    ],
+    "low_ltr_comments": [
+      "We waited quite a while for assistance when the bay equipment stopped working. It was eventually fixed, but we lost playing time."
+    ],
+    "ltr_avg": 7.0,
+    "fun_avg": 3.8,
+    "helpful_avg": 3.8,
+    "issues_pct": 75.0,
+    "resolution_avg": 3.7
+  },
+  "new_braunfels": {
+    "venue": "New Braunfels",
+    "responses": 3,
+    "date_range": [
+      "2026-08-27",
+      "2026-08-29"
+    ],
+    "ltr_scores": [
+      6,
+      4,
+      6
+    ],
+    "fun_scores": [
+      3,
+      2,
+      3
+    ],
+    "helpful_scores": [
+      3,
+      3,
+      5
+    ],
+    "issues_count": 2,
+    "resolution_scores": [
+      2,
+      4
+    ],
+    "comments": [
+      {
+        "ltr": 6,
+        "fun": 3,
+        "text": "The experience was okay. It was busy and felt a little rushed, but the games themselves were enjoyable."
+      },
+      {
+        "ltr": 4,
+        "fun": 2,
+        "text": "We waited quite a while for assistance when the bay equipment stopped working. It was eventually fixed, but we lost playing time."
+      },
+      {
+        "ltr": 6,
+        "fun": 3,
+        "text": "Our food order was incorrect, but our server was very helpful and replaced it quickly."
+      }
+    ],
+    "high_ltr_comments": [],
+    "low_ltr_comments": [
+      "The experience was okay. It was busy and felt a little rushed, but the games themselves were enjoyable.",
+      "We waited quite a while for assistance when the bay equipment stopped working. It was eventually fixed, but we lost playing time.",
+      "Our food order was incorrect, but our server was very helpful and replaced it quickly."
+    ],
+    "ltr_avg": 5.3,
+    "fun_avg": 2.7,
+    "helpful_avg": 3.7,
+    "issues_pct": 66.7,
+    "resolution_avg": 3.0
+  },
+  "rogers": {
+    "venue": "Rogers",
+    "responses": 5,
+    "date_range": [
+      "2026-08-24",
+      "2026-08-29"
+    ],
+    "ltr_scores": [
+      8,
+      9,
+      9,
+      6,
+      1
+    ],
+    "fun_scores": [
+      4,
       5,
+      5,
+      3,
+      1
+    ],
+    "helpful_scores": [
+      4,
+      5,
+      5,
+      5,
+      1
+    ],
+    "issues_count": 2,
+    "resolution_scores": [
       4,
       1
     ],
     "comments": [
       {
-        "ltr": 10,
-        "fun": 5,
-        "text": "We had an amazing time. Our bay host was friendly and kept checking on us. The kids loved the games and we will definitely be back."
+        "ltr": 8,
+        "fun": 4,
+        "text": "Fun night with friends. Food was good and the games were easy to get started."
       },
       {
         "ltr": 9,
         "fun": 5,
-        "text": "Our screen stopped tracking shots for a few minutes, but an employee came over right away and fixed it. Great experience overall."
+        "text": "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive."
       },
       {
-        "ltr": 7,
-        "fun": 4,
-        "text": "Golf was fun and the staff was nice. Food took longer than we expected and was a little expensive, but we still had a good time."
+        "ltr": 9,
+        "fun": 5,
+        "text": "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive."
       },
       {
         "ltr": 6,
         "fun": 3,
-        "text": "We waited a long time for our food and one order was wrong. Our server was very helpful and replaced it quickly."
+        "text": "Our food order was incorrect, but our server was very helpful and replaced it quickly."
       },
       {
-        "ltr": 3,
-        "fun": 2,
-        "text": "The bay equipment kept having problems and we had to ask for help several times. It was never completely fixed and we lost quite a bit of playing time."
+        "ltr": 1,
+        "fun": 1,
+        "text": "We had repeated equipment issues and could not get timely help. We left disappointed."
       }
     ],
     "high_ltr_comments": [
-      "We had an amazing time. Our bay host was friendly and kept checking on us. The kids loved the games and we will definitely be back.",
-      "Our screen stopped tracking shots for a few minutes, but an employee came over right away and fixed it. Great experience overall."
+      "Fun night with friends. Food was good and the games were easy to get started.",
+      "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive.",
+      "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive."
     ],
     "low_ltr_comments": [
-      "We waited a long time for our food and one order was wrong. Our server was very helpful and replaced it quickly.",
-      "The bay equipment kept having problems and we had to ask for help several times. It was never completely fixed and we lost quite a bit of playing time."
+      "Our food order was incorrect, but our server was very helpful and replaced it quickly.",
+      "We had repeated equipment issues and could not get timely help. We left disappointed."
     ],
-    "ltr_avg": 7.0,
-    "fun_avg": 3.8,
+    "ltr_avg": 6.6,
+    "fun_avg": 3.6,
     "helpful_avg": 4.0,
-    "issues_pct": 60.0,
-    "resolution_avg": 3.3
+    "issues_pct": 40.0,
+    "resolution_avg": 2.5
+  },
+  "waco": {
+    "venue": "Waco",
+    "responses": 4,
+    "date_range": [
+      "2026-08-23",
+      "2026-08-28"
+    ],
+    "ltr_scores": [
+      9,
+      10,
+      5,
+      7
+    ],
+    "fun_scores": [
+      5,
+      5,
+      3,
+      4
+    ],
+    "helpful_scores": [
+      5,
+      5,
+      3,
+      4
+    ],
+    "issues_count": 1,
+    "resolution_scores": [
+      3
+    ],
+    "comments": [
+      {
+        "ltr": 9,
+        "fun": 5,
+        "text": "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive."
+      },
+      {
+        "ltr": 10,
+        "fun": 5,
+        "text": "We had a fantastic time. The team was friendly, everything worked well, and the whole family wants to come back."
+      },
+      {
+        "ltr": 5,
+        "fun": 3,
+        "text": "Our bay had intermittent tracking problems. Staff helped reset it, but the issue came back later."
+      },
+      {
+        "ltr": 7,
+        "fun": 4,
+        "text": "Golf was fun and the staff was nice. Food took longer than expected, but we still had a good time."
+      }
+    ],
+    "high_ltr_comments": [
+      "Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive.",
+      "We had a fantastic time. The team was friendly, everything worked well, and the whole family wants to come back."
+    ],
+    "low_ltr_comments": [
+      "Our bay had intermittent tracking problems. Staff helped reset it, but the issue came back later."
+    ],
+    "ltr_avg": 7.8,
+    "fun_avg": 4.2,
+    "helpful_avg": 4.2,
+    "issues_pct": 25.0,
+    "resolution_avg": 3.0
   }
 }

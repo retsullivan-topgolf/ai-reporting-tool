@@ -257,6 +257,11 @@
             color: #c62828;
         }
 
+        .status-pill.unknown {
+            background: #f0f0f0;
+            color: #666666;
+        }
+
         /* Lists */
         .list-section {
             margin-bottom: 20px;
@@ -506,9 +511,9 @@
             <div class="header-content">
                 <h1>Topgolf Venue Report</h1>
                 <div class="header-meta">
-                    <span>📍 <strong>Venue:</strong> [Venue Name]</span>
-                    <span>📅 <strong>Period:</strong> [Start Date] - [End Date]</span>
-                    <span>📊 <strong>Week:</strong> Week of [Start Date]</span>
+                    <span>📍 <strong>Venue:</strong> {{ venue }}</span>
+                    <span>📅 <strong>Period:</strong> {{ start_formatted }} - {{ end_formatted }}</span>
+                    <span>📊 <strong>Week:</strong> Week of {{ week_formatted }}</span>
                 </div>
             </div>
         </div>
@@ -519,7 +524,7 @@
             <div class="section">
                 <h2 class="section-title">Venue Overview</h2>
                 <div class="overview-box">
-                    <p>[Venue] is a [characterization] venue that [primary strength] but [primary challenge]. The venue shows a clear pattern: [key insight about what drives satisfaction]. [Assessment of whether issues are capability gaps or execution gaps].</p>
+                    <p>{{ overview | safe }}</p>
                 </div>
             </div>
 
@@ -529,28 +534,28 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-label">LTR</div>
-                        <div class="metric-value">[AVG]</div>
-                        <span class="metric-status status-good">[Assessment]</span>
+                        <div class="metric-value">{{ ltr_avg_display }}</div>
+                        <span class="metric-status status-{{ ltr_assessment_class }}">{{ ltr_assessment }}</span>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Fun</div>
-                        <div class="metric-value">[AVG]</div>
-                        <span class="metric-status status-good">[Assessment]</span>
+                        <div class="metric-value">{{ fun_avg_display }}</div>
+                        <span class="metric-status status-{{ fun_assessment_class }}">{{ fun_assessment }}</span>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Helpfulness</div>
-                        <div class="metric-value">[AVG]</div>
-                        <span class="metric-status status-moderate">[Assessment]</span>
+                        <div class="metric-value">{{ helpful_avg_display }}</div>
+                        <span class="metric-status status-{{ helpful_assessment_class }}">{{ helpful_assessment }}</span>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Issues Reported</div>
-                        <div class="metric-value">[PER]%</div>
-                        <span class="metric-status status-poor">[Assessment]</span>
+                        <div class="metric-value">{{ issues_pct_card_display }}</div>
+                        <span class="metric-status status-{{ issues_assessment_class }}">{{ issues_assessment }}</span>
                     </div>
                 </div>
 
                 <div class="highlight-box">
-                    ✓ Overall Assessment: [1-2 sentence summary of venue performance]
+                    ✓ Overall Assessment: {{ overall_assessment }}
                 </div>
             </div>
 
@@ -563,40 +568,34 @@
                             <tr>
                                 <th>Attribute</th>
                                 <th style="text-align: right;">Score</th>
-                                <th>Benchmark</th>
-                                <th>Status</th>
+                                <th>Assessment</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Likelihood to Recommend</td>
-                                <td style="text-align: right;"><strong>[VENUE_AVG] / 10</strong></td>
-                                <td>7.8 (network avg)</td>
-                                <td><span class="status-pill [STATUS_CLASS]">[Status]</span></td>
+                                <td style="text-align: right;"><strong>{{ ltr_avg_display }} / 10</strong></td>
+                                <td><span class="status-pill {{ ltr_assessment_class }}">{{ ltr_assessment }}</span></td>
                             </tr>
                             <tr>
                                 <td>Fun</td>
-                                <td style="text-align: right;"><strong>[VENUE_AVG] / 5</strong></td>
-                                <td>4.1 (network avg)</td>
-                                <td><span class="status-pill [STATUS_CLASS]">[Status]</span></td>
+                                <td style="text-align: right;"><strong>{{ fun_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ fun_assessment_class }}">{{ fun_assessment }}</span></td>
                             </tr>
                             <tr>
                                 <td>Helpfulness</td>
-                                <td style="text-align: right;"><strong>[VENUE_AVG] / 5</strong></td>
-                                <td>4.2 (network avg)</td>
-                                <td><span class="status-pill [STATUS_CLASS]">[Status]</span></td>
+                                <td style="text-align: right;"><strong>{{ helpful_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ helpful_assessment_class }}">{{ helpful_assessment }}</span></td>
                             </tr>
                             <tr>
                                 <td>Issues Reported</td>
-                                <td style="text-align: right;"><strong>[VENUE_PERCENT]%</strong></td>
-                                <td>37.0% (network avg)</td>
-                                <td><span class="status-pill [STATUS_CLASS]">[Status]</span></td>
+                                <td style="text-align: right;"><strong>{{ issues_pct_table_display }}</strong></td>
+                                <td><span class="status-pill {{ issues_assessment_class }}">{{ issues_assessment }}</span></td>
                             </tr>
                             <tr>
                                 <td>Issue Resolution</td>
-                                <td style="text-align: right;"><strong>[VENUE_AVG] / 5</strong></td>
-                                <td>3.6 (network avg)</td>
-                                <td><span class="status-pill [STATUS_CLASS]">[Status]</span></td>
+                                <td style="text-align: right;"><strong>{{ resolution_avg_display }}</strong></td>
+                                <td><span class="status-pill {{ resolution_assessment_class }}">{{ resolution_assessment }}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -613,9 +612,8 @@
                     <div class="card ups">
                         <h3 class="card-title">📈 Ups</h3>
                         <ul class="card-list">
-                            <li><strong>[Theme Name]:</strong> [Evidence from comments or metrics]</li>
-                            <li><strong>[Theme Name]:</strong> [Evidence from comments or metrics]</li>
-                            <li><strong>[Theme Name]:</strong> [Evidence from comments or metrics]</li>
+                            {% for up in ups %}<li>{{ up | safe }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
 
@@ -623,9 +621,8 @@
                     <div class="card downs">
                         <h3 class="card-title">📉 Downs</h3>
                         <ul class="card-list">
-                            <li><strong>[Theme Name]:</strong> [Evidence from comments or metrics]</li>
-                            <li><strong>[Theme Name]:</strong> [Evidence from comments or metrics]</li>
-                            <li><strong>[Theme Name]:</strong> [Evidence from comments or metrics, if applicable]</li>
+                            {% for down in downs %}<li>{{ down | safe }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -638,27 +635,14 @@
             <div class="section">
                 <h2 class="section-title">Impact</h2>
                 <ul class="ranking-list">
-                    <li>
-                        <div class="ranking-number">1</div>
+                    {% for driver in impact %}<li>
+                        <div class="ranking-number">{{ loop.index }}</div>
                         <div class="ranking-content">
-                            <div class="ranking-title">[Top Driver]</div>
-                            <div class="ranking-description">[Quantitative or qualitative evidence]</div>
+                            <div class="ranking-title">{{ driver.title }}</div>
+                            <div class="ranking-description">{{ driver.description }}</div>
                         </div>
                     </li>
-                    <li>
-                        <div class="ranking-number">2</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">[Second Driver]</div>
-                            <div class="ranking-description">[Evidence]</div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="ranking-number">3</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">[Third Driver]</div>
-                            <div class="ranking-description">[Evidence]</div>
-                        </div>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
 
@@ -669,33 +653,27 @@
             <div class="section">
                 <h2 class="section-title">Recommendations</h2>
 
-                <h3 class="section-subtitle">1. [Top Gap]</h3>
+                <h3 class="section-subtitle">🔴 Critical Priority: {{ critical_title }}</h3>
                 <div class="list-section">
                     <ul>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
+                        {% for item in critical_items %}{{ item | safe }}
+                        {% endfor %}
                     </ul>
                 </div>
 
-                <h3 class="section-subtitle">2. [Second Gap]</h3>
+                <h3 class="section-subtitle">🟡 Secondary Priority: {{ secondary_title }}</h3>
                 <div class="list-section">
                     <ul>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description, if applicable]</li>
+                        {% for item in secondary_items %}{{ item | safe }}
+                        {% endfor %}
                     </ul>
                 </div>
 
-                <h3 class="section-subtitle">3. [Top Strength]</h3>
+                <h3 class="section-subtitle">🟢 Maintain Strengths: {{ maintain_title }}</h3>
                 <div class="list-section">
                     <ul>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description]</li>
-                        <li><strong>[Action Name]:</strong> [Brief description, if applicable]</li>
+                        {% for item in maintain_items %}{{ item | safe }}
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -705,7 +683,7 @@
         <div class="footer">
             <div class="footer-logo">TOPGOLF®</div>
             <p>Venue Performance Report | Confidential</p>
-            <p style="margin-top: 10px; opacity: 0.8; font-size: 0.85em;">Generated on [Date]</p>
+            <p style="margin-top: 10px; opacity: 0.8; font-size: 0.85em;">Generated on {{ generated_date }}</p>
         </div>
     </div>
 </body>

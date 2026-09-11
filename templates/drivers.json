@@ -1,0 +1,222 @@
+{
+  "_comment": [
+    "Standardized content registry for the keyword-based fallback analysis (used only when the AI analysis - ai_analysis.py - is unavailable).",
+    "Each entry in 'drivers' is a self-contained topic: how to detect it, how to score it for ranking, and what copy to show in the Ups/Downs cards, the Impact ranking, and the Recommendations section.",
+    "Text fields are Python str.format() templates. Available placeholders: venue data fields (ltr_avg, fun_avg, helpful_avg, issues_pct, resolution_avg, responses), and theme_count/theme_pct for keyword-based drivers. There is deliberately no benchmark_<metric> placeholder - individual venue reports don't assert a network average (see templates/metrics.json's _no_benchmark_comment) - so copy should describe the venue's own numbers, not compare them to 'the network'.",
+    "detect types: 'keyword_theme' (matches driver.keywords against comment text, active if count >= min_count), 'metric_compare' (single field/op/value check), 'all'/'any' (list of metric_compare conditions).",
+    "score types: 'field_value' (raw metric value), 'keyword_count_pct' (theme mention count / total responses * 100), 'metric_gap_pct' ((target - value) / target * 100), 'metric_ratio_pct' (value / max * 100). Higher score = ranks higher in the Impact section, regardless of polarity.",
+    "impact_priority: 'primary' drivers are always candidates for the Impact ranking. 'filler' drivers only become candidates if fewer than 3 primary drivers are active for this venue (keeps a weak/generic signal from crowding out real ones). 'none' means this driver only ever appears in Ups/Downs, never in Impact/Recommendations.",
+    "maintain_override_if_detected: if true, this driver's 'maintain' block is used whenever the driver is detected at all - even if it isn't the top-ranked positive driver - because it represents a time-sensitive opportunity (e.g. a new game launch) worth calling out regardless of ranking.",
+    "ups_priority / downs_priority: when more than 3 drivers are active at once, the Ups/Downs cards show only 3 bullets (matching the original heuristic) - lower number wins the tie-break. Only drivers with an up_bullet/down_bullet need one."
+  ],
+
+  "drivers": [
+    {
+      "id": "equipment",
+      "label": "Equipment Reliability",
+      "polarity": "negative",
+      "detect": {"type": "metric_compare", "field": "issues_pct", "op": ">", "value": 30},
+      "score": {"type": "field_value", "field": "issues_pct"},
+      "impact_priority": "primary",
+      "downs_priority": 2,
+      "down_bullet_tiers": [
+        {"min_score": 50, "text": "<strong>High equipment issue frequency:</strong> {issues_pct:.0f}% of guests reported issues—more than half of all visits—indicating systemic problems rather than isolated incidents"},
+        {"min_score": 0, "text": "<strong>Equipment reliability concerns:</strong> {issues_pct:.0f}% of guests experienced issues - enough to indicate a reliability problem worth investigating"}
+      ],
+      "impact_description": "{issues_pct:.0f}% of guests experienced issues; this is the primary detractor from satisfaction",
+      "recommendations": {
+        "critical": [
+          {"label": "Root cause analysis", "description": "Investigate why equipment issues occur in {issues_pct:.0f}% of visits"},
+          {"label": "Preventive maintenance audit", "description": "Review maintenance logs and assess current preventive maintenance schedule"},
+          {"label": "Response time standardization", "description": "Establish and enforce response time standards for guest issues"},
+          {"label": "Staff training", "description": "Ensure staff are trained on rapid issue detection and resolution procedures"}
+        ]
+      }
+    },
+
+    {
+      "id": "parking",
+      "label": "Parking Accessibility",
+      "polarity": "negative",
+      "keywords": ["parking", "park", "lot", "space"],
+      "detect": {"type": "keyword_theme", "min_count": 1},
+      "score": {"type": "keyword_count_pct"},
+      "impact_priority": "primary",
+      "downs_priority": 1,
+      "down_bullet": "<strong>Parking accessibility issues:</strong> {theme_count} guests mentioned parking challenges, citing difficulty finding spots and long walks that detracted from their experience",
+      "impact_description": "{theme_count} guests reported parking challenges that significantly impacted their overall experience",
+      "recommendations": {
+        "critical": [
+          {"label": "Parking lot assessment", "description": "Conduct a comprehensive review of parking capacity and layout"},
+          {"label": "Signage improvement", "description": "Add clear directional signage to guide guests to available parking"},
+          {"label": "Valet service consideration", "description": "Evaluate feasibility of valet parking during peak hours"},
+          {"label": "Guest communication", "description": "Provide parking information upfront when guests book or arrive"}
+        ]
+      }
+    },
+
+    {
+      "id": "sonic",
+      "label": "New Sonic Game Launch",
+      "polarity": "positive",
+      "keywords": ["sonic", "new game"],
+      "detect": {"type": "keyword_theme", "min_count": 1},
+      "score": {"type": "keyword_count_pct"},
+      "impact_priority": "primary",
+      "maintain_override_if_detected": true,
+      "ups_priority": 1,
+      "up_bullet": "<strong>New Sonic game excitement:</strong> Guests are enthusiastic about the newly released Sonic game, with {theme_count} positive mentions highlighting it as a major draw",
+      "impact_description": "{theme_count} guests highlighted the new Sonic game as a major positive, driving excitement and repeat visit intent",
+      "recommendations": {
+        "maintain": {
+          "title": "Sonic Game Momentum",
+          "items": [
+            {"label": "Marketing campaign", "description": "Leverage the Sonic game excitement in marketing and social media"},
+            {"label": "Staff training", "description": "Ensure all staff can provide expert guidance on the new Sonic game"},
+            {"label": "Promotional events", "description": "Consider special events or tournaments around the Sonic game"},
+            {"label": "Guest feedback loop", "description": "Continue gathering feedback to identify and address issues early"}
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "resolution_quality",
+      "label": "Issue Resolution Quality",
+      "polarity": "negative",
+      "detect": {"type": "all", "conditions": [
+        {"field": "resolution_avg", "op": ">", "value": 0},
+        {"field": "resolution_avg", "op": "<", "value": 4.0}
+      ]},
+      "score": {"type": "metric_gap_pct", "field": "resolution_avg", "target": 4.0},
+      "impact_priority": "primary",
+      "downs_priority": 5,
+      "down_bullet": "<strong>Inconsistent issue resolution:</strong> Average resolution satisfaction of {resolution_avg:.1f}/5 suggests guests don't always feel their issue was fully resolved",
+      "impact_description": "Average resolution satisfaction of {resolution_avg:.1f}/5 shows inconsistent outcomes when problems occur",
+      "recommendations": {
+        "critical": [
+          {"label": "Resolution process review", "description": "Investigate why resolution satisfaction averages {resolution_avg:.1f}/5"},
+          {"label": "Escalation path", "description": "Clarify when and how staff should escalate unresolved guest issues"},
+          {"label": "Follow-up standard", "description": "Require staff to confirm the guest is satisfied before closing out an issue"},
+          {"label": "Staff training", "description": "Ensure staff are trained on rapid issue detection and resolution procedures"}
+        ]
+      }
+    },
+
+    {
+      "id": "resolution_strength",
+      "label": "Quick Issue Resolution",
+      "polarity": "positive",
+      "detect": {"type": "metric_compare", "field": "resolution_avg", "op": ">=", "value": 3.5},
+      "score": {"type": "metric_ratio_pct", "field": "resolution_avg", "max": 5},
+      "impact_priority": "none",
+      "ups_priority": 4,
+      "up_bullet": "<strong>Quick issue resolution:</strong> When problems occur, staff resolve them effectively (average {resolution_avg:.1f}/5 satisfaction)"
+    },
+
+    {
+      "id": "entertainment",
+      "label": "Entertainment Value",
+      "polarity": "positive",
+      "detect": {"type": "metric_compare", "field": "fun_avg", "op": ">=", "value": 4.0},
+      "score": {"type": "metric_ratio_pct", "field": "fun_avg", "max": 5},
+      "impact_priority": "primary",
+      "ups_priority": 2,
+      "up_bullet": "<strong>Strong entertainment value:</strong> Guests consistently rate the games and experience as fun (average {fun_avg:.1f}/5), indicating the core offering is working well",
+      "impact_description": "Consistent {fun_avg:.1f}/5 fun ratings show guests enjoy the core experience",
+      "recommendations": {
+        "maintain": {
+          "title": "Entertainment Value",
+          "items": [
+            {"label": "Protect core experience", "description": "Ensure equipment issues don't undermine the strong entertainment value"},
+            {"label": "Staff recognition", "description": "Recognize and reward staff who deliver excellent service and quick resolutions"},
+            {"label": "Consistency assurance", "description": "Maintain the positive service culture across all team members"},
+            {"label": "Guest feedback loop", "description": "Continue gathering feedback to identify and address issues early"}
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "staff_helpfulness",
+      "label": "Staff Helpfulness",
+      "polarity": "positive",
+      "detect": {"type": "metric_compare", "field": "helpful_avg", "op": ">=", "value": 4.0},
+      "score": {"type": "metric_ratio_pct", "field": "helpful_avg", "max": 5},
+      "impact_priority": "none",
+      "ups_priority": 3,
+      "up_bullet": "<strong>Staff helpfulness:</strong> Team members are rated as helpful ({helpful_avg:.1f}/5), with guests noting staff knowledge and willingness to assist"
+    },
+
+    {
+      "id": "staff_helpfulness_gap",
+      "label": "Helpfulness Below Expectations",
+      "polarity": "negative",
+      "detect": {"type": "metric_compare", "field": "helpful_avg", "op": "<", "value": 4.0},
+      "score": {"type": "metric_gap_pct", "field": "helpful_avg", "target": 5},
+      "impact_priority": "none",
+      "downs_priority": 3,
+      "down_bullet": "<strong>Helpfulness below expectations:</strong> Helpfulness rating of {helpful_avg:.1f}/5 falls short of a strong service bar, likely reflecting guest frustration with issues"
+    },
+
+    {
+      "id": "ltr_low",
+      "label": "Recommendation Intent",
+      "polarity": "negative",
+      "detect": {"type": "metric_compare", "field": "ltr_avg", "op": "<", "value": 7.0},
+      "score": {"type": "metric_gap_pct", "field": "ltr_avg", "target": 10},
+      "impact_priority": "none",
+      "downs_priority": 4,
+      "down_bullet": "<strong>Lower recommendation intent:</strong> LTR of {ltr_avg:.1f}/10 falls short of the level associated with strong guest advocacy, indicating guests are less likely to recommend"
+    },
+
+    {
+      "id": "staff_knowledge",
+      "label": "Staff Knowledge",
+      "polarity": "positive",
+      "detect": {"type": "metric_compare", "field": "helpful_avg", "op": ">=", "value": 3.8},
+      "score": {"type": "metric_ratio_pct", "field": "helpful_avg", "max": 5},
+      "impact_priority": "filler",
+      "impact_description": "Helpful ratings of {helpful_avg:.1f}/5 indicate staff are knowledgeable and engaged"
+    },
+
+    {
+      "id": "staff_responsiveness",
+      "label": "Staff Responsiveness",
+      "polarity": "negative",
+      "detect": {"type": "metric_compare", "field": "helpful_avg", "op": "<", "value": 3.8},
+      "score": {"type": "metric_gap_pct", "field": "helpful_avg", "target": 5},
+      "impact_priority": "filler",
+      "impact_description": "Helpfulness rating of {helpful_avg:.1f}/5 suggests need for faster response times",
+      "recommendations": {
+        "critical": [
+          {"label": "Response time standardization", "description": "Establish and enforce response time standards for guest issues"},
+          {"label": "Staff training", "description": "Invest in training to improve staff knowledge and responsiveness"},
+          {"label": "Staff empowerment", "description": "Give staff authority to resolve issues quickly without escalation"},
+          {"label": "Monitoring system", "description": "Implement real-time monitoring of guest satisfaction"}
+        ]
+      }
+    }
+  ],
+
+  "fallbacks": {
+    "ups_empty": "<strong>Positive guest sentiment:</strong> Despite challenges, guests appreciate the venue's entertainment value and staff friendliness",
+    "generic_recommendation_items": [
+      {"label": "Service consistency", "description": "Ensure consistent service delivery across all shifts and staff members"},
+      {"label": "Guest communication", "description": "Improve communication when issues occur to manage expectations"},
+      {"label": "Staff empowerment", "description": "Give staff authority to resolve issues quickly without escalation"},
+      {"label": "Monitoring system", "description": "Implement real-time monitoring of equipment and guest satisfaction"}
+    ],
+    "critical_default_title": "Guest Experience Consistency",
+    "secondary_default_title": "Operational Consistency",
+    "maintain_default": {
+      "title": "Staff Knowledge",
+      "items": [
+        {"label": "Staff development", "description": "Invest in training to improve staff knowledge and engagement"},
+        {"label": "Recognition program", "description": "Recognize staff who go above and beyond for guests"},
+        {"label": "Culture building", "description": "Foster a positive service culture across all team members"},
+        {"label": "Feedback integration", "description": "Use guest feedback to continuously improve service delivery"}
+      ]
+    }
+  }
+}

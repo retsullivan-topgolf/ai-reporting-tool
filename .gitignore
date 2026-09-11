@@ -2,3 +2,5 @@ local
 reports/*
 example-data/*
 branding/*
+python/venue_data.json
+python/.cache/

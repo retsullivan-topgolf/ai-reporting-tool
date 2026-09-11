@@ -10,7 +10,10 @@ import os
 def run_command(script_name, args):
     """Run a Python script and return success status"""
     try:
-        cmd = [sys.executable, script_name] + args
+        # Get the directory where this script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(script_dir, script_name)
+        cmd = [sys.executable, script_path] + args
         print(f"\n{'='*60}")
         print(f"Running: {' '.join(cmd)}")
         print(f"{'='*60}\n")
