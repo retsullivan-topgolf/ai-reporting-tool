@@ -523,10 +523,30 @@
 
             .main {
                 padding: 16px 20px;
+                /* Flex-column with explicit `order` below lets print reorder
+                   sections (Impact before Ups/Downs) without touching the
+                   HTML/on-screen order - block layout and column-flex with
+                   no reordering look identical, so this has no effect until
+                   `order` is set on specific sections just below. */
+                display: flex;
+                flex-direction: column;
             }
 
+            /* Page 1: overview, performance summary, experience metrics.
+               Page 2 (forced at #impact-section): impact, ups/downs,
+               recommendations, footer. */
+            #overview-section { order: 1; }
+            #performance-summary-section { order: 2; }
+            #experience-metrics-section { order: 3; }
+            #impact-section {
+                order: 4;
+                page-break-before: always;
+            }
+            #ups-downs-section { order: 5; }
+            #recommendations-section { order: 6; }
+
             .section {
-                margin-bottom: 14px;
+                margin-bottom: 10px;
                 page-break-inside: avoid;
             }
 
@@ -538,10 +558,20 @@
                 page-break-inside: auto;
             }
 
+            /* Drop the decorative yellow underline on headings throughout. */
+            .section-title,
+            .card-title {
+                border-bottom: none;
+            }
+
             .section-title {
                 font-size: 1.25em;
                 margin-bottom: 8px;
-                padding-bottom: 6px;
+                padding-bottom: 2px;
+            }
+
+            #overall-assessment-box {
+                display: none;
             }
 
             .section-subtitle {
@@ -591,26 +621,12 @@
             }
 
             .table-wrapper {
-                margin-bottom: 10px;
+                margin-bottom: 4px;
             }
 
             th, td {
                 padding: 7px 10px;
                 font-size: 0.85em;
-            }
-
-            /* Force page 2 to start here regardless of how much room is
-               left on page 1, so ups/downs + impact + recommendations +
-               footer render together as a group rather than splitting
-               wherever they happen to land. */
-            #ups-downs-section {
-                page-break-before: always;
-            }
-
-            /* The divider right before that forced break would otherwise
-               print as a stray line at the top of page 2. */
-            #pre-page2-divider {
-                display: none;
             }
 
             .cards-container {
@@ -630,7 +646,7 @@
             .card-title {
                 font-size: 1em;
                 margin-bottom: 6px;
-                padding-bottom: 5px;
+                padding-bottom: 2px;
             }
 
             .card-list li {
@@ -660,10 +676,6 @@
 
             .list-section li {
                 padding: 6px 0 6px 22px;
-            }
-
-            hr {
-                margin: 12px 0 !important;
             }
 
             .footer {
@@ -696,7 +708,7 @@
         <!-- Main Content -->
         <div class="main">
             <!-- Venue Overview -->
-            <div class="section">
+            <div class="section" id="overview-section">
                 <h2 class="section-title">Venue Overview</h2>
                 <div class="overview-box">
                     <p>{{ overview | safe }}</p>
@@ -704,7 +716,7 @@
             </div>
 
             <!-- Performance Summary -->
-            <div class="section">
+            <div class="section" id="performance-summary-section">
                 <h2 class="section-title">Performance Summary</h2>
                 <div class="metrics-grid">
                     <div class="metric-card">
@@ -729,13 +741,13 @@
                     </div>
                 </div>
 
-                <div class="highlight-box">
+                <div class="highlight-box" id="overall-assessment-box">
                     ✓ Overall Assessment: {{ overall_assessment }}
                 </div>
             </div>
 
             <!-- Experience Metrics -->
-            <div class="section">
+            <div class="section" id="experience-metrics-section">
                 <h2 class="section-title">Experience Metrics - Current Period</h2>
                 <div class="table-wrapper">
                     <table>
@@ -777,9 +789,6 @@
                 </div>
             </div>
 
-            <!-- Divider -->
-            <hr id="pre-page2-divider" style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
-
             <!-- What Made Scores Go Up & Down -->
             <div class="section" id="ups-downs-section">
                 <div class="cards-container">
@@ -803,11 +812,8 @@
                 </div>
             </div>
 
-            <!-- Divider -->
-            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
-
             <!-- What Impacted Scores Most -->
-            <div class="section">
+            <div class="section" id="impact-section">
                 <h2 class="section-title">Impact</h2>
                 <ul class="ranking-list">
                     {% for driver in impact %}<li>
@@ -820,9 +826,6 @@
                     {% endfor %}
                 </ul>
             </div>
-
-            <!-- Divider -->
-            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
 
             <!-- Recommendations -->
             <div class="section" id="recommendations-section">
