@@ -513,6 +513,10 @@
             }
 
             .header-meta {
+                /* The printable page width is narrower than the 768px
+                   mobile breakpoint above, which would otherwise stack
+                   these into a column here too - keep them in a row. */
+                flex-direction: row;
                 gap: 16px;
                 font-size: 0.85em;
             }
@@ -610,22 +614,28 @@
             }
 
             .cards-container {
+                /* The page's printable width (Letter minus margins) is
+                   narrower than the 768px mobile breakpoint below, which
+                   would otherwise stack Ups/Downs into a single column here
+                   too - force them back into two columns for print. */
+                grid-template-columns: 1fr 1fr;
                 gap: 12px;
                 margin-bottom: 12px;
             }
 
             .card {
-                padding: 12px 14px;
+                padding: 10px 12px;
             }
 
             .card-title {
-                font-size: 1.05em;
-                margin-bottom: 8px;
-                padding-bottom: 6px;
+                font-size: 1em;
+                margin-bottom: 6px;
+                padding-bottom: 5px;
             }
 
             .card-list li {
-                padding: 6px 0 6px 18px;
+                padding: 5px 0 5px 16px;
+                font-size: 0.85em;
             }
 
             .ranking-list li {
