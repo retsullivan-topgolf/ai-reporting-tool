@@ -130,6 +130,18 @@
             line-height: 1.8;
         }
 
+        /* Shown in place of the overview (and instead of Ups/Downs, Impact,
+           and Recommendations entirely) when AI analysis wasn't available
+           for this report - see report_content.py's ai_unavailable context
+           flag. Amber rather than the default blue so it reads as a system
+           notice, not a finding about the venue. */
+        .overview-box.ai-unavailable-box {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+            border-left-color: #e65100;
+            font-style: italic;
+            color: #5c4a1a;
+        }
+
         /* Metrics Grid */
         .metrics-grid {
             display: flex;
@@ -705,9 +717,15 @@
             <!-- Venue Overview -->
             <div class="section" id="overview-section">
                 <h2 class="section-title">Venue Overview</h2>
+                {% if ai_unavailable %}
+                <div class="overview-box ai-unavailable-box">
+                    <p>{{ ai_unavailable_message | safe }}</p>
+                </div>
+                {% else %}
                 <div class="overview-box">
                     <p>{{ overview | safe }}</p>
                 </div>
+                {% endif %}
             </div>
 
             <!-- Performance Summary -->
@@ -784,6 +802,7 @@
                 </div>
             </div>
 
+            {% if not ai_unavailable %}
             <!-- What Made Scores Go Up & Down -->
             <div class="section" id="ups-downs-section">
                 <div class="cards-container">
@@ -850,6 +869,7 @@
                     </ul>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <!-- Footer -->

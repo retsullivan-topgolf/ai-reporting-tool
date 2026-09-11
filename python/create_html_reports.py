@@ -29,11 +29,9 @@ print(f"Reading data from: {json_file}")
 with open(json_file, 'r') as f:
     venue_data = json.load(f)
 
-# Metric assessment thresholds and the keyword/metric-driven fallback content
-# (used when AI analysis is unavailable) all live in templates/metrics.json
-# and templates/drivers.json - see report_engine.py for how they're
-# interpreted. Edit those files to tune a threshold or add a new theme; this
-# script should not need a code change for that.
+# Metric assessment thresholds live in templates/metrics.json - see
+# report_engine.py for how they're interpreted. Edit that file to tune a
+# threshold; this script should not need a code change for that.
 metrics_registry = report_engine.load_metrics_registry()
 
 # Jinja2 environment for the single-source-of-truth HTML template. The
@@ -49,9 +47,9 @@ report_template = jinja_env.get_template('venue-1page-browser.html')
 # Generate reports for all venues in the data
 for venue_key in sorted(venue_data.keys()):
     data = venue_data[venue_key]
-    # Dates, metric displays, assessments, and the AI/keyword-fallback
-    # analysis all live in report_content.py so create_pdf_reports.py can
-    # render the identical HTML (see render_html_report()'s docstring).
+    # Dates, metric displays, assessments, and the AI analysis all live in
+    # report_content.py so create_pdf_reports.py can render the identical
+    # HTML (see render_html_report()'s docstring).
     html = report_content.render_html_report(data, metrics_registry, report_template)
 
     # Convert key back to proper venue name (e.g., 'dallas' -> 'Dallas')

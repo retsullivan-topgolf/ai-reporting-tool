@@ -15,9 +15,11 @@ Why the CLI instead of the Anthropic API directly?
   use of the tool rather than a workaround.
 
 If the `claude` CLI isn't installed, isn't logged in, or the call fails for
-any reason, `get_ai_analysis()` returns None and the caller is expected to
-fall back to the simpler keyword-based analysis so report generation never
-hard-fails.
+any reason, `get_ai_analysis()` returns (None, reason) - there is no
+keyword-based fallback analysis. The caller is expected to show the reason
+to the reader in place of the AI-generated narrative (overview, ups/downs,
+impact, recommendations) while still showing the metrics, which don't
+depend on AI at all. See report_content.get_analysis().
 
 Caching
 -------
@@ -170,6 +172,13 @@ def _read_cache(cache_key, venue):
     return analysis
 
 
+def _unavailable(venue, reason):
+    """Log the reason AI analysis isn't available for this venue and return
+    the (None, reason) pair get_ai_analysis() hands back to its caller."""
+    print(f"[ai_analysis] {reason} (venue '{venue}').")
+    return None, reason
+
+
 def _write_cache(cache_key, venue, analysis):
     os.makedirs(CACHE_DIR, exist_ok=True)
     entry = {
@@ -231,9 +240,15 @@ def get_ai_analysis(data, use_cache=True):
     """Run the AI-based analysis via the Claude Code CLI, using a cached
     result when one exists for this exact venue payload + prompt.
 
-    Returns a dict matching the schema in ANALYSIS_SCHEMA_INSTRUCTIONS on
-    success, or None if the CLI is unavailable or anything goes wrong (with
-    a message printed to the console explaining why).
+    Returns (analysis, None) on success, where analysis is a dict matching
+    the schema in ANALYSIS_SCHEMA_INSTRUCTIONS. Returns (None, reason) if the
+    CLI is unavailable or anything goes wrong - reason is a short,
+    human-readable string safe to show directly in a report (e.g. in place
+    of the AI-generated overview) rather than just logged to the console.
+
+    There is no keyword-based fallback - a None result means the caller
+    should say AI analysis wasn't available rather than fabricate a
+    narrative from a different method.
 
     Set use_cache=False, or the AI_ANALYSIS_FORCE_REFRESH environment
     variable, to force a fresh call even when a cache entry exists.
@@ -246,16 +261,14 @@ def get_ai_analysis(data, use_cache=True):
         cached = _read_cache(cache_key, venue)
         if cached is not None:
             print(f"[ai_analysis] Using cached analysis for venue '{venue}' (key {cache_key[:12]}...)")
-            return cached
+            return cached, None
 
     claude_path = shutil.which("claude")
     if not claude_path:
-        print(
-            "[ai_analysis] 'claude' CLI not found on PATH - skipping AI analysis "
-            "(install/login to Claude Code to enable it). Falling back to "
-            "keyword-based analysis."
+        return _unavailable(
+            venue,
+            "'claude' CLI not found on PATH - install/login to Claude Code to enable AI analysis",
         )
-        return None
 
     prompt = _build_prompt(data)
 
@@ -267,25 +280,15 @@ def get_ai_analysis(data, use_cache=True):
             timeout=CLAUDE_TIMEOUT_SECONDS,
         )
     except subprocess.TimeoutExpired:
-        print(
-            f"[ai_analysis] Claude CLI timed out after {CLAUDE_TIMEOUT_SECONDS}s "
-            f"for venue '{venue}'. Falling back to keyword-based analysis."
-        )
-        return None
+        return _unavailable(venue, f"Claude CLI timed out after {CLAUDE_TIMEOUT_SECONDS}s")
     except Exception as e:
-        print(
-            f"[ai_analysis] Failed to invoke Claude CLI for venue "
-            f"'{venue}': {e}. Falling back to keyword-based analysis."
-        )
-        return None
+        return _unavailable(venue, f"failed to invoke Claude CLI ({e})")
 
     if result.returncode != 0:
-        print(
-            f"[ai_analysis] Claude CLI exited with code {result.returncode} for "
-            f"venue '{venue}': {result.stderr.strip()[:500]}. "
-            "Falling back to keyword-based analysis."
+        return _unavailable(
+            venue,
+            f"Claude CLI exited with code {result.returncode}: {result.stderr.strip()[:500]}",
         )
-        return None
 
     try:
         envelope = json.loads(result.stdout)
@@ -294,21 +297,13 @@ def get_ai_analysis(data, use_cache=True):
         response_text = envelope["result"]
         analysis = _extract_json(response_text)
     except Exception as e:
-        print(
-            f"[ai_analysis] Could not parse Claude CLI response for venue "
-            f"'{venue}': {e}. Falling back to keyword-based analysis."
-        )
-        return None
+        return _unavailable(venue, f"could not parse Claude CLI response ({e})")
 
     if not _validate_analysis(analysis):
-        print(
-            f"[ai_analysis] Claude CLI response for venue '{venue}' "
-            "did not match the expected schema. Falling back to keyword-based analysis."
-        )
-        return None
+        return _unavailable(venue, "Claude CLI response did not match the expected schema")
 
     _write_cache(cache_key, venue, analysis)
-    return analysis
+    return analysis, None
 
 
 if __name__ == "__main__":

@@ -3,16 +3,19 @@
 Generate Markdown venue reports from venue_data.json - the Markdown
 counterpart to create_html_reports.py.
 
-Uses the exact same analysis (AI-based, with keyword/metric fallback) and
-metric-assessment context as the HTML report via report_content.py, so the
-two formats never say something different about the same data. The only
-thing this script does differently is content SHAPE, not content: the HTML
-template expects inline HTML (`<strong>`, `<li>...</li>`) in ups/downs/
-recommendation strings, while Markdown wants `**bold**` and plain bullet
-text - see _to_markdown() below.
+Uses the exact same AI analysis and metric-assessment context as the HTML
+report via report_content.py, so the two formats never say something
+different about the same data. The only thing this script does differently
+is content SHAPE, not content: the HTML template expects inline HTML
+(`<strong>`, `<li>...</li>`) in ups/downs/recommendation strings, while
+Markdown wants `**bold**` and plain bullet text - see _to_markdown() below.
+
+There is no keyword-based fallback narrative - if AI analysis isn't
+available, the Markdown report says so (via the ai_unavailable /
+ai_unavailable_message context, same as the HTML/PDF reports) and only
+renders the metrics sections, which don't depend on AI.
 """
 import json
-import re
 import sys
 import os
 
@@ -58,21 +61,12 @@ jinja_env = Environment(
 )
 report_template = jinja_env.get_template('venue-1page-report.md.j2')
 
-_LI_TAG_RE = re.compile(r'</?li>')
-
-
 def _to_markdown(html_fragment):
-    """Convert the limited inline HTML that shows up in analysis text
-    (`<strong>...</strong>` from both the AI and keyword-fallback paths, and
-    `<li>...</li>` wrapping that the keyword-fallback path bakes in for
-    report_engine.generate_recommendations()) into Markdown equivalents.
-
-    This is the only HTML the analysis pipeline ever produces (see
-    ai_analysis.ANALYSIS_SCHEMA_INSTRUCTIONS and report_engine.py), so a
-    couple of targeted replacements are enough - no general HTML-to-Markdown
-    conversion needed."""
-    text = _LI_TAG_RE.sub('', html_fragment)
-    text = text.replace('<strong>', '**').replace('</strong>', '**')
+    """Convert the limited inline HTML the AI analysis produces
+    (`<strong>...</strong>` only - see ai_analysis.ANALYSIS_SCHEMA_INSTRUCTIONS)
+    into Markdown equivalents. A single targeted replacement is enough - no
+    general HTML-to-Markdown conversion needed."""
+    text = html_fragment.replace('<strong>', '**').replace('</strong>', '**')
     return text.strip()
 
 
@@ -80,34 +74,30 @@ def get_markdown_analysis(data):
     """Same analysis as report_content.get_analysis(), converted to
     Markdown-safe text instead of the HTML-ready shape that function returns
     (its recommendation items are pre-wrapped in `<li>...</li>` for the HTML
-    template). Calls the AI/fallback analysis directly rather than through
-    report_content.get_analysis() so this script owns its own text shape."""
-    ai_result = get_ai_analysis(data)
-    if ai_result is not None:
-        print(f"[analysis] Using AI-generated analysis for {data['venue']}")
-        analysis = {
-            'overview': ai_result['overview'],
-            'ups': ai_result['ups'],
-            'downs': ai_result['downs'],
-            'impact': ai_result['impact'],
-            'recommendations': ai_result['recommendations'],
-        }
-    else:
-        print(f"[analysis] Using keyword-based fallback analysis for {data['venue']}")
-        analysis = report_engine.generate_fallback_analysis(data)
+    template). Calls the AI analysis directly rather than through
+    report_content.get_analysis() so this script owns its own text shape.
 
+    Returns {'ai_available': False, 'unavailable_reason': str} unchanged
+    (no Markdown conversion needed) when AI analysis isn't available."""
+    ai_result, error = get_ai_analysis(data)
+    if ai_result is None:
+        print(f"[analysis] AI analysis unavailable for {data['venue']}: {error}")
+        return {'ai_available': False, 'unavailable_reason': error}
+
+    print(f"[analysis] Using AI-generated analysis for {data['venue']}")
     return {
-        'overview': _to_markdown(analysis['overview']),
-        'ups': [_to_markdown(item) for item in analysis['ups']],
-        'downs': [_to_markdown(item) for item in analysis['downs']],
+        'ai_available': True,
+        'overview': _to_markdown(ai_result['overview']),
+        'ups': [_to_markdown(item) for item in ai_result['ups']],
+        'downs': [_to_markdown(item) for item in ai_result['downs']],
         'impact': [
             {'title': driver['title'], 'description': _to_markdown(driver['description'])}
-            for driver in analysis['impact']
+            for driver in ai_result['impact']
         ],
         'recommendations': {
             tier: {
-                'title': analysis['recommendations'][tier]['title'],
-                'items': [_to_markdown(item) for item in analysis['recommendations'][tier]['items']],
+                'title': ai_result['recommendations'][tier]['title'],
+                'items': [_to_markdown(item) for item in ai_result['recommendations'][tier]['items']],
             }
             for tier in ('critical', 'secondary', 'maintain')
         },
@@ -122,21 +112,30 @@ def generate_markdown_report(data):
     context = report_content.build_metrics_context(data, metrics_registry)
 
     analysis = get_markdown_analysis(data)
-    recommendations = analysis['recommendations']
 
-    context.update({
-        'overview': analysis['overview'],
-        'ups': analysis['ups'],
-        'downs': analysis['downs'],
-        'impact': analysis['impact'],
+    if analysis['ai_available']:
+        recommendations = analysis['recommendations']
+        context.update({
+            'ai_unavailable': False,
+            'overview': analysis['overview'],
+            'ups': analysis['ups'],
+            'downs': analysis['downs'],
+            'impact': analysis['impact'],
 
-        'critical_title': recommendations['critical']['title'],
-        'critical_items': recommendations['critical']['items'],
-        'secondary_title': recommendations['secondary']['title'],
-        'secondary_items': recommendations['secondary']['items'],
-        'maintain_title': recommendations['maintain']['title'],
-        'maintain_items': recommendations['maintain']['items'],
-    })
+            'critical_title': recommendations['critical']['title'],
+            'critical_items': recommendations['critical']['items'],
+            'secondary_title': recommendations['secondary']['title'],
+            'secondary_items': recommendations['secondary']['items'],
+            'maintain_title': recommendations['maintain']['title'],
+            'maintain_items': recommendations['maintain']['items'],
+        })
+    else:
+        context.update({
+            'ai_unavailable': True,
+            'ai_unavailable_message': report_content.UNAVAILABLE_MESSAGE_TEMPLATE.format(
+                reason=analysis['unavailable_reason']
+            ),
+        })
 
     return report_template.render(**context)
 

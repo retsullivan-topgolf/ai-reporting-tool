@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Shared, format-agnostic report content: the analysis fetch (AI first, keyword
-fallback second) and the metric-assessment/date/display context that both
-create_html_reports.py and create_markdown_reports.py need.
+Shared, format-agnostic report content: the AI analysis fetch and the
+metric-assessment/date/display context that both create_html_reports.py and
+create_markdown_reports.py need.
 
 Neither of the two output scripts should reimplement this logic - if HTML and
 Markdown reports ever say something different about the same venue_data.json,
@@ -12,9 +12,19 @@ itself differs by output format.
 get_analysis() returns the "HTML-ready" shape (recommendation items are
 already `<li>...</li>` strings, matching what templates/venue-1page-browser.html
 expects - see create_html_reports.py). create_markdown_reports.py calls the
-same analysis functions independently and converts the inline HTML
-(`<strong>`, `<li>`) to Markdown - see md_format.py.
+AI analysis independently and converts the inline HTML (`<strong>`, `<li>`)
+to Markdown - see create_markdown_reports.py.
+
+There is no keyword/metric-based fallback narrative any more. If the AI
+analysis (ai_analysis.get_ai_analysis()) isn't available - CLI missing,
+timed out, bad response, etc. - get_analysis() returns an "unavailable"
+marker instead of substituting a differently-derived narrative, and callers
+show that fact to the reader rather than fabricate a story. The metrics
+sections (Performance Summary, Experience Metrics) never depend on AI at
+all - see build_metrics_context() below - so those keep rendering normally
+either way.
 """
+import html
 from datetime import datetime
 
 from ai_analysis import get_ai_analysis
@@ -22,14 +32,15 @@ import report_engine
 
 
 def get_analysis(data):
-    """Get the overview/ups/downs/impact/recommendations content for a venue.
+    """Get the overview/ups/downs/impact/recommendations content for a venue
+    from the AI-based analysis (via Claude Code CLI) - it's the only source
+    for this narrative, since it's the only one that actually reads the
+    guest comments rather than just the aggregate metrics.
 
-    Tries the AI-based analysis (via Claude Code CLI) first, since it actually
-    reads the guest comments instead of just the aggregate metrics. Falls back
-    to the keyword/metric-based heuristics in report_engine.py if the AI
-    analysis isn't available. Either way, returns the same shape:
+    On success, returns:
 
         {
+          "ai_available": True,
           "overview": str,
           "ups": [str, ...],
           "downs": [str, ...],
@@ -41,12 +52,18 @@ def get_analysis(data):
           },
         }
 
-    so callers never need to know which path produced it. Recommendation
-    items are HTML `<li>` strings in this return value (ready to drop into
-    the HTML template) - Markdown consumers should not call this function
-    directly; see create_markdown_reports.py.
+    Recommendation items are HTML `<li>` strings in this return value (ready
+    to drop into the HTML template) - Markdown consumers should not call
+    this function directly; see create_markdown_reports.py.
+
+    When AI analysis isn't available, returns:
+
+        {"ai_available": False, "unavailable_reason": str}
+
+    and callers are expected to show unavailable_reason to the reader in
+    place of the narrative sections.
     """
-    ai_result = get_ai_analysis(data)
+    ai_result, error = get_ai_analysis(data)
     if ai_result is not None:
         print(f"[analysis] Using AI-generated analysis for {data['venue']}")
 
@@ -54,6 +71,7 @@ def get_analysis(data):
             return [f"<li>{item}</li>" for item in items]
 
         return {
+            'ai_available': True,
             'overview': ai_result['overview'],
             'ups': ai_result['ups'],
             'downs': ai_result['downs'],
@@ -67,8 +85,15 @@ def get_analysis(data):
             },
         }
 
-    print(f"[analysis] Using keyword-based fallback analysis for {data['venue']}")
-    return report_engine.generate_fallback_analysis(data)
+    print(f"[analysis] AI analysis unavailable for {data['venue']}: {error}")
+    return {'ai_available': False, 'unavailable_reason': error}
+
+
+UNAVAILABLE_MESSAGE_TEMPLATE = (
+    "AI-generated analysis (venue overview, ups/downs, impact drivers, and "
+    "recommendations) is not available for this report: {reason}. The metrics "
+    "below come directly from this period's survey data and are unaffected."
+)
 
 
 def build_overall_assessment(data):
@@ -148,20 +173,36 @@ def render_html_report(data, metrics_registry, template):
     """
     context = build_metrics_context(data, metrics_registry)
     analysis = get_analysis(data)
-    recommendations = analysis['recommendations']
 
-    context.update({
-        'overview': analysis['overview'],
-        'ups': analysis['ups'],
-        'downs': analysis['downs'],
-        'impact': analysis['impact'],
+    if analysis['ai_available']:
+        recommendations = analysis['recommendations']
+        context.update({
+            'ai_unavailable': False,
+            'overview': analysis['overview'],
+            'ups': analysis['ups'],
+            'downs': analysis['downs'],
+            'impact': analysis['impact'],
 
-        'critical_title': recommendations['critical']['title'],
-        'critical_items': recommendations['critical']['items'],
-        'secondary_title': recommendations['secondary']['title'],
-        'secondary_items': recommendations['secondary']['items'],
-        'maintain_title': recommendations['maintain']['title'],
-        'maintain_items': recommendations['maintain']['items'],
-    })
+            'critical_title': recommendations['critical']['title'],
+            'critical_items': recommendations['critical']['items'],
+            'secondary_title': recommendations['secondary']['title'],
+            'secondary_items': recommendations['secondary']['items'],
+            'maintain_title': recommendations['maintain']['title'],
+            'maintain_items': recommendations['maintain']['items'],
+        })
+    else:
+        # The reason string ultimately comes from a subprocess's stderr (see
+        # ai_analysis.py) - not attacker-controlled, but not guaranteed
+        # HTML-safe either (e.g. a raw "<" from a CLI usage hint). The
+        # Jinja environments here run with autoescape=False, so this is the
+        # only place anything gets escaped before landing in the page - do
+        # it explicitly rather than relying on the text never containing a
+        # stray "<" or "&".
+        context.update({
+            'ai_unavailable': True,
+            'ai_unavailable_message': UNAVAILABLE_MESSAGE_TEMPLATE.format(
+                reason=html.escape(analysis['unavailable_reason'])
+            ),
+        })
 
     return template.render(**context)

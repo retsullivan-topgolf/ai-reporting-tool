@@ -8,7 +8,11 @@
 
 ## Venue Overview
 
+{% if ai_unavailable %}
+*{{ ai_unavailable_message }}*
+{% else %}
 {{ overview }}
+{% endif %}
 
 ---
 
@@ -35,6 +39,7 @@
 | Issues Reported | {{ issues_pct_table_display }} | {{ issues_assessment }} |
 | Issue Resolution | {{ resolution_avg_display }} | {{ resolution_assessment }} |
 
+{% if not ai_unavailable %}
 ---
 
 ## What Made Overall Scores Go Up
@@ -82,6 +87,7 @@
 - {{ item }}
 {% endfor %}
 
+{% endif %}
 ---
 
 **TOPGOLF® Venue Performance Report**

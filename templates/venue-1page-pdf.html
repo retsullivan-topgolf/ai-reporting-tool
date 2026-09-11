@@ -133,6 +133,16 @@
             line-height: 1.4;
         }
 
+        /* Shown in place of the overview (and instead of Ups/Downs, Impact,
+           and Recommendations entirely) when AI analysis wasn't available -
+           see venue-1page-browser.html for the matching browser-report rule. */
+        .overview-box.ai-unavailable-box {
+            background: #fff3e0;
+            border-left-color: #e65100;
+            font-style: italic;
+            color: #5c4a1a;
+        }
+
         /* Metrics Grid */
         .metrics-grid {
             display: flex;
@@ -431,9 +441,15 @@
             <!-- Venue Overview -->
             <div class="section" id="overview-section">
                 <h2 class="section-title">Venue Overview</h2>
+                {% if ai_unavailable %}
+                <div class="overview-box ai-unavailable-box">
+                    <p>{{ ai_unavailable_message | safe }}</p>
+                </div>
+                {% else %}
                 <div class="overview-box">
                     <p>{{ overview | safe }}</p>
                 </div>
+                {% endif %}
             </div>
 
             <!-- Performance Summary (no Overall Assessment box - PDF only) -->
@@ -506,6 +522,7 @@
                 </div>
             </div>
 
+            {% if not ai_unavailable %}
             <!-- What Impacted Scores Most (moved before Ups/Downs - PDF only) -->
             <div class="section" id="impact-section">
                 <h2 class="section-title">Impact</h2>
@@ -572,12 +589,12 @@
                     </ul>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <div class="footer-logo">TOPGOLF® Venue Performance Report</div>
-            <p style="margin-top: 8px; opacity: 0.8; font-size: 0.85em;">Generated on {{ generated_date }}</p>
+            <div class="footer-logo">TOPGOLF® Venue Performance Report | Generated on {{ generated_date }}</div>
         </div>
     </div>
 </body>
