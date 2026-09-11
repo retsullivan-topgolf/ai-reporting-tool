@@ -64,7 +64,8 @@ You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-
 - Actionable recommendations
 
 ## Key Files
-- `templates/venue-1page-browser.html` - HTML template for reports (also the source the PDF is rendered from)
+- `templates/venue-1page-browser.html` - HTML template for reports
+- `templates/venue-1page-pdf.html` - separate template used only for the PDF (different section order/content by request - see its docstring comment)
 - `templates/venue-1page-report.md.j2` - Markdown template for reports
 - `python/` - All Python processing scripts
 - `example-data/` - Sample CSV survey data

@@ -293,17 +293,17 @@ IF venue_metric < benchmark: "Below average" [or "Above average ✗" for Issues]
 
 ## Output Formats
 
-All three formats are generated from the same venue_data.json via `python/generate_all_reports.py` (which prompts for HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt). They share identical analysis/metrics via `python/report_content.py`, so they never disagree on the numbers or the narrative - only on markup.
+All three formats are generated from the same venue_data.json. They share identical analysis/metrics via `python/report_content.py` (see `report_content.render_html_report()`), so they never disagree on the numbers or the narrative - only on layout/markup. Run them via `python/generate_all_reports.py` (which prompts for HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt), or individually.
 
 ### HTML (Browser)
-- Template: `templates/venue-1page-browser.html` (Jinja2, single source of truth for markup/CSS)
+- Template: `templates/venue-1page-browser.html` (Jinja2)
 - Generator: `python/create_html_reports.py`
 - Output: `reports/Topgolf_Venue_Report_[VenueName]_1PAGE.html`
 - Use for: Interactive viewing
 
 ### PDF
-- Same template as HTML above - not a separate layout. `python/create_pdf_reports.py` renders that HTML through headless Chromium (Playwright) and prints it, so the PDF matches the HTML report's styling/layout exactly, including the template's `@media print` rules.
-- Generator: `python/create_pdf_reports.py` (one-time setup: `pip install playwright` then `playwright install chromium`)
+- Template: `templates/venue-1page-pdf.html` (Jinja2) - a layout dedicated to the PDF, deliberately separate from the HTML template above: by request, the PDF omits the "Overall Assessment" box and orders Impact before Ups/Downs, and reordering a *shared* template via print CSS (`order`/flexbox) turned out to conflict with Chromium's print pagination (content unexpectedly spilled onto an extra page). Plain top-to-bottom DOM order in its own file paginates predictably.
+- Generator: `python/create_pdf_reports.py` (one-time setup: `pip install playwright` then `playwright install chromium`) - renders that template through headless Chromium and prints it to PDF.
 - Output: `reports/Topgolf_Venue_Report_[VenueName]_1PAGE.pdf`
 - Use for: Email attachments, printing, sharing outside a browser
 

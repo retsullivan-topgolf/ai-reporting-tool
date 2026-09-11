@@ -2,9 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Topgolf Venue Report - 1 Page</title>
+    <title>Topgolf Venue Report - PDF</title>
     <style>
+        /*
+         * Dedicated PDF layout - rendered only by python/create_pdf_reports.py
+         * through headless Chromium. This is deliberately a SEPARATE file from
+         * templates/venue-1page-browser.html rather than one shared template
+         * reused via @media print:
+         *
+         * - The PDF's section order (Impact before Ups/Downs) and content
+         *   (no "Overall Assessment" box) differ from the browser report by
+         *   request, and reordering via flexbox `order` in a shared template
+         *   turned out to interact badly with Chromium's print pagination
+         *   (content would overflow to an unexpected extra page). Plain
+         *   top-to-bottom DOM order, as used here, paginates predictably.
+         * - This file has exactly one audience (a print-to-PDF render at a
+         *   fixed Letter page width), so it doesn't need the browser
+         *   template's responsive @media (max-width) rules - avoiding an
+         *   entire class of bugs where that breakpoint was accidentally
+         *   matching the (narrower) printable page width too.
+         *
+         * The data/analysis behind this - metrics, assessments, overview,
+         * ups/downs, impact, recommendations - still comes from the exact
+         * same report_content.py used for the HTML report (see
+         * create_pdf_reports.py), so the numbers and narrative always match;
+         * only this layout is print-specific.
+         */
         * {
             margin: 0;
             padding: 0;
@@ -14,10 +37,6 @@
         :root {
             --primary-dark: #050786;
             --primary-light: #2DFFFF;
-            --primary-light-soft: rgba(45, 255, 255, 0.15);
-            --accent-yellow: #FFFF00;
-            --accent-yellow-soft: rgba(255, 255, 0, 0.12);
-            --dark-bg: #0D1117;
             --white: #FFFFFF;
             --text-dark: #1a1a1a;
             --border-light: #e0e0e0;
@@ -26,57 +45,36 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+            background: white;
             color: var(--text-dark);
-            line-height: 1.6;
+            line-height: 1.35;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 100%;
         }
 
         /* Header */
         .header {
             background: linear-gradient(135deg, var(--primary-dark) 0%, #1a0f8f 100%);
             color: var(--white);
-            padding: 40px 30px;
+            padding: 16px 20px;
             border-radius: 12px 12px 0 0;
-            margin-bottom: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, var(--primary-light-soft) 0%, transparent 70%);
-            opacity: 0.3;
-            border-radius: 50%;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
+            page-break-after: avoid;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 1.6em;
+            margin-bottom: 6px;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
         .header-meta {
             display: flex;
-            gap: 30px;
-            font-size: 0.95em;
-            opacity: 0.95;
+            flex-direction: row;
+            gap: 16px;
+            font-size: 0.85em;
             flex-wrap: wrap;
         }
 
@@ -89,45 +87,50 @@
         /* Main Content */
         .main {
             background: var(--white);
-            padding: 40px;
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 30px;
+            padding: 16px 20px;
         }
 
         /* Sections */
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 10px;
+            page-break-inside: avoid;
         }
 
         .section:last-child {
             margin-bottom: 0;
         }
 
+        /* Recommendations is usually the tallest section (3 subsections of
+           up to 4 items each) - let it flow across a page boundary instead
+           of forcing the whole block to jump to a fresh page whenever it
+           doesn't quite fit in what's left of the page. */
+        #recommendations-section {
+            page-break-inside: auto;
+        }
+
         .section-title {
-            font-size: 1.8em;
+            font-size: 1.25em;
             color: var(--primary-dark);
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid rgba(255, 255, 0, 0.4);
+            margin-bottom: 8px;
             font-weight: 700;
         }
 
         .section-subtitle {
-            font-size: 1.2em;
+            font-size: 1em;
             color: var(--primary-dark);
-            margin-top: 25px;
-            margin-bottom: 15px;
+            margin-top: 10px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         /* Overview Box */
         .overview-box {
-            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            background: #f8f9ff;
             border-left: 5px solid var(--border-accent);
-            padding: 20px;
+            padding: 10px 14px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            line-height: 1.8;
+            margin-bottom: 10px;
+            line-height: 1.4;
         }
 
         /* Metrics Grid */
@@ -136,45 +139,37 @@
             flex-direction: row;
             flex-wrap: wrap;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .metric-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f9f9f9 100%);
+            background: #f9f9f9;
             border: 2px solid var(--border-light);
             border-radius: 8px;
-            padding: 15px;
+            padding: 8px 10px;
             margin-right: 10px;
             width: 20%;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .metric-card:hover {
-            border-color: var(--border-accent);
-            box-shadow: 0 8px 24px rgba(45, 255, 255, 0.1);
-            transform: translateY(-4px);
         }
 
         .metric-label {
-            font-size: 0.9em;
+            font-size: 0.7em;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            margin-bottom: 3px;
             font-weight: 600;
         }
 
         .metric-value {
-            font-size: 2.2em;
+            font-size: 1.4em;
             font-weight: 700;
             color: var(--primary-dark);
-            margin-bottom: 8px;
+            margin-bottom: 3px;
         }
 
         .metric-status {
-            font-size: 0.85em;
-            padding: 6px 12px;
+            font-size: 0.7em;
+            padding: 3px 8px;
             border-radius: 20px;
             display: inline-block;
             font-weight: 600;
@@ -198,7 +193,7 @@
         /* Table */
         .table-wrapper {
             overflow: hidden;
-            margin-bottom: 25px;
+            margin-bottom: 4px;
             border-radius: 12px;
             border: 2px solid var(--border-light);
         }
@@ -206,27 +201,23 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
 
         th {
             background: var(--primary-dark);
             color: var(--white);
-            padding: 15px;
+            padding: 7px 10px;
             text-align: left;
             font-weight: 600;
-            font-size: 0.95em;
+            font-size: 0.85em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         td {
-            padding: 15px;
+            padding: 7px 10px;
+            font-size: 0.85em;
             border-bottom: 1px solid var(--border-light);
-        }
-
-        tr:hover {
-            background: #f5f5f5;
         }
 
         tr:last-child td {
@@ -264,17 +255,15 @@
 
         /* Lists */
         .list-section {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .list-section ul {
             list-style: none;
-            padding-left: 0;
         }
 
         .list-section li {
-            padding: 12px 0;
-            padding-left: 30px;
+            padding: 6px 0 6px 22px;
             position: relative;
             border-bottom: 1px solid var(--border-light);
         }
@@ -292,46 +281,33 @@
             font-size: 1.2em;
         }
 
-        /* Highlight Box */
-        .highlight-box {
-            background: linear-gradient(135deg, rgba(255, 255, 0, 0.15) 0%, rgba(255, 235, 59, 0.12) 100%);
-            color: var(--primary-dark);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(255, 255, 0, 0.08);
-            border: 1px solid rgba(255, 255, 0, 0.2);
-        }
-
-        /* Ranking */
+        /* Ranking (Impact) */
         .ranking-list {
             list-style: none;
-            padding: 0;
         }
 
         .ranking-list li {
             display: flex;
             align-items: flex-start;
-            gap: 15px;
-            padding: 15px;
+            gap: 10px;
+            padding: 8px 10px;
             background: #f9f9f9;
             border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             border-left: 4px solid var(--border-accent);
         }
 
         .ranking-number {
             background: var(--primary-dark);
             color: var(--white);
-            width: 40px;
-            height: 40px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 0.9em;
             flex-shrink: 0;
         }
 
@@ -342,63 +318,51 @@
         .ranking-title {
             font-weight: 600;
             color: var(--primary-dark);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .ranking-description {
-            font-size: 0.9em;
+            font-size: 0.82em;
             color: #666;
         }
 
-        /* Cards Layout */
+        /* Cards Layout (Ups/Downs) */
         .cards-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .card {
-            background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+            background: #f9f9f9;
             border: 2px solid var(--border-light);
             border-radius: 12px;
-            padding: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--border-accent);
-            box-shadow: 0 8px 24px rgba(45, 255, 255, 0.1);
-            transform: translateY(-4px);
+            padding: 10px 12px;
         }
 
         .card-title {
-            font-size: 1.4em;
+            font-size: 1em;
             font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid rgba(255, 255, 0, 0.4);
+            margin-bottom: 6px;
             color: var(--primary-dark);
         }
 
         .card.ups .card-title {
             color: #2e7d32;
-            border-bottom-color: rgba(46, 125, 50, 0.3);
         }
 
         .card.downs .card-title {
             color: #c62828;
-            border-bottom-color: rgba(198, 40, 40, 0.3);
         }
 
         .card-list {
             list-style: none;
-            padding: 0;
         }
 
         .card-list li {
-            padding: 12px 0;
-            padding-left: 25px;
+            padding: 5px 0 5px 16px;
+            font-size: 0.85em;
             position: relative;
             border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
@@ -423,266 +387,28 @@
             color: #c62828;
         }
 
+        /* Force a fresh page here regardless of how much room is left, so
+           ups/downs + recommendations + footer render together as a group. */
+        #ups-downs-section {
+            page-break-before: always;
+        }
+
         /* Footer */
         .footer {
             background: var(--primary-dark);
             color: var(--white);
-            padding: 30px;
+            padding: 12px;
             border-radius: 12px;
             text-align: center;
-            font-size: 0.9em;
-            margin-top: 30px;
+            font-size: 0.75em;
+            margin-top: 12px;
         }
 
         .footer-logo {
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
             letter-spacing: 1px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .main {
-                padding: 20px;
-            }
-
-            .metrics-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header-meta {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .section-title {
-                font-size: 1.4em;
-            }
-
-            .cards-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-        }
-
-        /* Print Styles
-           Page 1: header, overview, performance summary, experience metrics.
-           Page 2 (forced via #ups-downs-section below): ups/downs, impact,
-           recommendations, footer. Padding/margins/fonts are all trimmed
-           down substantially from the on-screen sizes above so the report
-           fits in roughly two pages instead of running long with a lot of
-           unused whitespace. */
-        @media print {
-            body {
-                background: white;
-                line-height: 1.35;
-            }
-
-            .container {
-                max-width: 100%;
-                padding: 0;
-            }
-
-            .header {
-                page-break-after: avoid;
-                padding: 16px 20px;
-            }
-
-            /* Purely decorative glow behind the header title - not worth the
-               ink, and looks odd once the header is this much shorter. */
-            .header::before {
-                display: none;
-            }
-
-            .header h1 {
-                font-size: 1.6em;
-                margin-bottom: 6px;
-            }
-
-            .header-meta {
-                /* The printable page width is narrower than the 768px
-                   mobile breakpoint above, which would otherwise stack
-                   these into a column here too - keep them in a row. */
-                flex-direction: row;
-                gap: 16px;
-                font-size: 0.85em;
-            }
-
-            .main {
-                padding: 16px 20px;
-            }
-
-            /* Force a fresh page here regardless of how much room is left
-               on page 1, so ups/downs + impact + recommendations + footer
-               render together as a group. (This browser print stylesheet
-               keeps the on-screen section order - Ups/Downs before Impact -
-               unlike the dedicated PDF template in
-               python/create_pdf_reports.py, which reorders Impact first;
-               see that file for why reordering lives there instead of here.) */
-            #ups-downs-section {
-                page-break-before: always;
-            }
-
-            .section {
-                margin-bottom: 10px;
-                page-break-inside: avoid;
-            }
-
-            /* Recommendations is usually the tallest section (3 subsections
-               of up to 4 items each) - let it flow across a page boundary
-               instead of forcing the whole block to jump to a fresh page
-               whenever it doesn't quite fit in what's left of page 2. */
-            #recommendations-section {
-                page-break-inside: auto;
-            }
-
-            /* Drop the decorative yellow underline on headings throughout. */
-            .section-title,
-            .card-title {
-                border-bottom: none;
-            }
-
-            .section-title {
-                font-size: 1.25em;
-                margin-bottom: 8px;
-                padding-bottom: 2px;
-            }
-
-            .section-subtitle {
-                font-size: 1em;
-                margin-top: 10px;
-                margin-bottom: 6px;
-            }
-
-            .overview-box {
-                padding: 10px 14px;
-                margin-bottom: 10px;
-                line-height: 1.4;
-            }
-
-            .metrics-grid {
-                margin-bottom: 6px;
-            }
-
-            .metric-card {
-                padding: 8px 10px;
-            }
-
-            .metric-label {
-                font-size: 0.7em;
-                margin-bottom: 3px;
-            }
-
-            .metric-value {
-                font-size: 1.4em;
-                margin-bottom: 3px;
-            }
-
-            .metric-status {
-                font-size: 0.7em;
-                padding: 3px 8px;
-            }
-
-            .metric-card:hover {
-                border-color: var(--border-light);
-                box-shadow: none;
-                transform: none;
-            }
-
-            .highlight-box {
-                padding: 10px 14px;
-                margin-bottom: 10px;
-            }
-
-            .table-wrapper {
-                margin-bottom: 4px;
-            }
-
-            /* The base rule below gives every table a 20px bottom margin -
-               harmless for the table's own container, but it was adding an
-               unwanted 20px gap inside the rounded .table-wrapper border,
-               after the last row. */
-            table {
-                margin-bottom: 0;
-            }
-
-            th, td {
-                padding: 7px 10px;
-                font-size: 0.85em;
-            }
-
-            .cards-container {
-                /* The page's printable width (Letter minus margins) is
-                   narrower than the 768px mobile breakpoint below, which
-                   would otherwise stack Ups/Downs into a single column here
-                   too - force them back into two columns for print. */
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-                margin-bottom: 12px;
-            }
-
-            .card {
-                padding: 10px 12px;
-            }
-
-            .card-title {
-                font-size: 1em;
-                margin-bottom: 6px;
-                padding-bottom: 2px;
-            }
-
-            .card-list li {
-                padding: 5px 0 5px 16px;
-                font-size: 0.85em;
-            }
-
-            .ranking-list li {
-                padding: 8px 10px;
-                margin-bottom: 6px;
-                gap: 10px;
-            }
-
-            .ranking-number {
-                width: 26px;
-                height: 26px;
-                font-size: 0.9em;
-            }
-
-            .ranking-description {
-                font-size: 0.82em;
-            }
-
-            .list-section {
-                margin-bottom: 10px;
-            }
-
-            .list-section li {
-                padding: 6px 0 6px 22px;
-            }
-
-            .footer {
-                padding: 12px;
-                margin-top: 12px;
-                font-size: 0.75em;
-            }
-
-            .footer-logo {
-                font-size: 1em;
-                margin-bottom: 4px;
-            }
         }
     </style>
 </head>
@@ -710,7 +436,7 @@
                 </div>
             </div>
 
-            <!-- Performance Summary -->
+            <!-- Performance Summary (no Overall Assessment box - PDF only) -->
             <div class="section" id="performance-summary-section">
                 <h2 class="section-title">Performance Summary</h2>
                 <div class="metrics-grid">
@@ -734,10 +460,6 @@
                         <div class="metric-value">{{ issues_pct_card_display }}</div>
                         <span class="metric-status status-{{ issues_assessment_class }}">{{ issues_assessment }}</span>
                     </div>
-                </div>
-
-                <div class="highlight-box" id="overall-assessment-box">
-                    ✓ Overall Assessment: {{ overall_assessment }}
                 </div>
             </div>
 
@@ -784,7 +506,22 @@
                 </div>
             </div>
 
-            <!-- What Made Scores Go Up & Down -->
+            <!-- What Impacted Scores Most (moved before Ups/Downs - PDF only) -->
+            <div class="section" id="impact-section">
+                <h2 class="section-title">Impact</h2>
+                <ul class="ranking-list">
+                    {% for driver in impact %}<li>
+                        <div class="ranking-number">{{ loop.index }}</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">{{ driver.title }}</div>
+                            <div class="ranking-description">{{ driver.description }}</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- What Made Scores Go Up & Down (forced onto a fresh page) -->
             <div class="section" id="ups-downs-section">
                 <div class="cards-container">
                     <!-- Ups Card -->
@@ -805,21 +542,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-
-            <!-- What Impacted Scores Most -->
-            <div class="section" id="impact-section">
-                <h2 class="section-title">Impact</h2>
-                <ul class="ranking-list">
-                    {% for driver in impact %}<li>
-                        <div class="ranking-number">{{ loop.index }}</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">{{ driver.title }}</div>
-                            <div class="ranking-description">{{ driver.description }}</div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
             </div>
 
             <!-- Recommendations -->
@@ -854,7 +576,8 @@
 
         <!-- Footer -->
         <div class="footer">
-            <div class="footer-logo">TOPGOLF® Venue Performance Report | Generated on {{ generated_date }}</div>
+            <div class="footer-logo">TOPGOLF® Venue Performance Report</div>
+            <p style="margin-top: 8px; opacity: 0.8; font-size: 0.85em;">Generated on {{ generated_date }}</p>
         </div>
     </div>
 </body>
