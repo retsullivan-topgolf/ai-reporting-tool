@@ -293,20 +293,30 @@ IF venue_metric < benchmark: "Below average" [or "Above average ✗" for Issues]
 
 ## Output Formats
 
-### Markdown (1-Page)
-- File: `Topgolf_Venue_Report_[VenueName]_[Date]_1PAGE.md`
-- Use for: Email, documentation, version control
+All three formats are generated from the same venue_data.json via `python/generate_all_reports.py` (which prompts for HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt). They share identical analysis/metrics via `python/report_content.py`, so they never disagree on the numbers or the narrative - only on markup.
 
 ### HTML (Browser)
-- File: `venue-report-browser.html`
-- Use for: Interactive viewing, printing to PDF
+- Template: `templates/venue-1page-browser.html` (Jinja2, single source of truth for markup/CSS)
+- Generator: `python/create_html_reports.py`
+- Output: `reports/Topgolf_Venue_Report_[VenueName]_1PAGE.html`
+- Use for: Interactive viewing
 
-### HTML (Email)
-- File: `venue-report-email.html`
-- Use for: Email distribution, embedded in email templates
+### PDF
+- Same template as HTML above - not a separate layout. `python/create_pdf_reports.py` renders that HTML through headless Chromium (Playwright) and prints it, so the PDF matches the HTML report's styling/layout exactly, including the template's `@media print` rules.
+- Generator: `python/create_pdf_reports.py` (one-time setup: `pip install playwright` then `playwright install chromium`)
+- Output: `reports/Topgolf_Venue_Report_[VenueName]_1PAGE.pdf`
+- Use for: Email attachments, printing, sharing outside a browser
+
+### Markdown (1-Page)
+- Template: `templates/venue-1page-report.md.j2` (Jinja2)
+- Generator: `python/create_markdown_reports.py`
+- Output: `reports/Topgolf_Venue_Report_[VenueName]_1PAGE.md`
+- Use for: Email, documentation, version control
+
+Note: this project's current single-venue reports deliberately have no network-benchmark column (see `report_engine.py` / `templates/metrics.json`) - the "Benchmark" column shown in the example below is from an earlier iteration and does not reflect the current templates.
 
 ---
 
-## Example: Complete 1-Page Report
+## Example: Complete 1-Page Report (illustrative only - see note above re: benchmarks)
 
-See: `Topgolf_Venue_Report_Myrtle_Beach_20260829_1PAGE.md`
+See: `example-data/Topgolf_Venue_Report_Myrtle_Beach_20260829_1PAGE.md`

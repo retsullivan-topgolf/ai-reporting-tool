@@ -478,28 +478,193 @@
             }
         }
 
-        /* Print Styles */
+        /* Print Styles
+           Page 1: header, overview, performance summary, experience metrics.
+           Page 2 (forced via #ups-downs-section below): ups/downs, impact,
+           recommendations, footer. Padding/margins/fonts are all trimmed
+           down substantially from the on-screen sizes above so the report
+           fits in roughly two pages instead of running long with a lot of
+           unused whitespace. */
         @media print {
             body {
                 background: white;
+                line-height: 1.35;
             }
 
             .container {
                 max-width: 100%;
+                padding: 0;
             }
 
             .header {
                 page-break-after: avoid;
+                padding: 16px 20px;
+            }
+
+            /* Purely decorative glow behind the header title - not worth the
+               ink, and looks odd once the header is this much shorter. */
+            .header::before {
+                display: none;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+                margin-bottom: 6px;
+            }
+
+            .header-meta {
+                gap: 16px;
+                font-size: 0.85em;
+            }
+
+            .main {
+                padding: 16px 20px;
             }
 
             .section {
+                margin-bottom: 14px;
                 page-break-inside: avoid;
+            }
+
+            /* Recommendations is usually the tallest section (3 subsections
+               of up to 4 items each) - let it flow across a page boundary
+               instead of forcing the whole block to jump to a fresh page
+               whenever it doesn't quite fit in what's left of page 2. */
+            #recommendations-section {
+                page-break-inside: auto;
+            }
+
+            .section-title {
+                font-size: 1.25em;
+                margin-bottom: 8px;
+                padding-bottom: 6px;
+            }
+
+            .section-subtitle {
+                font-size: 1em;
+                margin-top: 10px;
+                margin-bottom: 6px;
+            }
+
+            .overview-box {
+                padding: 10px 14px;
+                margin-bottom: 10px;
+                line-height: 1.4;
+            }
+
+            .metrics-grid {
+                margin-bottom: 6px;
+            }
+
+            .metric-card {
+                padding: 8px 10px;
+            }
+
+            .metric-label {
+                font-size: 0.7em;
+                margin-bottom: 3px;
+            }
+
+            .metric-value {
+                font-size: 1.4em;
+                margin-bottom: 3px;
+            }
+
+            .metric-status {
+                font-size: 0.7em;
+                padding: 3px 8px;
             }
 
             .metric-card:hover {
                 border-color: var(--border-light);
                 box-shadow: none;
                 transform: none;
+            }
+
+            .highlight-box {
+                padding: 10px 14px;
+                margin-bottom: 10px;
+            }
+
+            .table-wrapper {
+                margin-bottom: 10px;
+            }
+
+            th, td {
+                padding: 7px 10px;
+                font-size: 0.85em;
+            }
+
+            /* Force page 2 to start here regardless of how much room is
+               left on page 1, so ups/downs + impact + recommendations +
+               footer render together as a group rather than splitting
+               wherever they happen to land. */
+            #ups-downs-section {
+                page-break-before: always;
+            }
+
+            /* The divider right before that forced break would otherwise
+               print as a stray line at the top of page 2. */
+            #pre-page2-divider {
+                display: none;
+            }
+
+            .cards-container {
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .card {
+                padding: 12px 14px;
+            }
+
+            .card-title {
+                font-size: 1.05em;
+                margin-bottom: 8px;
+                padding-bottom: 6px;
+            }
+
+            .card-list li {
+                padding: 6px 0 6px 18px;
+            }
+
+            .ranking-list li {
+                padding: 8px 10px;
+                margin-bottom: 6px;
+                gap: 10px;
+            }
+
+            .ranking-number {
+                width: 26px;
+                height: 26px;
+                font-size: 0.9em;
+            }
+
+            .ranking-description {
+                font-size: 0.82em;
+            }
+
+            .list-section {
+                margin-bottom: 10px;
+            }
+
+            .list-section li {
+                padding: 6px 0 6px 22px;
+            }
+
+            hr {
+                margin: 12px 0 !important;
+            }
+
+            .footer {
+                padding: 12px;
+                margin-top: 12px;
+                font-size: 0.75em;
+            }
+
+            .footer-logo {
+                font-size: 1em;
+                margin-bottom: 4px;
             }
         }
     </style>
@@ -603,10 +768,10 @@
             </div>
 
             <!-- Divider -->
-            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
+            <hr id="pre-page2-divider" style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
 
             <!-- What Made Scores Go Up & Down -->
-            <div class="section">
+            <div class="section" id="ups-downs-section">
                 <div class="cards-container">
                     <!-- Ups Card -->
                     <div class="card ups">
@@ -650,7 +815,7 @@
             <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
 
             <!-- Recommendations -->
-            <div class="section">
+            <div class="section" id="recommendations-section">
                 <h2 class="section-title">Recommendations</h2>
 
                 <h3 class="section-subtitle">1. {{ critical_title }}</h3>

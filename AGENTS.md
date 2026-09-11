@@ -4,9 +4,12 @@
 All Python scripts have been moved to the `python/` directory for better organization.
 
 ### Scripts in `python/` folder:
-- **generate_all_reports.py** - Master script: runs both steps below in one command (recommended)
+- **generate_all_reports.py** - Master script: runs both steps below in one command (recommended). After processing the CSV, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
 - **generate_reports.py** - Processes CSV survey data → generates JSON metrics
 - **create_html_reports.py** - Generates HTML reports from JSON data
+- **create_markdown_reports.py** - Generates Markdown reports from JSON data (same analysis as the HTML report - see `report_content.py`)
+- **create_pdf_reports.py** - Generates PDF reports from JSON data by rendering the same HTML through headless Chromium (Playwright), so the PDF matches the HTML report's styling/layout exactly. One-time setup: `pip install playwright` then `playwright install chromium`.
+- **report_content.py** - Shared, format-agnostic analysis/context logic used by `create_html_reports.py`, `create_markdown_reports.py`, and `create_pdf_reports.py`
 - **check_venues.py** - Utility to check venues in CSV files
 - **test_csv.py** - Utility to test CSV parsing
 
@@ -16,6 +19,10 @@ All Python scripts have been moved to the `python/` directory for better organiz
 ```bash
 cd python
 python generate_all_reports.py ../example-data/your_file.csv
+# You'll be prompted: 1) HTML  2) Markdown  3) PDF  4) All
+# Or skip the prompt:
+python generate_all_reports.py ../example-data/your_file.csv --format all
+python generate_all_reports.py ../example-data/your_file.csv --format html,pdf
 ```
 
 **Or run individually:**
@@ -23,12 +30,16 @@ python generate_all_reports.py ../example-data/your_file.csv
 cd python
 python generate_reports.py ../example-data/your_file.csv
 python create_html_reports.py venue_data.json
+python create_markdown_reports.py venue_data.json
+python create_pdf_reports.py venue_data.json
 ```
 
 ### File Paths
 - Input CSVs: `../example-data/` (parent directory)
 - JSON data: `venue_data.json` (python folder)
-- Output HTML: `../Topgolf_Venue_Report_*.html` (parent directory)
+- Output HTML: `../reports/Topgolf_Venue_Report_*_1PAGE.html`
+- Output Markdown: `../reports/Topgolf_Venue_Report_*_1PAGE.md`
+- Output PDF: `../reports/Topgolf_Venue_Report_*_1PAGE.pdf`
 
 ## Report Generation Workflow
 
@@ -37,11 +48,12 @@ python create_html_reports.py venue_data.json
 cd python
 python generate_all_reports.py ../example-data/your_file.csv
 ```
+You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-f`) to choose non-interactively - useful for scripting - with any of: `html`, `markdown`, `pdf`, `both` (html+markdown, legacy alias), `all` (all three), or a comma-separated combo like `html,pdf`. A non-interactive session (piped input, no real terminal) skips the prompt and defaults to all three automatically.
 
 **Manual steps:**
 1. Place CSV survey file in `example-data/` folder
 2. Run `python/generate_reports.py <csv_file>` to create `python/venue_data.json`
-3. Run `python/create_html_reports.py venue_data.json` to generate HTML reports in project root
+3. Run any of `python/create_html_reports.py venue_data.json`, `python/create_markdown_reports.py venue_data.json`, `python/create_pdf_reports.py venue_data.json` to generate reports in `reports/`
 
 ## Report Features
 - Color-coded status pills in Experience Metrics table
@@ -52,10 +64,11 @@ python generate_all_reports.py ../example-data/your_file.csv
 - Actionable recommendations
 
 ## Key Files
-- `templates/venue-1page-browser.html` - HTML template for reports
+- `templates/venue-1page-browser.html` - HTML template for reports (also the source the PDF is rendered from)
+- `templates/venue-1page-report.md.j2` - Markdown template for reports
 - `python/` - All Python processing scripts
 - `example-data/` - Sample CSV survey data
-- Generated reports appear in project root as `Topgolf_Venue_Report_*.html`
+- Generated reports appear in `reports/` as `Topgolf_Venue_Report_*_1PAGE.html`, `.md`, and/or `.pdf`
 
 ---
 

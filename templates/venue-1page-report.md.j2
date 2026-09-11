@@ -1,0 +1,89 @@
+# Topgolf {{ venue }} Venue Report (1-Page)
+
+**Venue:** {{ venue }}
+**Reporting period:** {{ start_formatted }} - {{ end_formatted }}
+**Report week:** Week of {{ week_formatted }}
+
+---
+
+## Venue Overview
+
+{{ overview }}
+
+---
+
+## Performance Summary
+
+| Metric | Score | Assessment |
+|---|---:|---|
+| Likelihood to Recommend (LTR) | {{ ltr_avg_display }} / 10 | {{ ltr_assessment }} |
+| Fun | {{ fun_avg_display }} / 5 | {{ fun_assessment }} |
+| Helpfulness | {{ helpful_avg_display }} / 5 | {{ helpful_assessment }} |
+| Issues Reported | {{ issues_pct_card_display }} | {{ issues_assessment }} |
+
+**Overall Assessment:** {{ overall_assessment }}
+
+---
+
+## Experience Metrics - Current Period
+
+| Attribute | Score | Assessment |
+|---|---:|---|
+| Likelihood to Recommend | {{ ltr_avg_display }} / 10 | {{ ltr_assessment }} |
+| Fun | {{ fun_avg_display }} / 5 | {{ fun_assessment }} |
+| Helpfulness | {{ helpful_avg_display }} / 5 | {{ helpful_assessment }} |
+| Issues Reported | {{ issues_pct_table_display }} | {{ issues_assessment }} |
+| Issue Resolution | {{ resolution_avg_display }} | {{ resolution_assessment }} |
+
+---
+
+## What Made Overall Scores Go Up
+
+{% for up in ups %}
+- {{ up }}
+{% endfor %}
+
+---
+
+## What Made Overall Scores Go Down
+
+{% for down in downs %}
+- {{ down }}
+{% endfor %}
+
+---
+
+## What Impacted Overall Scores Most
+
+| Rank | Driver | Evidence |
+|---:|---|---|
+{% for driver in impact %}| {{ loop.index }} | {{ driver.title }} | {{ driver.description }} |
+{% endfor %}
+
+---
+
+## Recommendations
+
+### 1. {{ critical_title }}
+
+{% for item in critical_items %}
+- {{ item }}
+{% endfor %}
+
+### 2. {{ secondary_title }}
+
+{% for item in secondary_items %}
+- {{ item }}
+{% endfor %}
+
+### 3. {{ maintain_title }}
+
+{% for item in maintain_items %}
+- {{ item }}
+{% endfor %}
+
+---
+
+**TOPGOLF®**
+Venue Performance Report | Confidential
+*Generated on {{ generated_date }}*
