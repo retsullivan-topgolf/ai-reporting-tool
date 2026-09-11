@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topgolf Venue Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #050786;
+            --primary-light: #2DFFFF;
+            --primary-light-soft: rgba(45, 255, 255, 0.15);
+            --accent-yellow: #FFFF00;
+            --accent-yellow-soft: rgba(255, 255, 0, 0.12);
+            --dark-bg: #0D1117;
+            --white: #FFFFFF;
+            --text-dark: #1a1a1a;
+            --border-light: #e0e0e0;
+            --border-accent: rgba(45, 255, 255, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a0f8f 100%);
+            color: var(--white);
+            padding: 40px 30px;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--primary-light-soft) 0%, transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 30px;
+            font-size: 0.95em;
+            opacity: 0.95;
+            flex-wrap: wrap;
+        }
+
+        .header-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Content */
+        .main {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 30px;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid rgba(255, 255, 0, 0.4);
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 1.2em;
+            color: var(--primary-dark);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Overview Box */
+        .overview-box {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-left: 5px solid var(--border-accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--white) 0%, #f9f9f9 100%);
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-right: 10px;
+            width: 20%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .metric-card:hover {
+            border-color: var(--border-accent);
+            box-shadow: 0 8px 24px rgba(45, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .metric-status {
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .status-good {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-moderate {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-poor {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Lists */
+        .list-section {
+            margin-bottom: 20px;
+        }
+
+        .list-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .list-section li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .list-section li:last-child {
+            border-bottom: none;
+        }
+
+        .list-section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: rgba(45, 255, 255, 0.5);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.15) 0%, rgba(255, 235, 59, 0.12) 100%);
+            color: var(--primary-dark);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(255, 255, 0, 0.08);
+            border: 1px solid rgba(255, 255, 0, 0.2);
+        }
+
+        /* Ranking */
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ranking-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--border-accent);
+        }
+
+        .ranking-number {
+            background: var(--primary-dark);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .ranking-content {
+            flex: 1;
+        }
+
+        .ranking-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .ranking-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 30px;
+        }
+
+        .footer-logo {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .section-title {
+                font-size: 1.4em;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .header {
+                page-break-after: avoid;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+
+            .metric-card:hover {
+                border-color: var(--border-light);
+                box-shadow: none;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1>Topgolf Venue Report</h1>
+                <div class="header-meta">
+                    <span>📍 <strong>Venue:</strong> Myrtle Beach</span>
+                    <span>📅 <strong>Period:</strong> August 23 - August 29, 2026</span>
+                    <span>📊 <strong>Week:</strong> Week of August 23, 2026</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <!-- Venue Overview -->
+            <div class="section">
+                <h2 class="section-title">Venue Overview</h2>
+                <div class="overview-box">
+                    <p>Myrtle Beach is a high-traffic venue that delivers strong entertainment value but faces consistent challenges with equipment reliability and response time. The venue shows a clear pattern: guests enjoy the experience when things work smoothly, but equipment issues create significant friction that impacts satisfaction and recommendation intent. The venue has demonstrated the capability to resolve issues quickly, suggesting that the problem is not a lack of capability but rather inconsistent execution or inadequate preventive maintenance.</p>
+                </div>
+            </div>
+
+            <!-- Performance Summary -->
+            <div class="section">
+                <h2 class="section-title">Performance Summary</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">LTR</div>
+                        <div class="metric-value">7.0</div>
+                        <span class="metric-status status-good">Good</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Fun</div>
+                        <div class="metric-value">4.0</div>
+                        <span class="metric-status status-good">Strong</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Helpfulness</div>
+                        <div class="metric-value">3.8</div>
+                        <span class="metric-status status-moderate">Moderate</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Issues Reported</div>
+                        <div class="metric-value">50%</div>
+                        <span class="metric-status status-poor">High</span>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    ✓ Overall Assessment: Myrtle Beach demonstrates strong entertainment delivery but is significantly hampered by equipment issues that occur in half of guest visits. The venue's challenge is not entertainment or staff friendliness, but rather operational reliability and the speed of problem resolution.
+                </div>
+            </div>
+
+            <!-- Experience Metrics -->
+            <div class="section">
+                <h2 class="section-title">Experience Metrics - Current Period</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Attribute</th>
+                                <th>Score</th>
+                                <th>Benchmark</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>LTR</td>
+                                <td><strong>7.0 / 10</strong></td>
+                                <td>7.8 (network avg)</td>
+                                <td>Slightly below average</td>
+                            </tr>
+                            <tr>
+                                <td>Fun</td>
+                                <td><strong>4.0 / 5</strong></td>
+                                <td>4.1 (network avg)</td>
+                                <td>On par</td>
+                            </tr>
+                            <tr>
+                                <td>Helpfulness</td>
+                                <td><strong>3.8 / 5</strong></td>
+                                <td>4.2 (network avg)</td>
+                                <td>Below average</td>
+                            </tr>
+                            <tr>
+                                <td>Issues Reported</td>
+                                <td><strong>50.0%</strong></td>
+                                <td>37.0% (network avg)</td>
+                                <td>Above average ✗</td>
+                            </tr>
+                            <tr>
+                                <td>Issue Resolution</td>
+                                <td><strong>3.5 / 5</strong></td>
+                                <td>3.6 (network avg)</td>
+                                <td>On par</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- What Made Scores Go Up -->
+            <div class="section">
+                <h2 class="section-title">What Made Overall Scores Go Up</h2>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>Strong entertainment value despite operational challenges:</strong> All four guests rated the experience as "Very fun" or "Extremely fun," indicating that the core entertainment offering is working well</li>
+                        <li><strong>Staff helpfulness when engaged:</strong> Guests who received prompt assistance reported positive interactions; staff have knowledge and willingness to enhance the guest experience</li>
+                        <li><strong>Positive resolution outcomes when issues are addressed:</strong> Guests whose equipment issues were resolved quickly reported satisfaction ratings of 4-5 out of 5</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
+
+            <!-- What Made Scores Go Down -->
+            <div class="section">
+                <h2 class="section-title">What Made Overall Scores Go Down</h2>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>High frequency of equipment issues:</strong> 50% of guests reported experiencing an issue—significantly above the network average of 37%—indicating a systemic equipment problem</li>
+                        <li><strong>Inconsistent response time to equipment problems:</strong> Same type of problem (bay equipment failure) produced vastly different outcomes: one guest with quick response gave LTR=9, while another with slow response gave LTR=4</li>
+                        <li><strong>Moderate helpfulness ratings:</strong> While staff are friendly and knowledgeable, the helpfulness score of 3.8 is slightly below network average, likely reflecting guest frustration with equipment issues and slow response</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
+
+            <!-- What Impacted Scores Most -->
+            <div class="section">
+                <h2 class="section-title">What Impacted Overall Scores Most</h2>
+                <ul class="ranking-list">
+                    <li>
+                        <div class="ranking-number">1</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">Equipment Reliability</div>
+                            <div class="ranking-description">50% issue rate; all issues were equipment-related</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ranking-number">2</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">Response Time</div>
+                            <div class="ranking-description">Same issue produced LTR=9 vs LTR=4 based on response speed</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ranking-number">3</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">Fun (entertainment value)</div>
+                            <div class="ranking-description">Consistently strong across all guests</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ranking-number">4</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">Staff Knowledge</div>
+                            <div class="ranking-description">Guests appreciate staff who explain games well</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ranking-number">5</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">LTR</div>
+                            <div class="ranking-description">Driven primarily by whether issues occurred and were resolved quickly</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Divider -->
+            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
+
+            <!-- Key Observations -->
+            <div class="section">
+                <h2 class="section-title">Key Observations</h2>
+
+                <h3 class="section-subtitle">What's Working Well</h3>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>Entertainment delivery:</strong> Guests consistently find the games fun and engaging</li>
+                        <li><strong>Staff knowledge:</strong> Staff are knowledgeable and willing to help guests learn</li>
+                        <li><strong>Issue resolution capability:</strong> When staff respond, they can effectively fix problems</li>
+                        <li><strong>Social experience:</strong> Venue attracts groups and facilitates positive social interactions</li>
+                    </ul>
+                </div>
+
+                <h3 class="section-subtitle">What Needs Urgent Attention</h3>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>Equipment reliability:</strong> 50% issue rate is unacceptable and requires immediate investigation</li>
+                        <li><strong>Response time consistency:</strong> Same issue type produces different outcomes based on response speed</li>
+                        <li><strong>Preventive maintenance:</strong> Equipment issues should be detected and fixed before guests encounter them</li>
+                        <li><strong>Staffing adequacy:</strong> May need additional staff to ensure rapid response during peak hours</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr style="border: none; border-top: 2px solid var(--border-light); margin: 30px 0;">
+
+            <!-- Recommendations -->
+            <div class="section">
+                <h2 class="section-title">Recommendations</h2>
+
+                <h3 class="section-subtitle">🔴 Critical Priority: Reduce Equipment Issue Frequency</h3>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>Root cause analysis:</strong> Identify why bay tracking systems are failing so frequently (equipment model/age, environmental factors, configuration, maintenance adequacy)</li>
+                        <li><strong>Preventive maintenance audit:</strong> Review maintenance logs for patterns; assess whether current maintenance schedule is adequate</li>
+                        <li><strong>Hardware assessment:</strong> Evaluate whether bay tracking systems need replacement or upgrade</li>
+                        <li><strong>Immediate mitigation:</strong> Implement daily pre-opening equipment checks and bay-monitoring system to detect issues before guests encounter them</li>
+                    </ul>
+                </div>
+
+                <h3 class="section-subtitle">🟡 Secondary Priority: Standardize Response Time</h3>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>Establish response-time standard:</strong> Staff respond to equipment issues within 2 minutes</li>
+                        <li><strong>Implement bay-monitoring system:</strong> Automated detection of equipment failures alerts staff immediately</li>
+                        <li><strong>Staffing analysis:</strong> Ensure adequate staffing during peak hours to enable rapid response</li>
+                        <li><strong>Staff training:</strong> Emphasize importance of rapid response and provide clear escalation procedures</li>
+                    </ul>
+                </div>
+
+                <h3 class="section-subtitle">🟢 Maintain Strengths: Entertainment & Staff Knowledge</h3>
+                <div class="list-section">
+                    <ul>
+                        <li><strong>Protect the experience:</strong> Ensure that equipment issues don't undermine the positive aspects of the venue</li>
+                        <li><strong>Staff recognition:</strong> Acknowledge staff who provide excellent explanations and service</li>
+                        <li><strong>Consistency:</strong> Ensure that the positive service culture is maintained across all shifts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">TOPGOLF®</div>
+            <p>Venue Performance Report | Confidential</p>
+            <p style="margin-top: 10px; opacity: 0.8; font-size: 0.85em;">Generated on September 10, 2026</p>
+        </div>
+    </div>
+</body>
+</html>
