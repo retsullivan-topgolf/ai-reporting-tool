@@ -653,7 +653,7 @@
             <div class="section">
                 <h2 class="section-title">Recommendations</h2>
 
-                <h3 class="section-subtitle">🔴 Critical Priority: {{ critical_title }}</h3>
+                <h3 class="section-subtitle">1. {{ critical_title }}</h3>
                 <div class="list-section">
                     <ul>
                         {% for item in critical_items %}{{ item | safe }}
@@ -661,7 +661,7 @@
                     </ul>
                 </div>
 
-                <h3 class="section-subtitle">🟡 Secondary Priority: {{ secondary_title }}</h3>
+                <h3 class="section-subtitle">2. {{ secondary_title }}</h3>
                 <div class="list-section">
                     <ul>
                         {% for item in secondary_items %}{{ item | safe }}
@@ -669,7 +669,7 @@
                     </ul>
                 </div>
 
-                <h3 class="section-subtitle">🟢 Maintain Strengths: {{ maintain_title }}</h3>
+                <h3 class="section-subtitle">3. {{ maintain_title }}</h3>
                 <div class="list-section">
                     <ul>
                         {% for item in maintain_items %}{{ item | safe }}
