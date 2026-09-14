@@ -64,13 +64,13 @@ def main():
         ai_result, error = get_ai_analysis(data)
         
         if ai_result is not None:
-            print(f"  ✓ Analysis complete for {venue_name}")
+            print(f"  + Analysis complete for {venue_name}")
             analysis_results[venue_key] = {
                 'ai_available': True,
                 'analysis': ai_result,
             }
         else:
-            print(f"  ✗ Analysis failed for {venue_name}: {error}")
+            print(f"  - Analysis failed for {venue_name}: {error}")
             analysis_results[venue_key] = {
                 'ai_available': False,
                 'unavailable_reason': error,

@@ -1,0 +1,61 @@
+{
+  "dallas": {
+    "ai_available": true,
+    "analysis": {
+      "overview": "Dallas delivered strong core experience quality with a 7.2/10 likelihood to recommend and solid Fun and Helpful scores, but a 53% issue rate\u00e2\u20ac\u201dprimarily from equipment reliability problems\u00e2\u20ac\u201dsignificantly constrains satisfaction and recovery. Guests appreciate responsive staff and proactive bay hosts who work to resolve issues, but extended wait times for assistance and lingering equipment problems prevent these positive interactions from fully offsetting operational friction. The tension between strong guest intent to recommend and high issue rates reveals a venue where the core experience shines, but operational reliability and responsiveness are not yet consistent enough to unlock the venue's full potential.",
+      "ups": [
+        "<strong>Responsive staff support:</strong> Staff quickly address equipment issues and get guests back to playing, with guests specifically noting fast problem resolution despite the frequency of problems.",
+        "<strong>Proactive bay host attentiveness:</strong> Bay hosts regularly check on guests without being intrusive, creating a supportive environment that guests notice and appreciate.",
+        "<strong>Sonic game appeal:</strong> The new Sonic game stands out as a signature attraction that guests find exciting and want to experience repeatedly."
+      ],
+      "downs": [
+        "<strong>Equipment reliability:</strong> Screens and equipment frequently lose functionality mid-session, with 11 guests citing failures ranging from minor tracking interruptions to complete play prevention.",
+        "<strong>Slow staff response:</strong> Guests waiting extended periods for assistance when equipment issues occur, resulting in lost playing time and compounding frustration.",
+        "<strong>Parking difficulties:</strong> Long waits to find parking and difficult parking access at arrival create rushed feelings that reduce guests' ability to enjoy their experience."
+      ],
+      "impact": [
+        {
+          "title": "Systemic Issue Prevalence",
+          "description": "53% of guests reported an issue during their visit, indicating operational challenges are pervasive and not isolated incidents\u00e2\u20ac\u201dthe primary constraint on overall venue satisfaction."
+        },
+        {
+          "title": "Equipment Reliability Failures",
+          "description": "Screens and equipment failures, cited in 11 comments, are the dominant specific issue, ranging from minor interruptions to preventing play entirely, and represent the primary source of guest friction."
+        },
+        {
+          "title": "Staff Response Time Gap",
+          "description": "Wait times for assistance force guests to lose playing time when equipment issues occur, mentioned in 4 comments, preventing effective recovery even when staff can ultimately resolve problems."
+        }
+      ],
+      "recommendations": {
+        "critical": {
+          "title": "Fix Equipment Reliability",
+          "items": [
+            "<strong>Daily equipment audit:</strong> Conduct pre-opening and mid-shift screen calibration checks and equipment functionality tests to catch failures before guests encounter them.",
+            "<strong>Rapid resolution standard:</strong> Establish and measure a 5-minute maximum response and resolution time for equipment issues to minimize lost playing time and guest frustration.",
+            "<strong>Root cause investigation:</strong> Systematically investigate recurring equipment failures (specific screen models, frequency patterns) to determine whether issues are hardware, software, or calibration-related and implement targeted fixes.",
+            "<strong>Backup equipment readiness:</strong> Ensure spare screens or bay configurations are available to quickly swap failed equipment and minimize downtime."
+          ]
+        },
+        "secondary": {
+          "title": "Improve Staff Response Visibility and Speed",
+          "items": [
+            "<strong>Request assistance visibility:</strong> Place clear 'request assistance' buttons or call systems in each bay so guests don't have to search for help when equipment issues occur.",
+            "<strong>Peak-hour bay host positioning:</strong> Ensure a bay host is visible and present in the bay area during peak times rather than performing back-office tasks, reducing wait time and perceived abandonment.",
+            "<strong>Issue escalation protocol:</strong> Define clear handoff procedures when bay hosts can't resolve issues immediately (who handles software resets vs. hardware swaps) to avoid guests waiting for answers.",
+            "<strong>Response time accountability:</strong> Monitor and track how long guests wait for assistance, flagging bays or shifts where response times exceed 3 minutes for immediate coaching and adjustment."
+          ]
+        },
+        "maintain": {
+          "title": "Protect Responsive Staff Culture",
+          "items": [
+            "<strong>Staff recognition for responsiveness:</strong> Celebrate and reward staff who are mentioned by guests for quick issue resolution during team meetings and in performance evaluations.",
+            "<strong>Best practice documentation:</strong> Capture and codify the issue-resolution and customer-recovery techniques that guests are praising (how staff calm frustrated guests, explain problems, get them back playing) so consistency is maintained across all shifts.",
+            "<strong>Guest feedback sharing:</strong> Proactively share positive guest comments about responsive staff directly with those team members to reinforce desired behaviors and build morale.",
+            "<strong>Consistent training on customer recovery:</strong> Ensure all staff training\u00e2\u20ac\u201despecially for new hires\u00e2\u20ac\u201dincludes the customer recovery and communication techniques that are already differentiating the Dallas venue."
+          ]
+        }
+      }
+    }
+  }
+}
