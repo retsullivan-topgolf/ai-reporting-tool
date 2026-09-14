@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Stage 2 eval runner: templates/skills/comment_analysis.md
+Stage 2 eval runner: .claude/single-venue-report/comment_analysis.md
 
 By default, chains from a Stage 1 result already produced by
 metric_skill_eval.py for the same --run-id (output/<run-id>/metrics_analysis.json).

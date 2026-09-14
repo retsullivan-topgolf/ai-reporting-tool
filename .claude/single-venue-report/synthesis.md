@@ -15,10 +15,10 @@ Required:
 
 - `venue`: venue name (for narrative grounding and context)
 - `responses`: total survey count for the period (for context)
-- `metrics_analysis`: structured output from `templates/skills/metrics_analysis.md` containing:
+- `metrics_analysis`: structured output from `.claude/single-venue-report/metrics_analysis.md` containing:
   - `characterization`: narrative summary of overall performance
   - `metric_flags`: array of `{metric, polarity, magnitude, note}` entries
-- `comment_analysis`: structured output from `templates/skills/comment_analysis.md` containing:
+- `comment_analysis`: structured output from `.claude/single-venue-report/comment_analysis.md` containing:
   - `themes`: array of `{label, polarity, mention_count, magnitude, summary, representative_detail}` entries
 
 If any required input is missing or incomplete (including all fields in `metric_flags` and `themes` arrays), ask the user to provide the required information before continuing.
@@ -199,4 +199,4 @@ The following demonstrates formatting and synthesis approach. Do not assume thes
 
 # Resources
 
-No additional references, scripts, or assets are required for this Skill, though you may reference the project context and the outputs from `templates/skills/metrics_analysis.md` and `templates/skills/comment_analysis.md` as needed.
+No additional references, scripts, or assets are required for this Skill, though you may reference the project context and the outputs from `.claude/single-venue-report/metrics_analysis.md` and `.claude/single-venue-report/comment_analysis.md` as needed.

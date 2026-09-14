@@ -7,6 +7,8 @@ This script runs generate_reports.py, then whichever of create_html_reports.py
 import subprocess
 import sys
 import os
+import json
+from datetime import datetime
 
 SINGLE_FORMATS = ('html', 'markdown', 'pdf')
 # 'both' is kept as a legacy alias (html + markdown, from before PDF support
@@ -17,7 +19,7 @@ FORMAT_ALIASES = {
 }
 
 
-def run_command(script_name, args):
+def run_command(script_name, args, env_overrides=None):
     """Run a Python script and return success status"""
     try:
         # Get the directory where this script is located
@@ -27,7 +29,13 @@ def run_command(script_name, args):
         print(f"\n{'='*60}")
         print(f"Running: {' '.join(cmd)}")
         print(f"{'='*60}\n")
-        result = subprocess.run(cmd, check=True)
+        
+        # Prepare environment with any overrides
+        env = os.environ.copy()
+        if env_overrides:
+            env.update(env_overrides)
+        
+        result = subprocess.run(cmd, check=True, env=env)
         return True
     except subprocess.CalledProcessError as e:
         print(f"\nError running {script_name}: {e}")
@@ -94,6 +102,46 @@ def parse_format_flag(argv):
     return formats, remaining
 
 
+def parse_timeout_flag(argv):
+    """Look for --timeout <seconds> anywhere in argv. Returns
+    (timeout_seconds_or_None, remaining_argv). Allows overriding the default
+    Claude timeout for AI analysis stages."""
+    remaining = []
+    timeout = None
+    i = 0
+    while i < len(argv):
+        arg = argv[i]
+        if arg == '--timeout':
+            if i + 1 >= len(argv):
+                print("Error: --timeout requires a value (in seconds)")
+                sys.exit(1)
+            try:
+                timeout = int(argv[i + 1])
+                if timeout <= 0:
+                    print("Error: --timeout must be a positive integer")
+                    sys.exit(1)
+            except ValueError:
+                print(f"Error: --timeout value '{argv[i + 1]}' is not a valid integer")
+                sys.exit(1)
+            i += 2
+            continue
+        if arg.startswith('--timeout='):
+            try:
+                timeout = int(arg.split('=', 1)[1])
+                if timeout <= 0:
+                    print("Error: --timeout must be a positive integer")
+                    sys.exit(1)
+            except ValueError:
+                print(f"Error: --timeout value is not a valid integer")
+                sys.exit(1)
+            i += 1
+            continue
+        remaining.append(arg)
+        i += 1
+
+    return timeout, remaining
+
+
 def prompt_for_format():
     """Interactive prompt for which report format(s) to generate. Falls back
     to 'all' (without prompting) when stdin isn't a real terminal - e.g. this
@@ -135,6 +183,7 @@ def prompt_for_format():
 
 def main():
     formats, remaining_args = parse_format_flag(sys.argv[1:])
+    timeout, remaining_args = parse_timeout_flag(remaining_args)
 
     # Get CSV file from command line argument or use default
     if len(remaining_args) > 0:
@@ -145,44 +194,62 @@ def main():
     # Check if CSV file exists
     if not os.path.exists(csv_file):
         print(f"Error: CSV file not found: {csv_file}")
-        print(f"\nUsage: python generate_all_reports.py <path_to_csv_file> [--format {_format_help()}]")
+        print(f"\nUsage: python generate_all_reports.py <path_to_csv_file> [--format {_format_help()}] [--timeout SECONDS]")
         print(f"\nExamples:")
         print(f"  python generate_all_reports.py ../example-data/topgolf_qualtrics_week_responses.csv")
         print(f"  python generate_all_reports.py ../example-data/topgolf_qualtrics_30_responses_DALLAS.csv --format pdf")
+        print(f"  python generate_all_reports.py ../example-data/topgolf_qualtrics_week_responses.csv --timeout 600")
         sys.exit(1)
 
     print(f"Generating all reports from: {csv_file}\n")
+    if timeout:
+        print(f"Claude timeout set to: {timeout} seconds\n")
+
+    # Prepare environment overrides for subcommands
+    env_overrides = {}
+    if timeout:
+        env_overrides['CLAUDE_TIMEOUT_SECONDS'] = str(timeout)
 
     # Step 1: Generate reports (creates venue_data.json)
     print("STEP 1: Processing CSV data and generating metrics...")
-    if not run_command('generate_reports.py', [csv_file]):
+    if not run_command('generate_reports.py', [csv_file], env_overrides):
         print("\nFailed to generate reports from CSV. Aborting.")
         sys.exit(1)
 
-    # Step 2: Ask (or use --format) which report format(s) to build
+    # Step 2: Generate AI analysis once for all venues
+    print("\nSTEP 2: Generating AI analysis for all venues...")
+    analysis_file = 'ai_analysis_results.json'
+    if not run_command('generate_ai_analysis.py', ['venue_data.json', '--output', analysis_file], env_overrides):
+        print("\nFailed to generate AI analysis. Aborting.")
+        sys.exit(1)
+
+    # Step 3: Ask (or use --format) which report format(s) to build
     if formats is None:
         formats = prompt_for_format()
     print(f"\nSelected format(s): {', '.join(sorted(formats))}")
 
     generated_files = []
+    
+    # Generate timestamp once for all report formats
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     if 'html' in formats:
-        print("\nSTEP 2: Creating HTML reports from metrics...")
-        if not run_command('create_html_reports.py', ['venue_data.json']):
+        print("\nSTEP 4: Creating HTML reports from metrics...")
+        if not run_command('create_html_reports.py', ['venue_data.json', '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
             print("\nFailed to create HTML reports. Aborting.")
             sys.exit(1)
         generated_files.append("  - Reports: ../reports/Topgolf_Venue_Report_*_1PAGE.html")
 
     if 'markdown' in formats:
-        print("\nSTEP 2: Creating Markdown reports from metrics...")
-        if not run_command('create_markdown_reports.py', ['venue_data.json']):
+        print("\nSTEP 4: Creating Markdown reports from metrics...")
+        if not run_command('create_markdown_reports.py', ['venue_data.json', '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
             print("\nFailed to create Markdown reports. Aborting.")
             sys.exit(1)
         generated_files.append("  - Reports: ../reports/Topgolf_Venue_Report_*_1PAGE.md")
 
     if 'pdf' in formats:
-        print("\nSTEP 2: Creating PDF reports from metrics...")
-        if not run_command('create_pdf_reports.py', ['venue_data.json']):
+        print("\nSTEP 4: Creating PDF reports from metrics...")
+        if not run_command('create_pdf_reports.py', ['venue_data.json', '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
             print("\nFailed to create PDF reports. Aborting.")
             sys.exit(1)
         generated_files.append("  - Reports: ../reports/Topgolf_Venue_Report_*_1PAGE.pdf")

@@ -1,8 +1,8 @@
 # Skill Eval Suite
 
 This folder evaluates the three prompt-based "skills" that make up the AI
-analysis pipeline (`templates/skills/metrics_analysis.md`,
-`templates/skills/comment_analysis.md`, `templates/skills/synthesis.md`),
+analysis pipeline (`.claude/single-venue-report/metrics_analysis.md`,
+`.claude/single-venue-report/comment_analysis.md`, `.claude/single-venue-report/synthesis.md`),
 each **independently**, using real `claude` CLI calls (the same mechanism
 `python/ai_analysis.py` uses in production).
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Stage 3 eval runner: templates/skills/synthesis.md
+Stage 3 eval runner: .claude/single-venue-report/synthesis.md
 
 By default, chains from Stage 1 and Stage 2 results already produced for
 the same --run-id (output/<run-id>/metrics_analysis.json and

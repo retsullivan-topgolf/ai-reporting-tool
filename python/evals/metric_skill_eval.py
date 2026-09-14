@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Stage 1 eval runner: templates/skills/metrics_analysis.md
+Stage 1 eval runner: .claude/single-venue-report/metrics_analysis.md
 
 Runs a CSV through the real generate_reports.py, builds the exact payload
 ai_analysis.py sends for the metrics_analysis stage, calls the real skill

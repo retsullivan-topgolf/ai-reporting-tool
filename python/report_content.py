@@ -31,11 +31,36 @@ from ai_analysis import get_ai_analysis
 import report_engine
 
 
-def get_analysis(data):
+def _format_analysis_as_html(ai_result):
+    """Convert raw AI analysis result to HTML-ready format with <li> items."""
+    def as_list_items(items):
+        return [f"<li>{item}</li>" for item in items]
+
+    return {
+        'ai_available': True,
+        'overview': ai_result['overview'],
+        'ups': ai_result['ups'],
+        'downs': ai_result['downs'],
+        'impact': ai_result['impact'],
+        'recommendations': {
+            tier: {
+                'title': ai_result['recommendations'][tier]['title'],
+                'items': as_list_items(ai_result['recommendations'][tier]['items']),
+            }
+            for tier in ('critical', 'secondary', 'maintain')
+        },
+    }
+
+
+def get_analysis(data, precomputed_analysis=None):
     """Get the overview/ups/downs/impact/recommendations content for a venue
     from the AI-based analysis (via Claude Code CLI) - it's the only source
     for this narrative, since it's the only one that actually reads the
     guest comments rather than just the aggregate metrics.
+
+    If precomputed_analysis is provided (from a pre-generated analysis file),
+    use that instead of calling get_ai_analysis(). This allows multiple report
+    formats to reuse the same analysis without re-running expensive API calls.
 
     On success, returns:
 
@@ -63,27 +88,23 @@ def get_analysis(data):
     and callers are expected to show unavailable_reason to the reader in
     place of the narrative sections.
     """
+    # Use precomputed analysis if provided
+    if precomputed_analysis is not None:
+        if precomputed_analysis.get('ai_available'):
+            print(f"[analysis] Using precomputed AI analysis for {data['venue']}")
+            return _format_analysis_as_html(precomputed_analysis['analysis'])
+        else:
+            print(f"[analysis] AI analysis unavailable for {data['venue']}: {precomputed_analysis.get('unavailable_reason')}")
+            return {
+                'ai_available': False,
+                'unavailable_reason': precomputed_analysis.get('unavailable_reason', 'Unknown error'),
+            }
+    
+    # Fall back to computing analysis on-the-fly (for backward compatibility)
     ai_result, error = get_ai_analysis(data)
     if ai_result is not None:
         print(f"[analysis] Using AI-generated analysis for {data['venue']}")
-
-        def as_list_items(items):
-            return [f"<li>{item}</li>" for item in items]
-
-        return {
-            'ai_available': True,
-            'overview': ai_result['overview'],
-            'ups': ai_result['ups'],
-            'downs': ai_result['downs'],
-            'impact': ai_result['impact'],
-            'recommendations': {
-                tier: {
-                    'title': ai_result['recommendations'][tier]['title'],
-                    'items': as_list_items(ai_result['recommendations'][tier]['items']),
-                }
-                for tier in ('critical', 'secondary', 'maintain')
-            },
-        }
+        return _format_analysis_as_html(ai_result)
 
     print(f"[analysis] AI analysis unavailable for {data['venue']}: {error}")
     return {'ai_available': False, 'unavailable_reason': error}
@@ -161,7 +182,7 @@ def build_metrics_context(data, metrics_registry):
     }
 
 
-def render_html_report(data, metrics_registry, template):
+def render_html_report(data, metrics_registry, template, precomputed_analysis=None):
     """Render templates/venue-1page-browser.html for this venue's data.
 
     Used by both create_html_reports.py (writes the .html file directly) and
@@ -170,9 +191,13 @@ def render_html_report(data, metrics_registry, template):
     second template or a re-derived context - is what keeps the PDF's
     styling/layout identical to the HTML report instead of a hand-maintained
     approximation of it.
+    
+    If precomputed_analysis is provided, it will be used instead of calling
+    get_ai_analysis(). This allows multiple report formats to reuse the same
+    analysis without re-running expensive API calls.
     """
     context = build_metrics_context(data, metrics_registry)
-    analysis = get_analysis(data)
+    analysis = get_analysis(data, precomputed_analysis=precomputed_analysis)
 
     if analysis['ai_available']:
         recommendations = analysis['recommendations']

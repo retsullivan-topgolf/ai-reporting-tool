@@ -18,7 +18,7 @@ by this module:
                           report content.
 
 Each stage's guidelines live as a standalone Markdown doc in
-templates/skills/ (metrics_analysis.md, comment_analysis.md, synthesis.md) so
+.claude/single-venue-report/ (metrics_analysis.md, comment_analysis.md, synthesis.md) so
 they can be read, reviewed, and iterated on independently of this file - see
 those docs for what each stage is actually being asked to do and why the
 magnitude scale matters.
@@ -72,10 +72,10 @@ from datetime import datetime, timezone
 
 import report_engine
 
-CLAUDE_TIMEOUT_SECONDS = 300  # per stage, not for the whole 3-stage pipeline
+CLAUDE_TIMEOUT_SECONDS = 600  # per stage, not for the whole 3-stage pipeline (5 minutes)
 
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.cache', 'ai_analysis')
-SKILLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates', 'skills')
+SKILLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.claude', 'single-venue-report')
 
 
 def _load_skill(filename):
@@ -348,7 +348,7 @@ def get_ai_analysis(data, use_cache=True):
     comment_analysis -> synthesis) for one venue's data.
 
     Returns (analysis, None) on success, where analysis matches the schema
-    produced by templates/skills/synthesis.md (overview/ups/downs/impact/
+    produced by .claude/single-venue-report/synthesis.md (overview/ups/downs/impact/
     recommendations). Returns (None, reason) if any stage fails - reason is
     a short, human-readable string safe to show directly in a report (e.g.
     in place of the AI-generated overview) rather than just logged to the

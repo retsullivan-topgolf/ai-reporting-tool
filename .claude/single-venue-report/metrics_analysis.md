@@ -71,7 +71,7 @@ Respond with ONLY a single JSON object (no markdown fences, no commentary):
 }
 ```
 
-**`characterization`**: Look for combinations a single metric can't show on its own. Say what the numbers suggest together, not a list of each one restated in prose.
+**`characterization`**: Look for combinations a single metric can't show on its own. Say what the numbers suggest together, not a list of each one restated in prose. Use natural language targeted to managers, c-suite executives, and owners to describe the relationships between metrics.
 
 Example sythesized characterisation: "Strong Fun and Helpfulness scores indicate the core experience resonates well, but a 52% issue rate reveals significant operational friction that's undermining guest satisfaction despite the quality of games and excellence of service."
 
