@@ -16,7 +16,7 @@
 ```
 Venue: [Venue column value]
 Reporting period: [MIN(VisitDate)] - [MAX(VisitDate)]
-Report week: Week of [MIN(VisitDate)]
+
 ```
 
 ---

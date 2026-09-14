@@ -2,18 +2,12 @@
 
 **Venue:** Dallas
 
-## Error
-
-```
-Claude CLI timed out after 120s
-```
-
 ## Input sent to the skill
 
 ```json
 {
   "venue": "Dallas",
-  "responses": 29,
+  "responses": 30,
   "comments": [
     {
       "ltr": 9,
@@ -174,13 +168,71 @@ Claude CLI timed out after 120s
 
 ## Raw AI output
 
-_No output - see Error above._
+```json
+{
+  "themes": [
+    {
+      "label": "Equipment reliability",
+      "polarity": "negative",
+      "mention_count": 10,
+      "magnitude": 52,
+      "summary": "Guests frequently encountered equipment failures including shot tracking loss and game startup issues. Impact ranged from brief interruptions quickly resolved by staff to extended downtime that resulted in lost playing time. One guest left the venue disappointed after repeated equipment problems and inability to get timely support.",
+      "representative_detail": "\"We waited quite a while for assistance when the bay equipment stopped working. It was eventually fixed, but we lost playing time.\""
+    },
+    {
+      "label": "Parking accessibility",
+      "polarity": "negative",
+      "mention_count": 2,
+      "magnitude": 32,
+      "summary": "Guests reported significant difficulty finding parking, with one instance involving 15 minutes of searching and another requiring parking far away with a long walk. Both guests noted the parking experience directly detracted from their overall visit satisfaction.",
+      "representative_detail": "\"Parking situation was terrible. We circled for 15 minutes looking for a spot. By the time we got inside, we felt rushed and couldn't fully enjoy our visit.\""
+    },
+    {
+      "label": "Equipment response time",
+      "polarity": "positive",
+      "mention_count": 5,
+      "magnitude": 25,
+      "summary": "When equipment failures occurred, staff responded quickly to resolve issues and get guests back to playing. Guests consistently noted appreciation for fast, effective support that minimized downtime.",
+      "representative_detail": "\"The screen stopped tracking shots for a few minutes, but someone came over quickly and fixed it. Great experience overall.\""
+    },
+    {
+      "label": "Attentive service",
+      "polarity": "positive",
+      "mention_count": 4,
+      "magnitude": 22,
+      "summary": "Bay hosts proactively checked on guests during their visit, striking a balance between staying helpful and not intruding. Guests appreciated this attentive, unobtrusive service model.",
+      "representative_detail": "\"Really fun visit and excellent service. Our bay host checked on us regularly without being intrusive.\""
+    },
+    {
+      "label": "Sonic game quality",
+      "polarity": "positive",
+      "mention_count": 2,
+      "magnitude": 14,
+      "summary": "The new Sonic game was specifically called out as a standout experience, with guests highlighting it as the best game offering they've experienced at the venue. Guests expressed strong intent to return and play it again.",
+      "representative_detail": "\"The new Sonic game was amazing! Best experience we've had at Topgolf. Can't wait to come back and play it again with our friends.\""
+    },
+    {
+      "label": "Game guidance and expertise",
+      "polarity": "positive",
+      "mention_count": 2,
+      "magnitude": 14,
+      "summary": "Staff demonstrated knowledge about games and provided helpful guidance to guests, particularly for newer players and with the new Sonic game. Guests appreciated the expertise and personalized support.",
+      "representative_detail": "\"Staff was knowledgeable about the new game and helped us get the most out of it.\""
+    }
+  ]
+}
+```
 
 ## Automated checks
 
 | Check | Result | Detail |
 |---|---|---|
-| skill call succeeded | FAIL | Claude CLI timed out after 120s |
+| output matches expected schema (themes[]) | PASS |  |
+| themes ordered by magnitude (highest first) | PASS | magnitudes=[52, 32, 25, 22, 14, 14] |
+| every theme has polarity 'positive' or 'negative' | PASS |  |
+| every theme's magnitude is within 0-100 | PASS |  |
+| no theme's mention_count exceeds the total number of comments | PASS |  |
+| every theme has label/polarity/mention_count/magnitude/summary | PASS |  |
 
 ## Manual review notes
 

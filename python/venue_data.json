@@ -1,7 +1,7 @@
 {
   "dallas": {
     "venue": "Dallas",
-    "responses": 29,
+    "responses": 30,
     "date_range": [
       "2026-08-01",
       "2026-08-30"
@@ -35,7 +35,8 @@
       3,
       10,
       2,
-      4
+      4,
+      8
     ],
     "fun_scores": [
       5,
@@ -66,7 +67,8 @@
       2,
       5,
       2,
-      3
+      3,
+      1
     ],
     "helpful_scores": [
       5,
@@ -97,9 +99,10 @@
       2,
       5,
       3,
-      3
+      3,
+      1
     ],
-    "issues_count": 15,
+    "issues_count": 16,
     "resolution_scores": [
       5,
       4,
@@ -115,7 +118,8 @@
       5,
       2,
       2,
-      3
+      3,
+      1
     ],
     "comments": [
       {
@@ -294,10 +298,10 @@
       "Parking situation was terrible. We circled for 15 minutes looking for a spot. By the time we got inside, we felt rushed and couldn't fully enjoy our visit.",
       "Parking was a nightmare. We had to park far away and walk a long distance with our kids. The venue itself was great, but the parking experience really detracted from the visit."
     ],
-    "ltr_avg": 7.1,
-    "fun_avg": 3.9,
-    "helpful_avg": 4.0,
-    "issues_pct": 51.7,
-    "resolution_avg": 3.5
+    "ltr_avg": 7.2,
+    "fun_avg": 3.8,
+    "helpful_avg": 3.9,
+    "issues_pct": 53.3,
+    "resolution_avg": 3.3
   }
 }
