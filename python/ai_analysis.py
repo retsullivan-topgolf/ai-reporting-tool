@@ -8,7 +8,8 @@ by this module:
   1. metrics_analysis  - reads only the 5 aggregate metrics, produces a short
                           characterization plus per-metric "concern flags" on
                           a 0-100 magnitude scale.
-  2. comment_analysis   - reads only the free-text guest comments, produces
+  2. comment_analysis   - reads the free-text guest comments plus Stage 1's
+                          metric_flags (for categorization context), produces
                           themes (positive and negative) on the same 0-100
                           magnitude scale.
   3. synthesis          - reads only the two stages' structured output (not
@@ -38,10 +39,7 @@ Why the CLI instead of the Anthropic API directly?
 - `claude --print --output-format json "<prompt>"` is Anthropic's officially
   documented headless/scripting mode for Claude Code, so this is a supported
   use of the tool rather than a workaround.
-- Each call also passes `--bare`, which skips hooks/LSP/plugin sync/auto-memory
-  and other interactive-session overhead this scripted pipeline never needs -
-  confirmed against this project's installed Claude Code version rather than
-  assumed, since an invalid flag would silently break every call.
+
 
 If any stage isn't available - CLI missing, timed out, bad response, etc. -
 `get_ai_analysis()` returns (None, reason) and the whole pipeline stops at
@@ -131,11 +129,12 @@ def _build_metrics_payload(data):
     }
 
 
-def _build_comment_payload(data):
+def _build_comment_payload(data, metric_flags):
     return {
         "venue": data["venue"],
         "responses": data["responses"],
         "comments": data.get("comments", []),
+        "metric_flags": metric_flags,
     }
 
 
@@ -271,7 +270,7 @@ def _invoke_claude(prompt, stage, venue):
 
     try:
         result = subprocess.run(
-            [claude_path, "--bare", "--print", "--output-format", "json", prompt],
+            [claude_path, "--print", "--output-format", "json", "--", prompt],
             capture_output=True,
             text=True,
             timeout=CLAUDE_TIMEOUT_SECONDS,
@@ -374,7 +373,8 @@ def get_ai_analysis(data, use_cache=True):
         return None, error
 
     comment_result, error = _run_stage(
-        "comment_analysis", COMMENT_ANALYSIS_SKILL, _build_comment_payload(data),
+        "comment_analysis", COMMENT_ANALYSIS_SKILL,
+        _build_comment_payload(data, metrics_result.get("metric_flags", [])),
         _validate_comment_analysis, venue, use_cache, force_refresh,
     )
     if comment_result is None:
@@ -382,6 +382,7 @@ def get_ai_analysis(data, use_cache=True):
 
     synthesis_payload = {
         "venue": venue,
+        "responses": data["responses"],
         "metrics_analysis": metrics_result,
         "comment_analysis": comment_result,
     }

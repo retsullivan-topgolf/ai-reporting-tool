@@ -1,0 +1,11 @@
+{
+  "characterization": "Strong Fun and Helpful scores indicate the core experience resonates well, but a 51.7% issue rate\u00e2\u20ac\u201daffecting more than half of respondents\u00e2\u20ac\u201dreveals significant operational friction that's likely dampening guest satisfaction despite solid resolution efforts.",
+  "metric_flags": [
+    {
+      "metric": "issues",
+      "polarity": "negative",
+      "magnitude": 52,
+      "note": "51.7% of guests reported an issue - a systemic rate, not isolated incidents"
+    }
+  ]
+}

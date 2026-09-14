@@ -1,0 +1,15 @@
+{
+  "_comment": "Defaults for the skill eval runners (metric_skill_eval.py, comment_skill_eval.py, synthesis_skill_eval.py). All paths are relative to this evals/ folder. See EVALS.md for the full picture.",
+
+  "default_csv": "../../example-data/topgolf_qualtrics_30_responses - DALLAS.csv",
+  "default_venue_key": "dallas",
+  "default_run_id": "dallas",
+
+  "output_dir": "output",
+
+  "stage_files": {
+    "metrics_analysis": "metrics_analysis.json",
+    "comment_analysis": "comment_analysis.json",
+    "synthesis": "synthesis.json"
+  }
+}
