@@ -118,7 +118,11 @@ def prompt_for_format():
     }
 
     for _ in range(3):
-        answer = input("Enter choice [1-4] (default: 4): ").strip().lower()
+        try:
+            answer = input("Enter choice [1-4] (default: 4): ").strip().lower()
+        except EOFError:
+            print("Non-interactive session detected - defaulting to All.")
+            return FORMAT_ALIASES['all']
         if answer == '':
             return FORMAT_ALIASES['all']
         if answer in choices:

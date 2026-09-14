@@ -63,9 +63,10 @@ report_template = jinja_env.get_template('venue-1page-report.md.j2')
 
 def _to_markdown(html_fragment):
     """Convert the limited inline HTML the AI analysis produces
-    (`<strong>...</strong>` only - see ai_analysis.ANALYSIS_SCHEMA_INSTRUCTIONS)
-    into Markdown equivalents. A single targeted replacement is enough - no
-    general HTML-to-Markdown conversion needed."""
+    (`<strong>...</strong>` only - see the "Formatting rules" section of
+    templates/skills/synthesis.md) into Markdown equivalents. A single
+    targeted replacement is enough - no general HTML-to-Markdown conversion
+    needed."""
     text = html_fragment.replace('<strong>', '**').replace('</strong>', '**')
     return text.strip()
 
