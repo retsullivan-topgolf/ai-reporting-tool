@@ -72,7 +72,7 @@ from datetime import datetime, timezone
 
 import report_engine
 
-CLAUDE_TIMEOUT_SECONDS = 120  # per stage, not for the whole 3-stage pipeline
+CLAUDE_TIMEOUT_SECONDS = 300  # per stage, not for the whole 3-stage pipeline
 
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.cache', 'ai_analysis')
 SKILLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates', 'skills')
