@@ -65,5 +65,109 @@
       {"min": 3.0, "level": "Moderate", "class": "moderate"},
       {"min": null, "level": "Weak", "class": "poor"}
     ]
+  },
+
+  "return_likelihood": {
+    "label": "Return Likelihood",
+    "data_field": "return_likelihood_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "price_value": {
+    "label": "Price Value",
+    "data_field": "price_value_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "food_value": {
+    "label": "Food Value",
+    "data_field": "food_value_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "food_speed": {
+    "label": "Food Speed",
+    "data_field": "food_speed_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "food_quality": {
+    "label": "Food Quality",
+    "data_field": "food_quality_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "beverage_value": {
+    "label": "Beverage Value",
+    "data_field": "beverage_value_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "beverage_speed": {
+    "label": "Beverage Speed",
+    "data_field": "beverage_speed_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "beverage_quality": {
+    "label": "Beverage Quality",
+    "data_field": "beverage_quality_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
   }
 }
