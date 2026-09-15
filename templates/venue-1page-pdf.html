@@ -476,6 +476,16 @@
                         <div class="metric-value">{{ issues_pct_card_display }}</div>
                         <span class="metric-status status-{{ issues_assessment_class }}">{{ issues_assessment }}</span>
                     </div>
+                    {% if return_likelihood_avg_display %}<div class="metric-card">
+                        <div class="metric-label">Return Likelihood</div>
+                        <div class="metric-value">{{ return_likelihood_avg_display }}</div>
+                        <span class="metric-status status-{{ return_likelihood_assessment_class }}">{{ return_likelihood_assessment }}</span>
+                    </div>{% endif %}
+                    {% if price_value_avg_display %}<div class="metric-card">
+                        <div class="metric-label">Price Value</div>
+                        <div class="metric-value">{{ price_value_avg_display }}</div>
+                        <span class="metric-status status-{{ price_value_assessment_class }}">{{ price_value_assessment }}</span>
+                    </div>{% endif %}
                 </div>
             </div>
 
@@ -520,6 +530,53 @@
                         </tbody>
                     </table>
                 </div>
+
+                {% if food_value_avg_display %}
+                <h3 class="section-subtitle">Food & Beverage Experience</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Attribute</th>
+                                <th style="text-align: right;">Score</th>
+                                <th>Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Food Value</td>
+                                <td style="text-align: right;"><strong>{{ food_value_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ food_value_assessment_class }}">{{ food_value_assessment }}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Food Speed</td>
+                                <td style="text-align: right;"><strong>{{ food_speed_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ food_speed_assessment_class }}">{{ food_speed_assessment }}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Food Quality</td>
+                                <td style="text-align: right;"><strong>{{ food_quality_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ food_quality_assessment_class }}">{{ food_quality_assessment }}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Beverage Value</td>
+                                <td style="text-align: right;"><strong>{{ beverage_value_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ beverage_value_assessment_class }}">{{ beverage_value_assessment }}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Beverage Speed</td>
+                                <td style="text-align: right;"><strong>{{ beverage_speed_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ beverage_speed_assessment_class }}">{{ beverage_speed_assessment }}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Beverage Quality</td>
+                                <td style="text-align: right;"><strong>{{ beverage_quality_avg_display }} / 5</strong></td>
+                                <td><span class="status-pill {{ beverage_quality_assessment_class }}">{{ beverage_quality_assessment }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
             </div>
 
             {% if not ai_unavailable %}

@@ -5,7 +5,10 @@ description: Analyze aggregate survey metrics for a venue and produce a characte
 
 # Purpose
 
-Analyze the five aggregate survey metrics for a single venue and produce a short characterization of what the numbers say together, plus a set of comparable "concern magnitudes" that a later synthesis step can rank against comment themes on the same scale. This is Stage 1 of 3 in a venue report analysis pipeline.
+Analyze the aggregate survey metrics for a single venue and produce a short characterization of what the numbers say together, plus a set of comparable "concern magnitudes" that a later synthesis step can rank against comment themes on the same scale. This is Stage 1 of 3 in a venue report analysis pipeline.
+
+Metrics may include core metrics (LTR, Fun, Helpfulness, Issues, Resolution) and optional metrics (Return Likelihood, Price Value, F&B metrics).
+
 # Inputs
 
 Required:
@@ -19,6 +22,18 @@ Required:
   - `issues_pct` (0-100 scale)
   - `resolution_avg` (0-5 scale, or `null` if no issues reported)
 - `assessment_tiers`: pre-computed tier for each metric (e.g. "Strong", "Critical") from `templates/metrics.json`
+
+Optional (if present in data):
+
+- `return_likelihood_avg` (0-5 scale) - customer intent to return
+- `price_value_avg` (0-5 scale) - perceived value for money
+- `food_value_avg` (0-5 scale) - food offering value
+- `food_speed_avg` (0-5 scale) - food service speed
+- `food_quality_avg` (0-5 scale) - food quality
+- `beverage_value_avg` (0-5 scale) - beverage offering value
+- `beverage_speed_avg` (0-5 scale) - beverage service speed
+- `beverage_quality_avg` (0-5 scale) - beverage quality
+- `fb_average` (0-5 scale) - computed average of all F&B metrics
 
 If no source information is available, ask the user to provide the required information before continuing.
 
@@ -39,9 +54,11 @@ Treat the provided metrics and assessment tiers as the source of truth. Do not i
 
 # Workflow
 
-1. Read the venue name, response count, and all five metrics.
+1. Read the venue name, response count, and all metrics (both core and optional).
 2. Review the assessment tiers to understand how each metric rates in isolation.
 3. Analyze cross-metric patterns and relationships to form a characterization (1-2 sentences).
+   - If F&B metrics are present, consider how they relate to overall satisfaction (e.g., strong F&B may offset operational issues, or weak F&B may be dragging down satisfaction)
+   - If Return Likelihood or Price Value are present, consider what they reveal about customer intent and value perception
 4. Identify metrics worth flagging (typically anything not squarely "Moderate"/middle-of-the-road).
 5. For each flagged metric, compute magnitude using the scoring rules below.
 6. Order metric_flags by magnitude, highest first.
@@ -77,7 +94,7 @@ Example sythesized characterisation: "Strong Fun and Helpfulness scores indicate
 
 **`metric_flags`**: One entry per metric that's worth calling out. Each entry must include:
 
-- `metric`: one of `ltr`, `fun`, `helpful`, `issues`, `resolution`
+- `metric`: one of `ltr`, `fun`, `helpful`, `issues`, `resolution`, `return_likelihood`, `price_value`, `food_value`, `food_speed`, `food_quality`, `beverage_value`, `beverage_speed`, `beverage_quality`, `fb_average`
 - `polarity`: `"positive"` or `"negative"`
 - `magnitude`: 0-100, representing how much this metric matters to overall guest satisfaction for this venue
 - `note`: one sentence, cite the actual number
@@ -97,8 +114,10 @@ Example sythesized characterisation: "Strong Fun and Helpfulness scores indicate
 - MUST include one entry per metric worth calling out (typically anything not "Moderate")
 - MUST NOT flag metrics with nothing notable to say (e.g., a "Strong" Fun score with nothing unusual)
 - MUST NOT flag `resolution_avg` as a concern if it is `null` (this is normal for low issue rates)
+- MUST NOT flag optional metrics (Return Likelihood, Price Value, F&B) if they are not present in the input data
 - MUST order flags by magnitude, highest first
 - if all metrics are moderate, return an array with all of them with their respective magnitudes
+- When F&B metrics are present, consider flagging the `fb_average` if it's notably strong or weak, as it represents the overall food & beverage experience
 
 ## Magnitude Scoring
 

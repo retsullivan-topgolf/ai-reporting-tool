@@ -169,5 +169,18 @@
       {"min": 2.5, "level": "Fair", "class": "moderate"},
       {"min": null, "level": "Poor", "class": "poor"}
     ]
+  },
+
+  "fb_average": {
+    "label": "Food & Beverage Average",
+    "data_field": "fb_average",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
   }
 }

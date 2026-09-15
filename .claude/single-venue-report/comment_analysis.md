@@ -42,9 +42,10 @@ Always use:
 
 When applicable, use:
 
-- The `@metrics.json` file to align comment themes with tracked metric categories
-- Severity of outcomes (left without playing, safety issues, etc.) to adjust magnitude upward even for low-mention themes
+- The `@metrics.json` file to align comment themes with tracked metric categories (including F&B-related themes like food quality, beverage service, pricing)
+- Severity of outcomes (left without playing, safety issues, food/beverage issues, etc.) to adjust magnitude upward even for low-mention themes
 - The distinction between sentiment ("had a great time!") and substance (specific, describable themes)
+- Specific F&B details (named menu items, service speed, quality issues, value perception) when guests mention food or beverage experiences
 
 Treat the provided comments and project context as the source of truth. Do not invent themes from generic comments or force weak themes into existence when sample size is low.
 

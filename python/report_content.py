@@ -148,7 +148,7 @@ def build_metrics_context(data, metrics_registry):
     issues_assessment = report_engine.get_assessment('issues', data['issues_pct'], metrics_registry)
     resolution_assessment = report_engine.get_assessment('resolution', data['resolution_avg'], metrics_registry)
 
-    return {
+    context = {
         'venue': data['venue'],
         'start_formatted': start_obj.strftime('%B %d, %Y'),
         'end_formatted': end_obj.strftime('%B %d, %Y'),
@@ -180,6 +180,38 @@ def build_metrics_context(data, metrics_registry):
 
         'overall_assessment': build_overall_assessment(data),
     }
+
+    # Add optional Return Likelihood and Price Value metrics (if present in data)
+    if 'return_likelihood_avg' in data and data['return_likelihood_avg'] is not None:
+        context['return_likelihood_avg_display'] = f"{data['return_likelihood_avg']:.1f}"
+        context['return_likelihood_assessment'] = report_engine.get_assessment('return_likelihood', data['return_likelihood_avg'], metrics_registry)
+        context['return_likelihood_assessment_class'] = report_engine.get_assessment_class('return_likelihood', data['return_likelihood_avg'], metrics_registry)
+
+    if 'price_value_avg' in data and data['price_value_avg'] is not None:
+        context['price_value_avg_display'] = f"{data['price_value_avg']:.1f}"
+        context['price_value_assessment'] = report_engine.get_assessment('price_value', data['price_value_avg'], metrics_registry)
+        context['price_value_assessment_class'] = report_engine.get_assessment_class('price_value', data['price_value_avg'], metrics_registry)
+
+    # Add optional F&B metrics (if present in data)
+    fb_metrics = ['food_value', 'food_speed', 'food_quality', 'beverage_value', 'beverage_speed', 'beverage_quality']
+    fb_values = []
+    for metric in fb_metrics:
+        data_field = f'{metric}_avg'
+        if data_field in data and data[data_field] is not None:
+            context[f'{metric}_avg_display'] = f"{data[data_field]:.1f}"
+            context[f'{metric}_assessment'] = report_engine.get_assessment(metric, data[data_field], metrics_registry)
+            context[f'{metric}_assessment_class'] = report_engine.get_assessment_class(metric, data[data_field], metrics_registry)
+            fb_values.append(data[data_field])
+
+    # Calculate F&B Average if we have any F&B metrics
+    if fb_values:
+        fb_average = sum(fb_values) / len(fb_values)
+        context['fb_average'] = fb_average
+        context['fb_average_display'] = f"{fb_average:.1f}"
+        context['fb_average_assessment'] = report_engine.get_assessment('fb_average', fb_average, metrics_registry)
+        context['fb_average_assessment_class'] = report_engine.get_assessment_class('fb_average', fb_average, metrics_registry)
+
+    return context
 
 
 def render_html_report(data, metrics_registry, template, precomputed_analysis=None):

@@ -24,7 +24,9 @@
 | Fun | {{ fun_avg_display }} / 5 | {{ fun_assessment }} |
 | Helpfulness | {{ helpful_avg_display }} / 5 | {{ helpful_assessment }} |
 | Issues Reported | {{ issues_pct_card_display }} | {{ issues_assessment }} |
-
+{% if return_likelihood_avg_display %}| Return Likelihood | {{ return_likelihood_avg_display }} / 5 | {{ return_likelihood_assessment }} |
+{% endif %}{% if price_value_avg_display %}| Price Value | {{ price_value_avg_display }} / 5 | {{ price_value_assessment }} |
+{% endif %}
 **Overall Assessment:** {{ overall_assessment }}
 
 ---
@@ -39,6 +41,19 @@
 | Issues Reported | {{ issues_pct_table_display }} | {{ issues_assessment }} |
 | Issue Resolution | {{ resolution_avg_display }} | {{ resolution_assessment }} |
 
+{% if food_value_avg_display %}
+### Food & Beverage Experience
+
+| Attribute | Score | Assessment |
+|---|---:|---|
+| Food Value | {{ food_value_avg_display }} / 5 | {{ food_value_assessment }} |
+| Food Speed | {{ food_speed_avg_display }} / 5 | {{ food_speed_assessment }} |
+| Food Quality | {{ food_quality_avg_display }} / 5 | {{ food_quality_assessment }} |
+| Beverage Value | {{ beverage_value_avg_display }} / 5 | {{ beverage_value_assessment }} |
+| Beverage Speed | {{ beverage_speed_avg_display }} / 5 | {{ beverage_speed_assessment }} |
+| Beverage Quality | {{ beverage_quality_avg_display }} / 5 | {{ beverage_quality_assessment }} |
+
+{% endif %}
 {% if not ai_unavailable %}
 ---
 

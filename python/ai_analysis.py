@@ -121,6 +121,29 @@ def _build_metrics_payload(data):
         "issues": report_engine.get_assessment("issues", metrics["issues_pct"], registry),
         "resolution": report_engine.get_assessment("resolution", metrics["resolution_avg"], registry),
     }
+
+    # Add optional Return Likelihood and Price Value metrics if present
+    if "return_likelihood_avg" in data and data["return_likelihood_avg"] is not None:
+        metrics["return_likelihood_avg"] = data["return_likelihood_avg"]
+        assessment_tiers["return_likelihood"] = report_engine.get_assessment("return_likelihood", data["return_likelihood_avg"], registry)
+
+    if "price_value_avg" in data and data["price_value_avg"] is not None:
+        metrics["price_value_avg"] = data["price_value_avg"]
+        assessment_tiers["price_value"] = report_engine.get_assessment("price_value", data["price_value_avg"], registry)
+
+    # Add optional F&B metrics if present
+    fb_metrics = ["food_value", "food_speed", "food_quality", "beverage_value", "beverage_speed", "beverage_quality"]
+    for metric in fb_metrics:
+        data_field = f"{metric}_avg"
+        if data_field in data and data[data_field] is not None:
+            metrics[data_field] = data[data_field]
+            assessment_tiers[metric] = report_engine.get_assessment(metric, data[data_field], registry)
+
+    # Add F&B Average if present
+    if "fb_average" in data and data["fb_average"] is not None:
+        metrics["fb_average"] = data["fb_average"]
+        assessment_tiers["fb_average"] = report_engine.get_assessment("fb_average", data["fb_average"], registry)
+
     return {
         "venue": data["venue"],
         "responses": data["responses"],

@@ -38,6 +38,7 @@ When applicable, use:
 - The metrics characterization as the foundation for the overview, then fold in comment themes that explain *why* the numbers look that way
 - Honest acknowledgment when metrics and comments tell different stories - that's a real finding, not an error
 - The combined ranking to determine priority order for recommendations, not topic-based or sentiment-based ordering
+- F&B metrics and themes to explain how food and beverage experiences contribute to overall satisfaction (e.g., strong F&B may offset operational issues, or weak F&B may be a distinct concern)
 
 Treat the provided metrics and comment analyses as the source of truth. This report covers one venue in isolation - do not state or imply network averages, network rankings, or comparisons to other venues.
 
