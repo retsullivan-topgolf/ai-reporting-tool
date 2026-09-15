@@ -1,0 +1,335 @@
+================================================================================
+                    SCHEMA MIGRATION PLAN - COMPLETE ✅
+================================================================================
+
+PROJECT: AI Reporting Tool - POC → Real Data Migration
+STATUS: Plan Complete, Ready for Implementation
+DATE: 2026-09-14
+
+================================================================================
+                              DELIVERABLES
+================================================================================
+
+8 COMPREHENSIVE DOCUMENTS CREATED (94 KB total):
+
+1. README_SCHEMA_MIGRATION.md (9.4 KB)
+   ├─ Quick overview of the entire migration
+   ├─ Document guide and learning paths
+   ├─ Getting started instructions
+   └─ Best for: First document to read
+
+2. PLAN_SUMMARY.md (9.4 KB)
+   ├─ High-level overview of the plan
+   ├─ 6-phase implementation breakdown
+   ├─ Timeline and success criteria
+   └─ Best for: Understanding what needs to be done
+
+3. QUICK_REFERENCE.md (12 KB)
+   ├─ Field mappings at a glance
+   ├─ Data type conversions
+   ├─ Metrics calculations
+   ├─ Implementation checklists
+   ├─ Common issues & solutions
+   └─ Best for: Keep open during implementation
+
+4. SCHEMA_ANALYSIS.md (7.2 KB)
+   ├─ Detailed field-by-field comparison
+   ├─ POC vs Real data overview
+   ├─ Impact on analysis
+   ├─ Data quality notes
+   └─ Best for: Understanding the data structure
+
+5. SCHEMA_MIGRATION_PLAN.md (11 KB)
+   ├─ Complete implementation plan with rationale
+   ├─ Field mapping specification
+   ├─ Backward compatibility strategy
+   ├─ File changes required
+   └─ Best for: Full context and approach
+
+6. IMPLEMENTATION_ROADMAP.md (17 KB)
+   ├─ Data flow architecture diagrams
+   ├─ Detailed phase breakdown (1-6)
+   ├─ Inputs and outputs for each phase
+   ├─ Implementation checklist
+   └─ Best for: Understanding the architecture
+
+7. PHASE1_CODE_EXAMPLES.md (18 KB)
+   ├─ Concrete code examples for Phase 1
+   ├─ Function signatures and implementations
+   ├─ Usage examples
+   ├─ Testing code
+   └─ Best for: Implementing Phase 1
+
+8. SCHEMA_MIGRATION_INDEX.md (9.8 KB)
+   ├─ Document index and navigation
+   ├─ Reading guide for different time budgets
+   ├─ Quick start paths
+   └─ Best for: Finding the right document
+
+================================================================================
+                            WHAT WE ANALYZED
+================================================================================
+
+TWO CSV SCHEMAS:
+
+POC Data (DALLAS.csv):
+  • 30 responses
+  • 5 core metrics (LTR, Fun, Helpful, Issues, Resolution)
+  • Text-based Fun/Helpful fields
+  • Single comment field
+  • No F&B data
+
+Real Data (Grand_Prarie.csv):
+  • Multiple responses
+  • 5 core metrics + 8 new metrics
+  • Numeric Fun/Helpful fields
+  • Single comment field
+  • 6 F&B metrics (food/beverage value, speed, quality)
+  • 2 customer intent metrics (return likelihood, price value)
+  • Operational data (email, bay #, bay host, time)
+
+KEY DIFFERENCES:
+  • LTR: Q1_LTR (1-10) → Combined NPS (0-10)
+  • Fun: Q2_FUN (text) → Fun (1-5 numeric)
+  • Helpful: Q3_HELPFUL (text) → Helpfulness (1-5 numeric)
+  • Comment: Q6_COMMENT → Open Comment
+  • Date: YYYY-MM-DD → M/D/YYYY
+  • F&B: ❌ None → ✅ 6 new fields
+  • Return: ❌ None → ✅ New field
+  • Price: ❌ None → ✅ New field
+
+================================================================================
+                          IMPLEMENTATION PLAN
+================================================================================
+
+6 SEQUENTIAL PHASES:
+
+Phase 1: Schema Detection & Field Mapping (2-3 hours)
+  ├─ Add detect_schema() function
+  ├─ Add normalize_row() function
+  ├─ Update process_venue_data() for schema awareness
+  ├─ File: python/generate_reports.py
+  └─ Result: Both schemas parse correctly ✅
+
+Phase 2: Metrics Calculation (2-3 hours)
+  ├─ Add F&B metrics (6 fields)
+  ├─ Add customer intent metrics (2 fields)
+  ├─ Update metrics registry
+  ├─ Files: python/generate_reports.py, python/report_engine.py
+  └─ Result: All 13 metrics calculated ✅
+
+Phase 3: Templates & Display (3-4 hours)
+  ├─ Add F&B section to reports
+  ├─ Add new metrics to Performance Summary
+  ├─ Conditional rendering for optional metrics
+  ├─ Files: HTML, Markdown, PDF templates, report_content.py
+  └─ Result: Reports show F&B section ✅
+
+Phase 4: AI Analysis Pipeline (4-5 hours)
+  ├─ Update metrics_analysis.md (include F&B)
+  ├─ Update comment_analysis.md (consider F&B themes)
+  ├─ Update synthesis.md (add F&B recommendations)
+  ├─ Update ai_analysis.py (new payload builders)
+  ├─ Files: Claude skill docs, python/ai_analysis.py
+  └─ Result: AI analysis includes F&B insights ✅
+
+Phase 5: Report Scripts (1-2 hours)
+  ├─ Verify create_html_reports.py
+  ├─ Verify create_markdown_reports.py
+  ├─ Verify create_pdf_reports.py
+  ├─ Test with both schemas
+  └─ Result: All report formats work ✅
+
+Phase 6: Testing & Validation (3-4 hours)
+  ├─ Schema detection tests
+  ├─ Field mapping tests
+  ├─ Metrics calculation tests
+  ├─ AI analysis tests
+  ├─ Report generation tests
+  └─ Result: All tests pass ✅
+
+TOTAL EFFORT: 15-21 hours (2-3 days for experienced developer)
+
+================================================================================
+                          BACKWARD COMPATIBILITY
+================================================================================
+
+STRATEGY: Auto-detection + Optional Metrics
+
+✅ POC data works exactly as before
+✅ Real data gets new features
+✅ Single codebase handles both schemas
+✅ No user intervention needed
+✅ Optional metrics gracefully skip if missing
+
+IMPLEMENTATION:
+  • detect_schema() - Auto-detect POC vs Real
+  • normalize_row() - Convert to standard format
+  • Field mapping - Centralized, easy to extend
+  • Optional metrics - Graceful fallback
+
+================================================================================
+                            KEY METRICS
+================================================================================
+
+CORE METRICS (Both Schemas):
+  • ltr_avg (0-10 or 1-10 scale)
+  • fun_avg (1-5 scale)
+  • helpful_avg (1-5 scale)
+  • issues_pct (0-100%)
+  • resolution_avg (1-5 scale)
+
+NEW METRICS (Real Data Only):
+  • food_value_avg (1-5)
+  • food_speed_avg (1-5)
+  • food_quality_avg (1-5)
+  • beverage_value_avg (1-5)
+  • beverage_speed_avg (1-5)
+  • beverage_quality_avg (1-5)
+  • return_likelihood_avg (1-5)
+  • price_value_avg (1-5)
+
+TOTAL: 13 metrics (5 core + 8 new)
+
+================================================================================
+                          SUCCESS CRITERIA
+================================================================================
+
+✅ POC data works exactly as before (backward compatible)
+✅ Real data parses correctly
+✅ All 13 metrics calculated for real data
+✅ F&B section appears in real data reports
+✅ AI analysis includes F&B insights
+✅ All report formats generate successfully
+✅ All tests pass
+
+================================================================================
+                            GETTING STARTED
+================================================================================
+
+QUICK START (15 minutes):
+  1. Read README_SCHEMA_MIGRATION.md
+  2. Read PLAN_SUMMARY.md
+  3. Skim QUICK_REFERENCE.md
+  4. You understand the plan!
+
+FULL UNDERSTANDING (1 hour):
+  1. Read README_SCHEMA_MIGRATION.md
+  2. Read PLAN_SUMMARY.md
+  3. Read SCHEMA_ANALYSIS.md
+  4. Read IMPLEMENTATION_ROADMAP.md
+  5. Skim QUICK_REFERENCE.md
+  6. You're ready to implement!
+
+START IMPLEMENTING (2-3 hours):
+  1. Read PHASE1_CODE_EXAMPLES.md
+  2. Open python/generate_reports.py
+  3. Add the 4 new functions
+  4. Test with both CSV files
+  5. Move to Phase 2
+
+================================================================================
+                          DOCUMENT GUIDE
+================================================================================
+
+START HERE:
+  → README_SCHEMA_MIGRATION.md (overview + guide)
+
+THEN READ (in order):
+  1. PLAN_SUMMARY.md (10 min)
+  2. SCHEMA_ANALYSIS.md (15 min)
+  3. IMPLEMENTATION_ROADMAP.md (25 min)
+
+FOR IMPLEMENTATION:
+  → PHASE1_CODE_EXAMPLES.md (concrete code)
+
+KEEP HANDY:
+  → QUICK_REFERENCE.md (checklists + lookup)
+
+FOR NAVIGATION:
+  → SCHEMA_MIGRATION_INDEX.md (document index)
+
+================================================================================
+                            FILES TO MODIFY
+================================================================================
+
+Phase 1:
+  • python/generate_reports.py
+
+Phase 2:
+  • python/generate_reports.py
+  • python/report_engine.py
+
+Phase 3:
+  • templates/venue-1page-browser.html
+  • templates/venue-1page-pdf.html
+  • templates/venue-1page-report.md.j2
+  • python/report_content.py
+
+Phase 4:
+  • .claude/single-venue-report/metrics_analysis.md
+  • .claude/single-venue-report/comment_analysis.md
+  • .claude/single-venue-report/synthesis.md
+  • python/ai_analysis.py
+
+Phase 5:
+  • python/create_html_reports.py (verify)
+  • python/create_markdown_reports.py (verify)
+  • python/create_pdf_reports.py (verify)
+  • python/generate_all_reports.py (verify)
+
+Phase 6:
+  • Create new test files in python/tests/
+
+================================================================================
+                            TIMELINE
+================================================================================
+
+Phase 1: 2-3 hours   (cumulative: 2-3h)
+Phase 2: 2-3 hours   (cumulative: 4-6h)
+Phase 3: 3-4 hours   (cumulative: 7-10h)
+Phase 4: 4-5 hours   (cumulative: 11-15h)
+Phase 5: 1-2 hours   (cumulative: 12-17h)
+Phase 6: 3-4 hours   (cumulative: 15-21h)
+
+TOTAL: 15-21 hours (2-3 days for experienced developer)
+
+================================================================================
+                          NEXT STEPS
+================================================================================
+
+1. ✅ Review README_SCHEMA_MIGRATION.md
+2. ✅ Review PLAN_SUMMARY.md
+3. ✅ Review SCHEMA_ANALYSIS.md
+4. ✅ Review PHASE1_CODE_EXAMPLES.md
+5. → Start implementing Phase 1
+6. → Test with both DALLAS.csv and Grand_Prarie.csv
+7. → Proceed through phases 2-6
+
+================================================================================
+                          YOU'RE ALL SET!
+================================================================================
+
+Everything you need to migrate the POC application to real data is documented.
+
+The plan is:
+  ✅ Complete
+  ✅ Detailed
+  ✅ Phased
+  ✅ Backward compatible
+  ✅ Ready to implement
+
+Start with README_SCHEMA_MIGRATION.md and follow the learning path.
+
+Questions? Refer to the appropriate document:
+  • "What are we doing?" → PLAN_SUMMARY.md
+  • "How do schemas differ?" → SCHEMA_ANALYSIS.md
+  • "What's the implementation plan?" → SCHEMA_MIGRATION_PLAN.md
+  • "How does data flow?" → IMPLEMENTATION_ROADMAP.md
+  • "How do I implement Phase 1?" → PHASE1_CODE_EXAMPLES.md
+  • "What's the field mapping?" → QUICK_REFERENCE.md
+  • "Where do I find docs?" → SCHEMA_MIGRATION_INDEX.md
+
+Ready to begin? Open README_SCHEMA_MIGRATION.md now!
+
+================================================================================
