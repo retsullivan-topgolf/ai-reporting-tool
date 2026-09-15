@@ -1,58 +1,58 @@
 {
-  "dallas": {
+  "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "Dallas delivered strong core experience quality with a 7.2/10 likelihood to recommend and solid Fun and Helpful scores, but a 53% issue rate\u00e2\u20ac\u201dprimarily from equipment reliability problems\u00e2\u20ac\u201dsignificantly constrains satisfaction and recovery. Guests appreciate responsive staff and proactive bay hosts who work to resolve issues, but extended wait times for assistance and lingering equipment problems prevent these positive interactions from fully offsetting operational friction. The tension between strong guest intent to recommend and high issue rates reveals a venue where the core experience shines, but operational reliability and responsiveness are not yet consistent enough to unlock the venue's full potential.",
+      "overview": "Grand Prairie excels at the core activity\u2014guests rate Fun at 4.4/5 and return likelihood at 4.4/5, supported by a clean facility, accessible gaming environment, and consistently helpful staff. However, multiple operational failures are creating friction: slow and inattentive service (the dominant complaint at 43 mentions), equipment malfunctions, food quality issues, and reservation check-in failures all accumulate to produce weak issue resolution scores (2.6/5). Additionally, rude and unprofessional conduct from some staff members\u2014including documented instances of casual racism\u2014has severely damaged experience for affected guests. The gap between excellent core experience and weak problem resolution reveals that when things go wrong, guests lack satisfactory remedies. Operational consistency and staff conduct improvements could unlock significant upside.",
       "ups": [
-        "<strong>Responsive staff support:</strong> Staff quickly address equipment issues and get guests back to playing, with guests specifically noting fast problem resolution despite the frequency of problems.",
-        "<strong>Proactive bay host attentiveness:</strong> Bay hosts regularly check on guests without being intrusive, creating a supportive environment that guests notice and appreciate.",
-        "<strong>Sonic game appeal:</strong> The new Sonic game stands out as a signature attraction that guests find exciting and want to experience repeatedly."
+        "<strong>Staff friendliness and service excellence:</strong> Named staff members consistently praised for being attentive, proactive, and going above and beyond, particularly when helping first-timers understand systems and making special occasions memorable.",
+        "<strong>Accessible gaming for all skill levels:</strong> The welcoming, pressure-free environment makes gaming accessible regardless of experience; guests appreciate that they can enjoy themselves without fear of judgment, contributing to strong Fun scores.",
+        "<strong>Clean, well-maintained facility:</strong> The facility is consistently described as clean, new, and well-maintained, with fresh equipment and mats that create a positive first impression and support the core experience."
       ],
       "downs": [
-        "<strong>Equipment reliability:</strong> Screens and equipment frequently lose functionality mid-session, with 11 guests citing failures ranging from minor tracking interruptions to complete play prevention.",
-        "<strong>Slow staff response:</strong> Guests waiting extended periods for assistance when equipment issues occur, resulting in lost playing time and compounding frustration.",
-        "<strong>Parking difficulties:</strong> Long waits to find parking and difficult parking access at arrival create rushed feelings that reduce guests' ability to enjoy their experience."
+        "<strong>Staff rudeness and unprofessional conduct:</strong> 16 comments documented rude, dismissive, and unprofessional behavior from staff, including serious instances of casual racism that created hostile experiences and severely damaged willingness to return.",
+        "<strong>Slow and inattentive service:</strong> Slow and inattentive service is the most frequent complaint with 43 mentions; guests report waiting 20+ minutes for drinks and struggling to get refills, directly reducing play time and satisfaction.",
+        "<strong>Equipment and game malfunctions:</strong> Machines, screens, and scoring systems frequently malfunction mid-session; one guest was unable to play for an hour, others lost significant play time before being moved or ultimately left with issues unresolved."
       ],
       "impact": [
         {
-          "title": "Systemic Issue Prevalence",
-          "description": "53% of guests reported an issue during their visit, indicating operational challenges are pervasive and not isolated incidents\u00e2\u20ac\u201dthe primary constraint on overall venue satisfaction."
+          "title": "Staff Conduct Issues",
+          "description": "Rude and unprofessional behavior (16 documented comments including casual racism) is the highest-magnitude issue at magnitude 50, creating a hostile environment that directly contradicts the helpful experience the venue aims to provide and damages loyalty."
         },
         {
-          "title": "Equipment Reliability Failures",
-          "description": "Screens and equipment failures, cited in 11 comments, are the dominant specific issue, ranging from minor interruptions to preventing play entirely, and represent the primary source of guest friction."
+          "title": "Exceptional Staff Service",
+          "description": "Staff friendliness and going above and beyond (mentioned in 55 comments) is the venue's strongest positive asset at magnitude 46, with named staff members consistently recognized for helping first-timers and making special occasions memorable."
         },
         {
-          "title": "Staff Response Time Gap",
-          "description": "Wait times for assistance force guests to lose playing time when equipment issues occur, mentioned in 4 comments, preventing effective recovery even when staff can ultimately resolve problems."
+          "title": "Operational Reliability",
+          "description": "Equipment and game malfunctions (magnitude 45, affecting 9 comments) directly undermine the core Fun experience and contribute to weak issue resolution when guests need help recovering from failures."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Fix Equipment Reliability",
+          "title": "Enforce Professional Conduct Standards",
           "items": [
-            "<strong>Daily equipment audit:</strong> Conduct pre-opening and mid-shift screen calibration checks and equipment functionality tests to catch failures before guests encounter them.",
-            "<strong>Rapid resolution standard:</strong> Establish and measure a 5-minute maximum response and resolution time for equipment issues to minimize lost playing time and guest frustration.",
-            "<strong>Root cause investigation:</strong> Systematically investigate recurring equipment failures (specific screen models, frequency patterns) to determine whether issues are hardware, software, or calibration-related and implement targeted fixes.",
-            "<strong>Backup equipment readiness:</strong> Ensure spare screens or bay configurations are available to quickly swap failed equipment and minimize downtime."
+            "<strong>Establish behavioral expectations:</strong> Document clear standards for professional, respectful conduct with zero tolerance for harassment, discrimination, or rudeness. Ensure all staff acknowledge and agree to these standards.",
+            "<strong>Bias and sensitivity training:</strong> Implement mandatory, documented training on respectful workplace conduct and cultural competence for all staff, with accountability for completion and understanding.",
+            "<strong>Incident response and follow-up:</strong> Create a process for customers to report misconduct immediately, for management to investigate within 24 hours, and for management to follow up with both the customer and staff involved.",
+            "<strong>Culture assessment:</strong> Conduct a review to determine whether rudeness is isolated incidents or systemic; address root causes such as understaffing, lack of training, or cultural issues."
           ]
         },
         "secondary": {
-          "title": "Improve Staff Response Visibility and Speed",
+          "title": "Improve Service Speed and Consistency",
           "items": [
-            "<strong>Request assistance visibility:</strong> Place clear 'request assistance' buttons or call systems in each bay so guests don't have to search for help when equipment issues occur.",
-            "<strong>Peak-hour bay host positioning:</strong> Ensure a bay host is visible and present in the bay area during peak times rather than performing back-office tasks, reducing wait time and perceived abandonment.",
-            "<strong>Issue escalation protocol:</strong> Define clear handoff procedures when bay hosts can't resolve issues immediately (who handles software resets vs. hardware swaps) to avoid guests waiting for answers.",
-            "<strong>Response time accountability:</strong> Monitor and track how long guests wait for assistance, flagging bays or shifts where response times exceed 3 minutes for immediate coaching and adjustment."
+            "<strong>Peak-hour staffing review:</strong> Analyze staffing levels during high-demand periods and ensure adequate servers and bartenders to meet service speed expectations of <5 minutes for drink delivery.",
+            "<strong>Service flow optimization:</strong> Review ordering processes (app, in-person, phone) to identify bottlenecks and streamline handoff between front-of-house and kitchen; set clear targets for order-to-delivery time.",
+            "<strong>Training on service standards:</strong> Set and communicate clear expectations for responsiveness, drink refills, and attentiveness; train staff on speed and check-in frequency with guests.",
+            "<strong>Kitchen and bar workflow review:</strong> Identify operational bottlenecks in food prep and drink production; implement efficiency improvements, better communication between stations, or additional staffing."
           ]
         },
         "maintain": {
-          "title": "Protect Responsive Staff Culture",
+          "title": "Protect and Reinforce Staff Friendliness",
           "items": [
-            "<strong>Staff recognition for responsiveness:</strong> Celebrate and reward staff who are mentioned by guests for quick issue resolution during team meetings and in performance evaluations.",
-            "<strong>Best practice documentation:</strong> Capture and codify the issue-resolution and customer-recovery techniques that guests are praising (how staff calm frustrated guests, explain problems, get them back playing) so consistency is maintained across all shifts.",
-            "<strong>Guest feedback sharing:</strong> Proactively share positive guest comments about responsive staff directly with those team members to reinforce desired behaviors and build morale.",
-            "<strong>Consistent training on customer recovery:</strong> Ensure all staff training\u00e2\u20ac\u201despecially for new hires\u00e2\u20ac\u201dincludes the customer recovery and communication techniques that are already differentiating the Dallas venue."
+            "<strong>Staff recognition program:</strong> Formally recognize and reward the staff members being named in positive comments by providing bonuses, schedule preferences, or public acknowledgment; ensure they know their excellent service is valued.",
+            "<strong>Document and share best practices:</strong> Interview high-performing staff to codify what they do right\u2014greeting approach, problem-solving, special occasion handling\u2014and train other staff on these practices to build consistency.",
+            "<strong>Performance monitoring:</strong> Establish metrics and regular check-ins to ensure service quality remains consistently high across all staff and shifts, protecting the 46-magnitude positive cultural asset.",
+            "<strong>Career development for top performers:</strong> Offer growth opportunities, leadership training, and clear advancement paths to high-performing staff to reduce turnover and maintain the positive service culture that guests value."
           ]
         }
       }

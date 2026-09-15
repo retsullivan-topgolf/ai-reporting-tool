@@ -293,17 +293,12 @@ def _invoke_claude(prompt, stage, venue):
 
     try:
         result = subprocess.run(
-            [claude_path, "--print", "--output-format", "json", "--", prompt],
+            [claude_path, "--print", "--output-format", "json"],
+            input=prompt,
             capture_output=True,
             text=True,
+            encoding='utf-8',
             timeout=CLAUDE_TIMEOUT_SECONDS,
-            # This is a non-interactive scripted call that never needs
-            # input - explicitly closing stdin (rather than inheriting
-            # whatever the parent process's stdin is) avoids the CLI
-            # sitting for a few seconds waiting on stdin and printing a
-            # "no stdin data received" warning that would otherwise pollute
-            # the reason string shown to report readers.
-            stdin=subprocess.DEVNULL,
         )
     except subprocess.TimeoutExpired:
         return None, f"Claude CLI timed out after {CLAUDE_TIMEOUT_SECONDS}s"

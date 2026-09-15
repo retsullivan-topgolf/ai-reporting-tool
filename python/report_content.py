@@ -139,8 +139,14 @@ def build_metrics_context(data, metrics_registry):
     since the two formats need that content shaped differently."""
     start_date = data['date_range'][0]
     end_date = data['date_range'][1]
-    start_obj = datetime.strptime(start_date, '%Y-%m-%d')
-    end_obj = datetime.strptime(end_date, '%Y-%m-%d')
+    try:
+        start_obj = datetime.strptime(start_date, '%m/%d/%Y %H:%M')
+    except ValueError:
+        start_obj = datetime.strptime(start_date, '%Y-%m-%d')
+    try:
+        end_obj = datetime.strptime(end_date, '%m/%d/%Y %H:%M')
+    except ValueError:
+        end_obj = datetime.strptime(end_date, '%Y-%m-%d')
 
     ltr_assessment = report_engine.get_assessment('ltr', data['ltr_avg'], metrics_registry)
     fun_assessment = report_engine.get_assessment('fun', data['fun_avg'], metrics_registry)
