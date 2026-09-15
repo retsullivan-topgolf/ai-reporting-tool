@@ -235,10 +235,10 @@ For each tier, generate 3-4 concrete actions that directly address that finding.
 
 ## Related Skills
 
-- See [venue-overview-skill](../venue-overview-skill/SKILL.md) for the narrative summary
-- See [ups-downs-skill](../ups-downs-skill/SKILL.md) for additional findings
-- See [impact-drivers-skill](../impact-drivers-skill/SKILL.md) for the top 3 ranked drivers
+- See `venue-overview-skill.md` for the narrative summary
+- See `ups-downs-skill.md` for additional findings
+- See `impact-drivers-skill.md` for the top 3 ranked drivers
 
 ## Resources
 
-- `.claude/single-venue-report/synthesis.md` - The actual prompt that implements this skill
+- `synthesis.md` - The actual prompt that implements this skill

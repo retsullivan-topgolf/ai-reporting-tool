@@ -141,11 +141,11 @@ The report generation pipeline now uses a **3-stage AI analysis pipeline** that 
 
 ### Synthesis Skills
 
-The Stage 3 synthesis prompt is guided by four modular skills that define how each section should be written:
+The Stage 3 synthesis prompt is guided by four modular skill documents in `.claude/single-venue-report/`:
 
-- **[venue-overview-skill](.devin/skills/venue-overview-skill/SKILL.md)** - Guidance on writing the narrative overview without redundantly repeating metric numbers
-- **[ups-downs-skill](.devin/skills/ups-downs-skill/SKILL.md)** - Guidance on selecting and articulating positive/negative findings
-- **[impact-drivers-skill](.devin/skills/impact-drivers-skill/SKILL.md)** - Guidance on identifying and explaining the top 3 impact drivers
-- **[recommendations-skill](.devin/skills/recommendations-skill/SKILL.md)** - Guidance on generating actionable, prioritized recommendations
+- **venue-overview-skill.md** - Guidance on writing the narrative overview without redundantly repeating metric numbers
+- **ups-downs-skill.md** - Guidance on selecting and articulating positive/negative findings
+- **impact-drivers-skill.md** - Guidance on identifying and explaining the top 3 impact drivers
+- **recommendations-skill.md** - Guidance on generating actionable, prioritized recommendations
 
-These skills are referenced in `.claude/single-venue-report/synthesis.md` and provide detailed rules and examples for each section.
+These skills are referenced in `synthesis.md` and provide detailed rules and examples for each section. See also `overview-metrics-guidance.md` for detailed guidance on metrics handling in the overview.

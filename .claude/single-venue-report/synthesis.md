@@ -205,10 +205,13 @@ The following demonstrates formatting and synthesis approach. Do not assume thes
 
 For detailed guidance on each section of this synthesis, see:
 
-- [venue-overview-skill](../../.devin/skills/venue-overview-skill/SKILL.md) - Guidance on writing the overview narrative
-- [ups-downs-skill](../../.devin/skills/ups-downs-skill/SKILL.md) - Guidance on selecting and articulating ups/downs
-- [impact-drivers-skill](../../.devin/skills/impact-drivers-skill/SKILL.md) - Guidance on identifying and explaining impact drivers
-- [recommendations-skill](../../.devin/skills/recommendations-skill/SKILL.md) - Guidance on generating actionable recommendations
+- `venue-overview-skill.md` - Guidance on writing the overview narrative
+- `ups-downs-skill.md` - Guidance on selecting and articulating ups/downs
+- `impact-drivers-skill.md` - Guidance on identifying and explaining impact drivers
+- `recommendations-skill.md` - Guidance on generating actionable recommendations
+
+See also:
+- `overview-metrics-guidance.md` - Detailed guidance on how to handle metrics in the overview
 
 ## Input Sources
 

@@ -2,57 +2,57 @@
   "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "Grand Prairie delivers an engaging core TopGolf experience that guests find genuinely fun with strong intent to return (4.4/5), and some staff members create memorable moments specifically praised by name. However, a stark divide in service quality undermines this: some staff exhibit serious conduct problems including rude, dismissive, and prejudiced behavior, while others struggle with attentiveness and responsiveness; when issues occur, resolution is weak (2.6/5), leaving guests feeling unheard. Pricing confusion and occasional equipment failures add to the friction, preventing the excellent core experience from translating into top-tier satisfaction.",
+      "overview": "Grand Prairie's strong loyalty metrics are anchored in an excellent core gaming experience, but significant operational friction threatens to erode this advantage. Server inattentiveness is the dominant complaint, mentioned in 35 comments\u2014vastly exceeding other issues\u2014and is compounded by occasional rudeness from staff. Notably, 27 comments also praised exceptional server performances, revealing this as a consistency problem rather than a capability gap. Pricing concerns and hidden fees add to the value perception challenge, leaving guests questioning whether they're getting their money's worth.",
       "ups": [
-        "<strong>Staff excellence:</strong> Named staff members (e.g., Diego) deliver exceptional service with genuine warmth and attentiveness, creating memorable experiences that guests specifically recognize and praise.",
-        "<strong>Engaging core activity:</strong> TopGolf consistently delivers judgment-free, genuinely fun entertainment (4.4/5 fun rating) that exceeds expectations even for first-timers with no golf experience.",
-        "<strong>Clean, modern facility:</strong> Venue maintains consistent cleanliness and modern equipment, creating an inviting, well-organized environment that guests appreciate."
+        "<strong>Exceptional server performance:</strong> When staff delivers\u2014as reflected in 27 comments praising named servers like Diego who were attentive, punctual, and proactive\u2014the experience becomes memorable and creates strong positive impressions, especially for special occasions and celebrations.",
+        "<strong>Excellent core game experience:</strong> Guests consistently return despite operational challenges, anchored in the strength of the core activity itself, which delivers on its promise to provide genuine fun and entertainment.",
+        "<strong>Clean, well-maintained facility:</strong> The new venue with fresh equipment and organized space contributes to a welcoming atmosphere, creating a positive environment that helps offset operational frustrations."
       ],
       "downs": [
-        "<strong>Rude and dismissive staff behavior:</strong> Some staff members exhibit openly rude, dismissive, or prejudiced behavior (including reported casual racism), creating hostile experiences that cause guests to swear they will never return.",
-        "<strong>Weak issue resolution:</strong> When guests encounter problems, resolution is inadequate (2.6/5), leaving them feeling unheard and unresolved despite attempts to help.",
-        "<strong>Slow and inattentive service:</strong> Servers frequently fail to check in regularly, take orders slowly, or are difficult to locate; beverages often take 20+ minutes to arrive, creating a neglected feeling during visits."
+        "<strong>Server inattentiveness and slow service:</strong> With 35 comments describing servers who don't check on tables frequently, forget orders, and make guests wait 20-30+ minutes for basic service, this is the venue's #1 operational issue by a significant margin.",
+        "<strong>Rude and unprofessional staff attitudes:</strong> 14 guests reported condescension, dismissiveness, and hostility from staff and managers, including one report of casual racism and discriminatory comments, creating an actively unwelcome atmosphere.",
+        "<strong>Equipment and technical failures:</strong> 11 guests encountered machines breaking down mid-session, screens freezing, and scoring systems failing to register shots, forcing them to switch bays and waste valuable playing time."
       ],
       "impact": [
         {
-          "title": "Staff conduct crisis",
-          "description": "Rude and dismissive behavior from some staff, including reports of casual racism, is the #1 driver of guest dissatisfaction (13 comments, magnitude 42). These encounters directly cause guests to swear never to return, canceling out the strong core experience."
+          "title": "Server Inattentiveness",
+          "description": "Server inattentiveness and slow service dominates the operational landscape with 35 mentions, vastly exceeding any other issue, and directly blocks guests from receiving basic service like drink orders and table checks throughout their visit."
         },
         {
-          "title": "Weak issue resolution",
-          "description": "Resolution quality is severely weak at 2.6/5 (magnitude 28). When issues occur, very few guests feel adequately resolved, creating a sense of being unheard that compounds frustration beyond the original problem."
+          "title": "Exceptional vs. Inconsistent Service",
+          "description": "The stark contrast between 27 comments praising exceptional servers and 35 comments describing inattentiveness reveals this is a consistency problem, not a capability gap\u2014best practices exist but aren't uniformly applied across the staff."
         },
         {
-          "title": "Manageable issue baseline",
-          "description": "Despite service quality challenges, underlying issue frequency is manageable at 26.3% of guests (magnitude 26). Most visits proceed smoothly, providing capacity to improve resolution and service attentiveness without being overwhelmed by problem volume."
+          "title": "Rude and Unprofessional Staff Attitudes",
+          "description": "Staff rudeness and unprofessionalism is the #2 ranked operational issue with 14 mentions, including reports of discriminatory behavior, actively driving guests away and directly contradicting the hospitality mission."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Fix Staff Conduct and Respect",
+          "title": "Fix Server Inattentiveness and Service Consistency",
           "items": [
-            "<strong>Establish conduct standards and accountability:</strong> Create a clear, written policy prohibiting discriminatory language, dismissive behavior, and unprofessional interactions, with defined consequences consistently enforced.",
-            "<strong>Mandatory inclusivity and respect training:</strong> Implement required training for all front-line staff on inclusivity, unconscious bias awareness, guest respect, and professionalism, with ongoing reinforcement.",
-            "<strong>Formal incident reporting and response:</strong> Establish a documented process for guests to report conduct issues in-venue or post-visit, with management review, accountability, and corrective action tracking to prevent repeat offenders.",
-            "<strong>Regular coaching on professional behavior:</strong> Institute monthly one-on-ones with staff focused on observed behaviors, guest feedback themes, and coaching on respectful guest interactions and professional tone."
+            "<strong>Establish table check frequency standard:</strong> Implement a clear protocol requiring servers to check every table every 5-7 minutes for drinks, food status, and additional needs, with shift supervisors auditing compliance during peak hours.",
+            "<strong>Review and adjust staffing levels:</strong> Analyze peak-hour guest volumes against server-to-table ratios to determine if understaffing is contributing to inattentiveness; add staffing if data supports it.",
+            "<strong>Service recovery training:</strong> Train all servers on immediate recovery steps when they've missed a check-in or order (apology, expedited service, offer of compensation), so guests feel acknowledged even when mistakes happen.",
+            "<strong>Implement order accuracy accountability:</strong> Create a process where servers verbally confirm orders back to guests and follow up to verify orders were placed correctly and arrived as requested."
           ]
         },
         "secondary": {
-          "title": "Improve Issue Resolution and Service Responsiveness",
+          "title": "Address Staff Professionalism and Attitude",
           "items": [
-            "<strong>Empower staff to resolve issues immediately:</strong> Authorize front-line staff to offer solutions (comped items, bay changes, replacements) to address guest issues on the spot, reducing friction and improving resolution satisfaction.",
-            "<strong>Implement resolution confirmation protocol:</strong> Train staff to confirm with guests that their issue is resolved before ending interaction, ensuring guests feel heard and problems are genuinely fixed.",
-            "<strong>Develop escalation and follow-up process:</strong> Create a clear procedure for staff to escalate unsolvable issues to management (e.g., equipment failures) with timeline and guest follow-up commitment.",
-            "<strong>Track resolution success with post-visit feedback:</strong> Follow up with guests who reported issues to assess satisfaction with resolution; use data to identify training gaps and recognize staff who resolve well."
+            "<strong>Professionalism and cultural competency training:</strong> Implement mandatory staff training on respectful service, de-escalation techniques, and zero-tolerance policies for rudeness or discriminatory behavior.",
+            "<strong>Management observation and coaching:</strong> Require managers to spend time on the floor observing staff interactions, documenting positive and problematic behaviors, and providing immediate coaching.",
+            "<strong>Clear consequence framework:</strong> Establish and communicate consequences for unprofessional or rude behavior, with escalation steps and documentation to ensure consistency.",
+            "<strong>Guest feedback loop:</strong> Create a process where guests who experience rudeness can report it immediately (to a manager or online), ensuring the feedback reaches leadership and generates accountability."
           ]
         },
         "maintain": {
-          "title": "Protect and Grow Staff Excellence",
+          "title": "Protect and Scale Exceptional Server Performance",
           "items": [
-            "<strong>Launch \"Guest Champion\" recognition program:</strong> Highlight and celebrate staff members who receive positive guest mentions by name, with recognition in meetings, newsletters, or bonuses to reinforce excellent service.",
-            "<strong>Document best practices from top performers:</strong> Capture what exceptional staff like Diego do well (specific attention behaviors, order follow-up, problem-solving) and share as training examples and coaching material.",
-            "<strong>Offer career development and advancement:</strong> Create pathways for excellent staff to move into supervisory or training roles, retaining top performers and preserving the practices that create memorable guest experiences.",
-            "<strong>Celebrate positive guest feedback regularly:</strong> Share guest compliments with the full team at shift meetings to reinforce the culture of excellence and show that exceptional service is noticed and valued."
+            "<strong>Document and share best practices:</strong> Interview and observe the servers who earned 27 guest-praise comments to document their behaviors, response times, and guest engagement strategies, then share these as models for the broader team.",
+            "<strong>Recognition and rewards program:</strong> Implement a system to recognize and reward servers who deliver exceptional experiences (monthly bonuses, public recognition, preferred scheduling), creating incentives for consistent excellence.",
+            "<strong>Mentor and pairing:</strong> Have exceptional servers mentor lower-performing team members through shift pairings, where they model attentiveness and service recovery in real-time.",
+            "<strong>Monitor and protect consistency:</strong> Track server-level satisfaction scores or guest feedback by server to identify and reinforce who's delivering the exceptional performances guests are praising, while using this data to coach others."
           ]
         }
       }

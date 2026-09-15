@@ -164,10 +164,10 @@ The magnitude score already accounts for:
 
 ## Related Skills
 
-- See [venue-overview-skill](../venue-overview-skill/SKILL.md) for the narrative summary
-- See [ups-downs-skill](../ups-downs-skill/SKILL.md) for additional positive/negative findings
-- See [recommendations-skill](../recommendations-skill/SKILL.md) for actions to address the top drivers
+- See `venue-overview-skill.md` for the narrative summary
+- See `ups-downs-skill.md` for additional positive/negative findings
+- See `recommendations-skill.md` for actions to address the top drivers
 
 ## Resources
 
-- `.claude/single-venue-report/synthesis.md` - The actual prompt that implements this skill
+- `synthesis.md` - The actual prompt that implements this skill

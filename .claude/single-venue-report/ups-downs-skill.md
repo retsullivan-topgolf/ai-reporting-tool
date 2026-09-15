@@ -107,10 +107,10 @@ Two lists:
 
 ## Related Skills
 
-- See [venue-overview-skill](../venue-overview-skill/SKILL.md) for the narrative summary
-- See [impact-drivers-skill](../impact-drivers-skill/SKILL.md) for the top 3 ranked drivers
-- See [recommendations-skill](../recommendations-skill/SKILL.md) for actions to address downs
+- See `venue-overview-skill.md` for the narrative summary
+- See `impact-drivers-skill.md` for the top 3 ranked drivers
+- See `recommendations-skill.md` for actions to address downs
 
 ## Resources
 
-- `.claude/single-venue-report/synthesis.md` - The actual prompt that implements this skill
+- `synthesis.md` - The actual prompt that implements this skill

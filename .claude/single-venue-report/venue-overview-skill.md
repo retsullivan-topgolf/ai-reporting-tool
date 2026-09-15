@@ -106,11 +106,11 @@ Instead of exact percentages/scores, use:
 
 ## Related Skills
 
-- See [ups-downs-skill](../ups-downs-skill/SKILL.md) for how to structure positive/negative findings
-- See [impact-drivers-skill](../impact-drivers-skill/SKILL.md) for how to rank and explain top drivers
-- See [recommendations-skill](../recommendations-skill/SKILL.md) for how to generate actions
+- See `ups-downs-skill.md` for how to structure positive/negative findings
+- See `impact-drivers-skill.md` for how to rank and explain top drivers
+- See `recommendations-skill.md` for how to generate actions
 
 ## Resources
 
-- [OVERVIEW_METRICS_GUIDANCE.md](./OVERVIEW_METRICS_GUIDANCE.md) - Detailed guidance on metrics handling
-- `.claude/single-venue-report/synthesis.md` - The actual prompt that implements this skill
+- `overview-metrics-guidance.md` - Detailed guidance on metrics handling
+- `synthesis.md` - The actual prompt that implements this skill
