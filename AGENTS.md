@@ -143,9 +143,178 @@ The report generation pipeline now uses a **3-stage AI analysis pipeline** that 
 
 The Stage 3 synthesis prompt is guided by four modular skill documents in `.claude/single-venue-report/`:
 
-- **venue-overview-skill.md** - Guidance on writing the narrative overview without redundantly repeating metric numbers
-- **ups-downs-skill.md** - Guidance on selecting and articulating positive/negative findings
-- **impact-drivers-skill.md** - Guidance on identifying and explaining the top 3 impact drivers
-- **recommendations-skill.md** - Guidance on generating actionable, prioritized recommendations
+1. **venue-overview-skill.md**
+   - Writes 2-4 sentence narrative summary
+   - Key rule: Avoid redundant metric numbers; use descriptive language ("over half", "most guests")
+   - Example: "This venue is performing well overall, driven by strong satisfaction with the experience. However, equipment reliability issues are creating friction..."
 
-These skills are referenced in `synthesis.md` and provide detailed rules and examples for each section. See also `overview-metrics-guidance.md` for detailed guidance on metrics handling in the overview.
+2. **ups-downs-skill.md**
+   - Identifies 2-3 positive and 2-3 negative findings
+   - Key rule: Don't limit to top 3; include lower-magnitude items with distinct operational value
+   - Example: Strong recommendation intent, Responsive staff, Equipment reliability issues, Food service speed
+
+3. **impact-drivers-skill.md**
+   - Explains the top 3 factors affecting performance
+   - Key rule: Follow magnitude ranking strictly; cite numbers
+   - Example: Recommendation Intent (87% LTR), Equipment Reliability (14 comments), Staff Responsiveness (8 mentions)
+
+4. **recommendations-skill.md**
+   - Generates actionable next steps in three tiers
+   - Key rule: Critical addresses #1 negative, Secondary addresses #2 negative, Maintain reinforces #1 positive
+   - Example: Critical: Fix Equipment Reliability (4 actions), Secondary: Improve Food Service Speed (4 actions), Maintain: Protect Recommendation Intent (4 actions)
+
+All skills work from the same **combined ranking** of metrics + comment themes, sorted by magnitude (highest first). This ensures consistent prioritization across all sections.
+
+**For detailed guidance on the synthesis pipeline and skills**, see `.claude/single-venue-report/README.md`.
+
+**For detailed guidance on metrics handling in the overview**, see `.claude/single-venue-report/overview-metrics-guidance.md`.
+
+---
+
+## For Developers
+
+### How the AI Analysis Pipeline Works
+
+The `python/ai_analysis.py` script implements the 3-stage pipeline:
+
+```python
+# Stage 1: Load metrics_analysis.md and analyze metrics
+METRICS_ANALYSIS_SKILL = _load_skill('metrics_analysis.md')
+metrics_result, error = _run_stage(
+    'metrics_analysis', 
+    METRICS_ANALYSIS_SKILL, 
+    _build_metrics_payload(data),
+    _validate_metrics_analysis, 
+    venue, 
+    use_cache=True
+)
+# Output: characterization + metric_flags
+
+# Stage 2: Load comment_analysis.md and analyze comments
+COMMENT_ANALYSIS_SKILL = _load_skill('comment_analysis.md')
+comment_result, error = _run_stage(
+    'comment_analysis', 
+    COMMENT_ANALYSIS_SKILL,
+    _build_comment_payload(data, metrics_result['metric_flags']),
+    _validate_comment_analysis, 
+    venue, 
+    use_cache=True
+)
+# Output: themes with magnitude and summary
+
+# Stage 3: Load synthesis.md and all skill guides, then synthesize
+SYNTHESIS_SKILL = _load_skill('synthesis.md')
+synthesis_payload = {
+    'venue': venue,
+    'responses': data['responses'],
+    'metrics_analysis': metrics_result,
+    'comment_analysis': comment_result,
+}
+synthesis_result, error = _run_stage(
+    'synthesis', 
+    SYNTHESIS_SKILL, 
+    synthesis_payload,
+    _validate_synthesis, 
+    venue, 
+    use_cache=True
+)
+# Output: overview, ups, downs, impact, recommendations
+```
+
+### Caching
+
+Each stage is cached independently:
+
+```python
+def _stage_cache_key(stage, skill_text, payload):
+    """Hash of (stage guideline doc + that stage's input payload)"""
+    fingerprint = skill_text + "\n" + json.dumps(payload, sort_keys=True)
+    return hashlib.sha256(fingerprint.encode("utf-8")).hexdigest()
+```
+
+This means:
+- Editing `venue-overview-skill.md` only invalidates the synthesis stage cache
+- Editing `metrics_analysis.md` only invalidates the metrics_analysis stage cache
+- Running with new data automatically invalidates all affected caches
+
+### Adding a New Skill or Modifying the Pipeline
+
+To add a new section or modify how synthesis works:
+
+1. **Edit the skill file** in `.claude/single-venue-report/`
+   - Add or modify the guidance
+   - Update examples and rules
+   - Update the output schema if needed
+
+2. **Update `synthesis.md`** if the output structure changes
+   - Update the Output section
+   - Update the validation rules
+   - Update the example
+
+3. **Update `_validate_synthesis()`** in `ai_analysis.py` if the output schema changes
+   - Add new required fields
+   - Update validation logic
+
+4. **Clear the cache** to force regeneration:
+   ```bash
+   python ai_analysis.py --clear-cache
+   ```
+
+5. **Test with sample data**:
+   ```bash
+   python generate_ai_analysis.py venue_data.json
+   ```
+
+### Skill File Locations
+
+All skill files are in `.claude/single-venue-report/`:
+
+```
+.claude/single-venue-report/
+├── README.md                      (This guide)
+├── metrics_analysis.md            (Stage 1 prompt)
+├── comment_analysis.md            (Stage 2 prompt)
+├── synthesis.md                   (Stage 3 prompt)
+├── venue-overview-skill.md        (Skill: overview writing)
+├── ups-downs-skill.md             (Skill: findings selection)
+├── impact-drivers-skill.md        (Skill: impact explanation)
+├── recommendations-skill.md       (Skill: action generation)
+└── overview-metrics-guidance.md   (Reference: metrics handling)
+```
+
+### Performance Considerations
+
+- **3 API calls per venue** (one per stage)
+- **Caching**: Subsequent runs with same data are instant
+- **Timeout**: 600 seconds per stage (5 minutes)
+- **Batch processing**: All venues processed sequentially
+
+To optimize for large batches:
+- Run `generate_ai_analysis.py` once to cache all results
+- Reuse cached results across multiple report formats
+- Clear cache only when data or prompts change
+
+### Debugging
+
+To debug the AI analysis:
+
+1. **Check the cache**:
+   ```bash
+   ls -la python/.cache/ai_analysis/
+   ```
+
+2. **Clear cache and re-run**:
+   ```bash
+   python ai_analysis.py --clear-cache
+   python generate_ai_analysis.py venue_data.json
+   ```
+
+3. **Inspect the output**:
+   ```bash
+   cat python/ai_analysis_results.json | jq '.["venue_name"]'
+   ```
+
+4. **Check for errors**:
+   - Look for `"ai_available": false` in the results
+   - Check the `unavailable_reason` field for error details
+   - Verify Claude CLI is logged in: `claude auth status`

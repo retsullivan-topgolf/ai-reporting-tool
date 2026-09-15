@@ -10,8 +10,7 @@
          * templates/venue-1page-browser.html rather than one shared template
          * reused via @media print:
          *
-         * - The PDF's section order (Impact before Ups/Downs) and content
-         *   (no "Overall Assessment" box) differ from the browser report by
+         * - The PDF's section order and content differ from the browser report by
          *   request, and reordering via flexbox `order` in a shared template
          *   turned out to interact badly with Chromium's print pagination
          *   (content would overflow to an unexpected extra page). Plain
@@ -21,6 +20,11 @@
          *   template's responsive @media (max-width) rules - avoiding an
          *   entire class of bugs where that breakpoint was accidentally
          *   matching the (narrower) printable page width too.
+         *
+         * Page layout:
+         *   Page 1: Header, Venue Overview, Performance Summary, Overall Assessment, Experience Metrics
+         *   Page 2: Ups/Downs, Impact
+         *   Page 3: Recommendations, Footer
          *
          * The data/analysis behind this - metrics, assessments, overview,
          * ups/downs, impact, recommendations - still comes from the exact
@@ -93,6 +97,7 @@
         /* Sections */
         .section {
             margin-bottom: 10px;
+            margin-top: 10px;
             page-break-inside: avoid;
         }
 
@@ -130,6 +135,7 @@
             padding: 10px 14px;
             border-radius: 8px;
             margin-bottom: 10px;
+            margin-top: 10px;
             line-height: 1.4;
         }
 
@@ -410,9 +416,15 @@
             color: #c62828;
         }
 
-        /* Force a fresh page here regardless of how much room is left, so
-           ups/downs + recommendations + footer render together as a group. */
+        /* Page breaks for multi-page layout
+           Page 1: Header, Overview, Performance Summary, Overall Assessment, Experience Metrics
+           Page 2: Ups/Downs, Impact
+           Page 3: Recommendations, Footer */
         #ups-downs-section {
+            page-break-before: always;
+        }
+
+        #recommendations-section {
             page-break-before: always;
         }
 
@@ -465,7 +477,7 @@
                 {% endif %}
             </div>
 
-            <!-- Performance Summary (no Overall Assessment box - PDF only) -->
+            <!-- Performance Summary -->
             <div class="section" id="performance-summary-section">
                 <h2 class="section-title">Performance Summary</h2>
                 <div class="metrics-grid">
@@ -496,6 +508,15 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Overall Assessment -->
+            {% if not ai_unavailable %}
+            <div class="section" id="overall-assessment-section">
+                <div class="highlight-box" id="overall-assessment-box">
+                    ✓ Overall Assessment: {{ overall_assessment }}
+                </div>
+            </div>
+            {% endif %}
 
             <!-- Experience Metrics -->
             <div class="section" id="experience-metrics-section">
@@ -540,22 +561,7 @@
             </div>
 
             {% if not ai_unavailable %}
-            <!-- What Impacted Scores Most (moved before Ups/Downs - PDF only) -->
-            <div class="section" id="impact-section">
-                <h2 class="section-title">Impact</h2>
-                <ul class="ranking-list">
-                    {% for driver in impact %}<li>
-                        <div class="ranking-number">{{ loop.index }}</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">{{ driver.title }}</div>
-                            <div class="ranking-description">{{ driver.description }}</div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- What Made Scores Go Up & Down (forced onto a fresh page) -->
+            <!-- What Made Scores Go Up & Down (forced onto page 2) -->
             <div class="section" id="ups-downs-section">
                 <div class="cards-container">
                     <!-- Ups Card -->
@@ -578,7 +584,22 @@
                 </div>
             </div>
 
-            <!-- Recommendations -->
+            <!-- What Impacted Scores Most (page 2 after Ups/Downs) -->
+            <div class="section" id="impact-section">
+                <h2 class="section-title">Impact</h2>
+                <ul class="ranking-list">
+                    {% for driver in impact %}<li>
+                        <div class="ranking-number">{{ loop.index }}</div>
+                        <div class="ranking-content">
+                            <div class="ranking-title">{{ driver.title }}</div>
+                            <div class="ranking-description">{{ driver.description }}</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Recommendations (forced onto page 3) -->
             <div class="section" id="recommendations-section">
                 <h2 class="section-title">Recommendations</h2>
 
