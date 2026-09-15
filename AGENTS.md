@@ -119,7 +119,7 @@ The report generation pipeline now uses a **3-stage AI analysis pipeline** that 
 3. **ai_analysis.py** (3-stage pipeline)
    - **Stage 1: metrics_analysis** - Analyzes 5 aggregate metrics, produces concern flags
    - **Stage 2: comment_analysis** - Analyzes guest comments + metric flags, identifies themes
-   - **Stage 3: synthesis** - Produces final overview/ups/downs/impact/recommendations
+   - **Stage 3: synthesis** - Produces final overview/ups/downs/impact/recommendations (see related skills below)
    - Each stage is cached independently and reusable
 
 4. **report_content.py** (updated)
@@ -138,3 +138,14 @@ The report generation pipeline now uses a **3-stage AI analysis pipeline** that 
 ✅ **Backward compatible** - Scripts work without `--analysis` parameter (slower, but functional)
 ✅ **Cacheable** - AI analysis results cached by `ai_analysis.py` (metrics, comments, synthesis stages)
 ✅ **Debuggable** - Analysis results saved to JSON file for inspection/debugging
+
+### Synthesis Skills
+
+The Stage 3 synthesis prompt is guided by four modular skills that define how each section should be written:
+
+- **[venue-overview-skill](.devin/skills/venue-overview-skill/SKILL.md)** - Guidance on writing the narrative overview without redundantly repeating metric numbers
+- **[ups-downs-skill](.devin/skills/ups-downs-skill/SKILL.md)** - Guidance on selecting and articulating positive/negative findings
+- **[impact-drivers-skill](.devin/skills/impact-drivers-skill/SKILL.md)** - Guidance on identifying and explaining the top 3 impact drivers
+- **[recommendations-skill](.devin/skills/recommendations-skill/SKILL.md)** - Guidance on generating actionable, prioritized recommendations
+
+These skills are referenced in `.claude/single-venue-report/synthesis.md` and provide detailed rules and examples for each section.

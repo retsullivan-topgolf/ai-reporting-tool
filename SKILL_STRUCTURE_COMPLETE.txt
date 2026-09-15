@@ -1,0 +1,143 @@
+================================================================================
+SKILL MIGRATION COMPLETE
+================================================================================
+
+Created a modular skill ecosystem for the AI reporting tool's LLM-driven sections.
+
+STRUCTURE
+================================================================================
+
+.devin/skills/
+├── SKILLS_OVERVIEW.md                    (Master guide for all skills)
+├── venue-overview-skill/
+│   ├── SKILL.md                          (116 lines - narrative guidance)
+│   └── OVERVIEW_METRICS_GUIDANCE.md      (moved from project root)
+├── ups-downs-skill/
+│   └── SKILL.md                          (116 lines - findings guidance)
+├── impact-drivers-skill/
+│   └── SKILL.md                          (173 lines - drivers guidance)
+└── recommendations-skill/
+    └── SKILL.md                          (244 lines - actions guidance)
+
+WHAT EACH SKILL DOES
+================================================================================
+
+1. venue-overview-skill
+   Purpose: Write 2-4 sentence narrative summary
+   Key Rule: Avoid redundant metric numbers; use descriptive language
+   Example: "This venue is performing well overall, driven by strong 
+            satisfaction with the experience. However, equipment reliability 
+            issues are creating friction..."
+
+2. ups-downs-skill
+   Purpose: Identify 2-3 positive and 2-3 negative findings
+   Key Rule: Don't limit to top 3; include lower-magnitude items with value
+   Example: Strong recommendation intent, Responsive staff, Equipment 
+            reliability issues, Food service speed
+
+3. impact-drivers-skill
+   Purpose: Explain top 3 factors affecting performance
+   Key Rule: Follow magnitude ranking strictly; cite numbers
+   Example: Recommendation Intent (87% LTR), Equipment Reliability (14 
+            comments), Staff Responsiveness (8 mentions)
+
+4. recommendations-skill
+   Purpose: Generate actionable next steps (Critical/Secondary/Maintain)
+   Key Rule: Critical addresses #1 negative, Secondary addresses #2 negative,
+             Maintain reinforces #1 positive
+   Example: Critical: Fix Equipment Reliability (4 actions)
+            Secondary: Improve Food Service Speed (4 actions)
+            Maintain: Protect Recommendation Intent (4 actions)
+
+HOW THEY WORK TOGETHER
+================================================================================
+
+All skills use the same "combined ranking" of metrics + comment themes,
+sorted by magnitude (highest first):
+
+  1. LTR (positive, 82)
+  2. Equipment reliability (negative, 71)
+  3. Staff responsiveness (positive, 65)
+  4. Food service speed (negative, 45)
+  5. Game selection (positive, 38)
+  ...
+
+Each skill uses this ranking differently:
+- Overview: Explains why #1-3 matter
+- Ups/Downs: Selects notable positive/negative findings
+- Impact: Explains why top 3 are most impactful
+- Recommendations: Generates actions for #1/#2 negatives + #1 positive
+
+BENEFITS
+================================================================================
+
+✅ Modularity       - Each skill is independent and editable
+✅ Clarity          - Clear separation of concerns
+✅ Discoverability  - Skills in standard .devin/skills/ directory
+✅ Maintainability  - Easier to tune one section without affecting others
+✅ Testability      - Can evaluate each section independently
+✅ Reusability      - Skills can be used in other contexts
+
+NO CODE CHANGES
+================================================================================
+
+The Python code (ai_analysis.py) doesn't change. The skills are guidance
+for Claude, not code changes. The pipeline still:
+
+1. Loads .claude/single-venue-report/synthesis.md
+2. Passes it to Claude
+3. Gets back the same output (overview/ups/downs/impact/recommendations)
+
+FILES CHANGED
+================================================================================
+
+Created:
+  .devin/skills/SKILLS_OVERVIEW.md
+  .devin/skills/venue-overview-skill/SKILL.md
+  .devin/skills/ups-downs-skill/SKILL.md
+  .devin/skills/impact-drivers-skill/SKILL.md
+  .devin/skills/recommendations-skill/SKILL.md
+
+Moved:
+  OVERVIEW_METRICS_GUIDANCE.md → .devin/skills/venue-overview-skill/
+
+Updated:
+  .claude/single-venue-report/synthesis.md (added skill references)
+  AGENTS.md (added "Synthesis Skills" section)
+
+Created (Documentation):
+  SKILL_MIGRATION_SUMMARY.md (this summary)
+
+HOW TO USE
+================================================================================
+
+For Understanding:
+  1. Read SKILLS_OVERVIEW.md (big picture)
+  2. Read each skill's SKILL.md file (details)
+
+For Tuning:
+  1. Edit the skill file
+  2. Clear cache: python ai_analysis.py --clear-cache
+  3. Regenerate: python generate_ai_analysis.py venue_data.json
+
+For Extending:
+  1. Create new skill in .devin/skills/
+  2. Update synthesis.md to reference it
+  3. Update SKILLS_OVERVIEW.md to document it
+
+NEXT STEPS (OPTIONAL)
+================================================================================
+
+If you want to split synthesis.md into 4 separate API calls:
+  1. Create synthesis_overview.md, synthesis_ups_downs.md, etc.
+  2. Update ai_analysis.py to call each separately
+  3. Update skills to reference new prompts
+  Trade-off: 4 API calls instead of 1, but more flexibility per section
+
+If you want to reuse skills elsewhere:
+  - Dashboard summaries (use venue-overview-skill)
+  - Executive briefings (use impact-drivers-skill)
+  - Action planning (use recommendations-skill)
+  - Competitive analysis (use ups-downs-skill)
+
+================================================================================

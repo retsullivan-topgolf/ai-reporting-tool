@@ -201,4 +201,17 @@ The following demonstrates formatting and synthesis approach. Do not assume thes
 
 # Resources
 
-No additional references, scripts, or assets are required for this Skill, though you may reference the project context and the outputs from `.claude/single-venue-report/metrics_analysis.md` and `.claude/single-venue-report/comment_analysis.md` as needed.
+## Related Skills
+
+For detailed guidance on each section of this synthesis, see:
+
+- [venue-overview-skill](../../.devin/skills/venue-overview-skill/SKILL.md) - Guidance on writing the overview narrative
+- [ups-downs-skill](../../.devin/skills/ups-downs-skill/SKILL.md) - Guidance on selecting and articulating ups/downs
+- [impact-drivers-skill](../../.devin/skills/impact-drivers-skill/SKILL.md) - Guidance on identifying and explaining impact drivers
+- [recommendations-skill](../../.devin/skills/recommendations-skill/SKILL.md) - Guidance on generating actionable recommendations
+
+## Input Sources
+
+This Skill references the outputs from:
+- `.claude/single-venue-report/metrics_analysis.md` (Stage 1)
+- `.claude/single-venue-report/comment_analysis.md` (Stage 2)
