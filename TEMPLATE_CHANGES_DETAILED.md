@@ -74,10 +74,10 @@
 
 #### 1. Performance Summary Section
 **Current:** 4 metrics in a simple table
-**New:** Add 3 rows for key new metrics (Return Likelihood, Price Value, + 1 F&B)
+**New:** Add 3 rows for key new metrics (Return Likelihood, Value, + 1 F&B AVERAGE metric)
 
 **Why this works:**
-- Table naturally extends vertically
+- Table naturally extends 
 - No layout disruption
 - Easy to scan
 
