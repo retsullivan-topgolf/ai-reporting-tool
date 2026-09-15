@@ -117,8 +117,15 @@ UNAVAILABLE_MESSAGE_TEMPLATE = (
 )
 
 
-def build_overall_assessment(data):
-    """One-sentence roll-up shown in the Performance Summary highlight box."""
+def build_overall_assessment(data, metrics_registry=None):
+    """One-sentence roll-up shown in the Performance Summary highlight box.
+    
+    Checks all performance metrics for WEAK/Poor assessments and acknowledges
+    them in the overall assessment if found.
+    """
+    if metrics_registry is None:
+        metrics_registry = report_engine.load_metrics_registry()
+    
     performance_word = 'strong' if data['ltr_avg'] >= 7.0 else 'moderate'
     fun_word = 'excellent' if data['fun_avg'] >= 4.0 else 'good'
     closing = (
@@ -126,10 +133,59 @@ def build_overall_assessment(data):
         if data['issues_pct'] > 50
         else 'The venue maintains good operational consistency.'
     )
-    return (
+    
+    # Check for WEAK metrics across all performance metrics
+    weak_metrics = []
+    
+    # Core metrics to check
+    core_metrics = [
+        ('ltr', data['ltr_avg']),
+        ('fun', data['fun_avg']),
+        ('helpful', data['helpful_avg']),
+        ('issues', data['issues_pct']),
+        ('resolution', data['resolution_avg']),
+    ]
+    
+    # Optional metrics
+    optional_metrics = [
+        ('return_likelihood', data.get('return_likelihood_avg')),
+        ('price_value', data.get('price_value_avg')),
+    ]
+    
+    # Check core metrics
+    for metric_key, value in core_metrics:
+        if value is not None:
+            assessment = report_engine.get_assessment(metric_key, value, metrics_registry)
+            # Check for weak/poor assessments (case-insensitive)
+            if assessment and assessment.lower() in ('weak', 'poor', 'critical'):
+                explanation = metrics_registry[metric_key].get('weak_explanation', metrics_registry[metric_key]['label'])
+                weak_metrics.append(explanation)
+    
+    # Check optional metrics
+    for metric_key, value in optional_metrics:
+        if value is not None:
+            assessment = report_engine.get_assessment(metric_key, value, metrics_registry)
+            if assessment and assessment.lower() in ('weak', 'poor', 'critical'):
+                explanation = metrics_registry[metric_key].get('weak_explanation', metrics_registry[metric_key]['label'])
+                weak_metrics.append(explanation)
+    
+    # Build base assessment
+    assessment_text = (
         f"{data['venue']} demonstrates {performance_word} performance with "
         f"{fun_word} entertainment value. {closing}"
     )
+    
+    # Add note about weak metrics if any exist
+    if weak_metrics:
+        if len(weak_metrics) == 1:
+            assessment_text += f" However, {weak_metrics[0]}."
+        elif len(weak_metrics) == 2:
+            assessment_text += f" However, {weak_metrics[0]}, and {weak_metrics[1]}."
+        else:
+            weak_list = ', '.join(weak_metrics[:-1]) + f", and {weak_metrics[-1]}"
+            assessment_text += f" However, {weak_list}."
+    
+    return assessment_text
 
 
 def build_metrics_context(data, metrics_registry):
@@ -184,7 +240,7 @@ def build_metrics_context(data, metrics_registry):
         'issues_assessment_class': report_engine.get_assessment_class('issues', data['issues_pct'], metrics_registry),
         'resolution_assessment_class': report_engine.get_assessment_class('resolution', data['resolution_avg'], metrics_registry),
 
-        'overall_assessment': build_overall_assessment(data),
+        'overall_assessment': build_overall_assessment(data, metrics_registry),
     }
 
     # Add optional Return Likelihood and Price Value metrics (if present in data)
@@ -201,6 +257,9 @@ def build_metrics_context(data, metrics_registry):
     # Add optional F&B metrics (if present in data)
     fb_metrics = ['food_value', 'food_speed', 'food_quality', 'beverage_value', 'beverage_speed', 'beverage_quality']
     fb_values = []
+    food_values = []
+    beverage_values = []
+    
     for metric in fb_metrics:
         data_field = f'{metric}_avg'
         if data_field in data and data[data_field] is not None:
@@ -208,6 +267,26 @@ def build_metrics_context(data, metrics_registry):
             context[f'{metric}_assessment'] = report_engine.get_assessment(metric, data[data_field], metrics_registry)
             context[f'{metric}_assessment_class'] = report_engine.get_assessment_class(metric, data[data_field], metrics_registry)
             fb_values.append(data[data_field])
+            
+            # Separate food and beverage values for their respective averages
+            if metric.startswith('food_'):
+                food_values.append(data[data_field])
+            elif metric.startswith('beverage_'):
+                beverage_values.append(data[data_field])
+
+    # Calculate Food Average if we have any Food metrics
+    if food_values:
+        food_average = sum(food_values) / len(food_values)
+        context['food_avg_display'] = f"{food_average:.1f}"
+        context['food_assessment'] = report_engine.get_assessment('food', food_average, metrics_registry)
+        context['food_assessment_class'] = report_engine.get_assessment_class('food', food_average, metrics_registry)
+
+    # Calculate Beverage Average if we have any Beverage metrics
+    if beverage_values:
+        beverage_average = sum(beverage_values) / len(beverage_values)
+        context['beverage_avg_display'] = f"{beverage_average:.1f}"
+        context['beverage_assessment'] = report_engine.get_assessment('beverage', beverage_average, metrics_registry)
+        context['beverage_assessment_class'] = report_engine.get_assessment_class('beverage', beverage_average, metrics_registry)
 
     # Calculate F&B Average if we have any F&B metrics
     if fb_values:

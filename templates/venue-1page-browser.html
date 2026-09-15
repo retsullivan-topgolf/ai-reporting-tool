@@ -168,7 +168,7 @@
         }
 
         .metric-label {
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -177,8 +177,8 @@
         }
 
         .metric-value {
-            font-size: 2.2em;
-            font-weight: 700;
+            font-size: 1.8em;
+            font-weight: 500;
             color: var(--primary-dark);
             margin-bottom: 8px;
         }
@@ -489,6 +489,55 @@
             }
         }
 
+        /* Expandable sub-metrics for Food & Beverage (HTML only) */
+        .sub-metrics-toggle {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: var(--primary-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sub-metrics-toggle:hover {
+            color: var(--border-accent);
+        }
+
+        .sub-metrics-toggle::before {
+            content: '▶';
+            display: inline-block;
+            transition: transform 0.3s ease;
+            font-size: 0.8em;
+        }
+
+        .sub-metrics-toggle.expanded::before {
+            transform: rotate(90deg);
+        }
+
+        /* Hide sub-metric rows by default */
+        tr[data-sub-metric] {
+            display: none;
+        }
+
+        /* Show sub-metric rows when parent is expanded */
+        tr[data-sub-metric].expanded {
+            display: table-row;
+        }
+
+        tr[data-sub-metric] {
+            background: #fafafa;
+        }
+
+        tr[data-sub-metric] td {
+            padding-left: 40px;
+            font-size: 0.95em;
+        }
+
         /* Print Styles
            Page 1: header, overview, performance summary, experience metrics.
            Page 2 (forced via #ups-downs-section below): ups/downs, impact,
@@ -604,7 +653,7 @@
 
             .metric-status {
                 font-size: 0.7em;
-                padding: 3px 8px;
+                padding: 3px 3px;
             }
 
             .metric-card:hover {
@@ -737,30 +786,25 @@
                         <span class="metric-status status-{{ ltr_assessment_class }}">{{ ltr_assessment }}</span>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-label">Fun</div>
-                        <div class="metric-value">{{ fun_avg_display }}</div>
-                        <span class="metric-status status-{{ fun_assessment_class }}">{{ fun_assessment }}</span>
+                        <div class="metric-label">Return</div>
+                        <div class="metric-value">{{ return_likelihood_avg_display }}</div>
+                        <span class="metric-status status-{{ return_likelihood_assessment_class }}">{{ return_likelihood_assessment }}</span>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-label">Helpfulness</div>
-                        <div class="metric-value">{{ helpful_avg_display }}</div>
-                        <span class="metric-status status-{{ helpful_assessment_class }}">{{ helpful_assessment }}</span>
+                        <div class="metric-label">Value</div>
+                        <div class="metric-value">{{ price_value_avg_display }}</div>
+                        <span class="metric-status status-{{ price_value_assessment_class }}">{{ price_value_assessment }}</span>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Issues</div>
                         <div class="metric-value">{{ issues_pct_card_display }}</div>
                         <span class="metric-status status-{{ issues_assessment_class }}">{{ issues_assessment }}</span>
                     </div>
-                    {% if return_likelihood_avg_display %}<div class="metric-card">
-                        <div class="metric-label">Return</div>
-                        <div class="metric-value">{{ return_likelihood_avg_display }}</div>
-                        <span class="metric-status status-{{ return_likelihood_assessment_class }}">{{ return_likelihood_assessment }}</span>
-                    </div>{% endif %}
-                    {% if price_value_avg_display %}<div class="metric-card">
-                        <div class="metric-label">Value</div>
-                        <div class="metric-value">{{ price_value_avg_display }}</div>
-                        <span class="metric-status status-{{ price_value_assessment_class }}">{{ price_value_assessment }}</span>
-                    </div>{% endif %}
+                    <div class="metric-card">
+                        <div class="metric-label">Resolution</div>
+                        <div class="metric-value">{{ resolution_avg_display }}</div>
+                        <span class="metric-status status-{{ resolution_assessment_class }}">{{ resolution_assessment }}</span>
+                    </div>
                 </div>
 
                 <div class="highlight-box" id="overall-assessment-box">
@@ -776,86 +820,76 @@
                         <thead>
                             <tr>
                                 <th>Attribute</th>
-                                <th style="text-align: right;">Score</th>
-                                <th>Assessment</th>
+                                <th >Score</th>
+                                <th style="text-align: right;">Assessment</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Likelihood to Recommend</td>
-                                <td style="text-align: right;"><strong>{{ ltr_avg_display }} / 10</strong></td>
-                                <td><span class="status-pill {{ ltr_assessment_class }}">{{ ltr_assessment }}</span></td>
-                            </tr>
-                            <tr>
                                 <td>Fun</td>
-                                <td style="text-align: right;"><strong>{{ fun_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ fun_assessment_class }}">{{ fun_assessment }}</span></td>
+                                <td><strong>{{ fun_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ fun_assessment_class }}">{{ fun_assessment }}</span></td>
                             </tr>
                             <tr>
                                 <td>Helpfulness</td>
-                                <td style="text-align: right;"><strong>{{ helpful_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ helpful_assessment_class }}">{{ helpful_assessment }}</span></td>
+                                <td><strong>{{ helpful_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ helpful_assessment_class }}">{{ helpful_assessment }}</span></td>
                             </tr>
-                            <tr>
-                                <td>Issues Reported</td>
-                                <td style="text-align: right;"><strong>{{ issues_pct_table_display }}</strong></td>
-                                <td><span class="status-pill {{ issues_assessment_class }}">{{ issues_assessment }}</span></td>
+                            {% if food_avg_display %}
+                            <tr class="parent-metric" data-metric="food">
+                                <td>
+                                    <button class="sub-metrics-toggle" onclick="toggleSubMetrics(event, 'food')">
+                                        Food
+                                    </button>
+                                </td>
+                                <td><strong>{{ food_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ food_assessment_class }}">{{ food_assessment }}</span></td>
                             </tr>
-                            <tr>
-                                <td>Issue Resolution</td>
-                                <td style="text-align: right;"><strong>{{ resolution_avg_display }}</strong></td>
-                                <td><span class="status-pill {{ resolution_assessment_class }}">{{ resolution_assessment }}</span></td>
+                            <tr data-sub-metric="food">
+                                <td style="padding-left: 40px;">Food Value</td>
+                                <td><strong>{{ food_value_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ food_value_assessment_class }}">{{ food_value_assessment }}</span></td>
                             </tr>
+                            <tr data-sub-metric="food">
+                                <td style="padding-left: 40px;">Food Speed</td>
+                                <td><strong>{{ food_speed_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ food_speed_assessment_class }}">{{ food_speed_assessment }}</span></td>
+                            </tr>
+                            <tr data-sub-metric="food">
+                                <td style="padding-left: 40px;">Food Quality</td>
+                                <td><strong>{{ food_quality_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ food_quality_assessment_class }}">{{ food_quality_assessment }}</span></td>
+                            </tr>
+                            {% endif %}
+                            {% if beverage_avg_display %}
+                            <tr class="parent-metric" data-metric="beverage">
+                                <td>
+                                    <button class="sub-metrics-toggle" onclick="toggleSubMetrics(event, 'beverage')">
+                                        Beverage
+                                    </button>
+                                </td>
+                                <td><strong>{{ beverage_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ beverage_assessment_class }}">{{ beverage_assessment }}</span></td>
+                            </tr>
+                            <tr data-sub-metric="beverage">
+                                <td style="padding-left: 40px;">Beverage Value</td>
+                                <td><strong>{{ beverage_value_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ beverage_value_assessment_class }}">{{ beverage_value_assessment }}</span></td>
+                            </tr>
+                            <tr data-sub-metric="beverage">
+                                <td style="padding-left: 40px;">Beverage Speed</td>
+                                <td><strong>{{ beverage_speed_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ beverage_speed_assessment_class }}">{{ beverage_speed_assessment }}</span></td>
+                            </tr>
+                            <tr data-sub-metric="beverage">
+                                <td style="padding-left: 40px;">Beverage Quality</td>
+                                <td><strong>{{ beverage_quality_avg_display }} / 5</strong></td>
+                                <td style="text-align: right;"><span class="status-pill {{ beverage_quality_assessment_class }}">{{ beverage_quality_assessment }}</span></td>
+                            </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
-
-                {% if food_value_avg_display %}
-                <h3 class="section-subtitle">Food & Beverage Experience</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Attribute</th>
-                                <th style="text-align: right;">Score</th>
-                                <th>Assessment</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Food Value</td>
-                                <td style="text-align: right;"><strong>{{ food_value_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ food_value_assessment_class }}">{{ food_value_assessment }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>Food Speed</td>
-                                <td style="text-align: right;"><strong>{{ food_speed_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ food_speed_assessment_class }}">{{ food_speed_assessment }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>Food Quality</td>
-                                <td style="text-align: right;"><strong>{{ food_quality_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ food_quality_assessment_class }}">{{ food_quality_assessment }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>Beverage Value</td>
-                                <td style="text-align: right;"><strong>{{ beverage_value_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ beverage_value_assessment_class }}">{{ beverage_value_assessment }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>Beverage Speed</td>
-                                <td style="text-align: right;"><strong>{{ beverage_speed_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ beverage_speed_assessment_class }}">{{ beverage_speed_assessment }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>Beverage Quality</td>
-                                <td style="text-align: right;"><strong>{{ beverage_quality_avg_display }} / 5</strong></td>
-                                <td><span class="status-pill {{ beverage_quality_assessment_class }}">{{ beverage_quality_assessment }}</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                {% endif %}
             </div>
 
             {% if not ai_unavailable %}
@@ -933,5 +967,23 @@
             <div class="footer-logo">TOPGOLF® Venue Performance Report | Generated on {{ generated_date }}</div>
         </div>
     </div>
+
+    <script>
+        function toggleSubMetrics(event, metricType) {
+            event.preventDefault();
+            const button = event.target.closest('.sub-metrics-toggle');
+            const parentRow = button.closest('tr');
+            
+            // Toggle the expanded class on the button
+            button.classList.toggle('expanded');
+            
+            // Toggle the expanded class on all related sub-metric rows
+            const table = parentRow.closest('table');
+            const subMetricRows = table.querySelectorAll(`tr[data-sub-metric="${metricType}"]`);
+            subMetricRows.forEach(row => {
+                row.classList.toggle('expanded');
+            });
+        }
+    </script>
 </body>
 </html>

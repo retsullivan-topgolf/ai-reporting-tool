@@ -76,7 +76,8 @@ You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-
 ## Report Features
 - Color-coded status pills in Experience Metrics table
 - Performance summary with metric cards
-- Venue overview narrative
+- **Overall Assessment synthesizes WEAK metrics** - If any performance metric is rated WEAK/Poor/Critical, the Overall Assessment text automatically includes a synthesized explanation of what that weakness means for the business (e.g., "customers are frequently very unsatisfied with how issues are resolved during their visit" instead of just "Issue Resolution")
+- **Venue overview narrative** - Tells the story without redundantly repeating metric numbers; uses descriptive language like "over half" or "most guests" instead of exact percentages/scores that are already in the Performance Summary cards
 - Ups/Downs analysis
 - Impact drivers ranking
 - Actionable recommendations

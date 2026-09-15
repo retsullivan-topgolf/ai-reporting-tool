@@ -91,7 +91,7 @@ FIELD_MAPPING = {
         'resolution': 'Issue Resolution Sat',
         'comment': 'Open Comment',
         'return_likelihood': 'Likelihood to Return - How likely are you to return to this or another Topgolf venue?',
-        'price_value': 'Price Value - How would you rate Topgolf\'s price compared to the value of your experience...?',
+        'price_value': "Price Value - How would you rate Topgolf's price compared to the value of your experience...",
         'food_value': 'F&B Matrix_1 - Value for the price you paid for food',
         'food_speed': 'F&B Matrix_2 - Speed of food service',
         'food_quality': 'F&B Matrix_3 - Food quality',

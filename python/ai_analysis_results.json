@@ -2,57 +2,57 @@
   "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "Grand Prairie excels at the core activity\u2014guests rate Fun at 4.4/5 and return likelihood at 4.4/5, supported by a clean facility, accessible gaming environment, and consistently helpful staff. However, multiple operational failures are creating friction: slow and inattentive service (the dominant complaint at 43 mentions), equipment malfunctions, food quality issues, and reservation check-in failures all accumulate to produce weak issue resolution scores (2.6/5). Additionally, rude and unprofessional conduct from some staff members\u2014including documented instances of casual racism\u2014has severely damaged experience for affected guests. The gap between excellent core experience and weak problem resolution reveals that when things go wrong, guests lack satisfactory remedies. Operational consistency and staff conduct improvements could unlock significant upside.",
+      "overview": "Grand Prairie delivers an engaging core TopGolf experience that guests find genuinely fun with strong intent to return (4.4/5), and some staff members create memorable moments specifically praised by name. However, a stark divide in service quality undermines this: some staff exhibit serious conduct problems including rude, dismissive, and prejudiced behavior, while others struggle with attentiveness and responsiveness; when issues occur, resolution is weak (2.6/5), leaving guests feeling unheard. Pricing confusion and occasional equipment failures add to the friction, preventing the excellent core experience from translating into top-tier satisfaction.",
       "ups": [
-        "<strong>Staff friendliness and service excellence:</strong> Named staff members consistently praised for being attentive, proactive, and going above and beyond, particularly when helping first-timers understand systems and making special occasions memorable.",
-        "<strong>Accessible gaming for all skill levels:</strong> The welcoming, pressure-free environment makes gaming accessible regardless of experience; guests appreciate that they can enjoy themselves without fear of judgment, contributing to strong Fun scores.",
-        "<strong>Clean, well-maintained facility:</strong> The facility is consistently described as clean, new, and well-maintained, with fresh equipment and mats that create a positive first impression and support the core experience."
+        "<strong>Staff excellence:</strong> Named staff members (e.g., Diego) deliver exceptional service with genuine warmth and attentiveness, creating memorable experiences that guests specifically recognize and praise.",
+        "<strong>Engaging core activity:</strong> TopGolf consistently delivers judgment-free, genuinely fun entertainment (4.4/5 fun rating) that exceeds expectations even for first-timers with no golf experience.",
+        "<strong>Clean, modern facility:</strong> Venue maintains consistent cleanliness and modern equipment, creating an inviting, well-organized environment that guests appreciate."
       ],
       "downs": [
-        "<strong>Staff rudeness and unprofessional conduct:</strong> 16 comments documented rude, dismissive, and unprofessional behavior from staff, including serious instances of casual racism that created hostile experiences and severely damaged willingness to return.",
-        "<strong>Slow and inattentive service:</strong> Slow and inattentive service is the most frequent complaint with 43 mentions; guests report waiting 20+ minutes for drinks and struggling to get refills, directly reducing play time and satisfaction.",
-        "<strong>Equipment and game malfunctions:</strong> Machines, screens, and scoring systems frequently malfunction mid-session; one guest was unable to play for an hour, others lost significant play time before being moved or ultimately left with issues unresolved."
+        "<strong>Rude and dismissive staff behavior:</strong> Some staff members exhibit openly rude, dismissive, or prejudiced behavior (including reported casual racism), creating hostile experiences that cause guests to swear they will never return.",
+        "<strong>Weak issue resolution:</strong> When guests encounter problems, resolution is inadequate (2.6/5), leaving them feeling unheard and unresolved despite attempts to help.",
+        "<strong>Slow and inattentive service:</strong> Servers frequently fail to check in regularly, take orders slowly, or are difficult to locate; beverages often take 20+ minutes to arrive, creating a neglected feeling during visits."
       ],
       "impact": [
         {
-          "title": "Staff Conduct Issues",
-          "description": "Rude and unprofessional behavior (16 documented comments including casual racism) is the highest-magnitude issue at magnitude 50, creating a hostile environment that directly contradicts the helpful experience the venue aims to provide and damages loyalty."
+          "title": "Staff conduct crisis",
+          "description": "Rude and dismissive behavior from some staff, including reports of casual racism, is the #1 driver of guest dissatisfaction (13 comments, magnitude 42). These encounters directly cause guests to swear never to return, canceling out the strong core experience."
         },
         {
-          "title": "Exceptional Staff Service",
-          "description": "Staff friendliness and going above and beyond (mentioned in 55 comments) is the venue's strongest positive asset at magnitude 46, with named staff members consistently recognized for helping first-timers and making special occasions memorable."
+          "title": "Weak issue resolution",
+          "description": "Resolution quality is severely weak at 2.6/5 (magnitude 28). When issues occur, very few guests feel adequately resolved, creating a sense of being unheard that compounds frustration beyond the original problem."
         },
         {
-          "title": "Operational Reliability",
-          "description": "Equipment and game malfunctions (magnitude 45, affecting 9 comments) directly undermine the core Fun experience and contribute to weak issue resolution when guests need help recovering from failures."
+          "title": "Manageable issue baseline",
+          "description": "Despite service quality challenges, underlying issue frequency is manageable at 26.3% of guests (magnitude 26). Most visits proceed smoothly, providing capacity to improve resolution and service attentiveness without being overwhelmed by problem volume."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Enforce Professional Conduct Standards",
+          "title": "Fix Staff Conduct and Respect",
           "items": [
-            "<strong>Establish behavioral expectations:</strong> Document clear standards for professional, respectful conduct with zero tolerance for harassment, discrimination, or rudeness. Ensure all staff acknowledge and agree to these standards.",
-            "<strong>Bias and sensitivity training:</strong> Implement mandatory, documented training on respectful workplace conduct and cultural competence for all staff, with accountability for completion and understanding.",
-            "<strong>Incident response and follow-up:</strong> Create a process for customers to report misconduct immediately, for management to investigate within 24 hours, and for management to follow up with both the customer and staff involved.",
-            "<strong>Culture assessment:</strong> Conduct a review to determine whether rudeness is isolated incidents or systemic; address root causes such as understaffing, lack of training, or cultural issues."
+            "<strong>Establish conduct standards and accountability:</strong> Create a clear, written policy prohibiting discriminatory language, dismissive behavior, and unprofessional interactions, with defined consequences consistently enforced.",
+            "<strong>Mandatory inclusivity and respect training:</strong> Implement required training for all front-line staff on inclusivity, unconscious bias awareness, guest respect, and professionalism, with ongoing reinforcement.",
+            "<strong>Formal incident reporting and response:</strong> Establish a documented process for guests to report conduct issues in-venue or post-visit, with management review, accountability, and corrective action tracking to prevent repeat offenders.",
+            "<strong>Regular coaching on professional behavior:</strong> Institute monthly one-on-ones with staff focused on observed behaviors, guest feedback themes, and coaching on respectful guest interactions and professional tone."
           ]
         },
         "secondary": {
-          "title": "Improve Service Speed and Consistency",
+          "title": "Improve Issue Resolution and Service Responsiveness",
           "items": [
-            "<strong>Peak-hour staffing review:</strong> Analyze staffing levels during high-demand periods and ensure adequate servers and bartenders to meet service speed expectations of <5 minutes for drink delivery.",
-            "<strong>Service flow optimization:</strong> Review ordering processes (app, in-person, phone) to identify bottlenecks and streamline handoff between front-of-house and kitchen; set clear targets for order-to-delivery time.",
-            "<strong>Training on service standards:</strong> Set and communicate clear expectations for responsiveness, drink refills, and attentiveness; train staff on speed and check-in frequency with guests.",
-            "<strong>Kitchen and bar workflow review:</strong> Identify operational bottlenecks in food prep and drink production; implement efficiency improvements, better communication between stations, or additional staffing."
+            "<strong>Empower staff to resolve issues immediately:</strong> Authorize front-line staff to offer solutions (comped items, bay changes, replacements) to address guest issues on the spot, reducing friction and improving resolution satisfaction.",
+            "<strong>Implement resolution confirmation protocol:</strong> Train staff to confirm with guests that their issue is resolved before ending interaction, ensuring guests feel heard and problems are genuinely fixed.",
+            "<strong>Develop escalation and follow-up process:</strong> Create a clear procedure for staff to escalate unsolvable issues to management (e.g., equipment failures) with timeline and guest follow-up commitment.",
+            "<strong>Track resolution success with post-visit feedback:</strong> Follow up with guests who reported issues to assess satisfaction with resolution; use data to identify training gaps and recognize staff who resolve well."
           ]
         },
         "maintain": {
-          "title": "Protect and Reinforce Staff Friendliness",
+          "title": "Protect and Grow Staff Excellence",
           "items": [
-            "<strong>Staff recognition program:</strong> Formally recognize and reward the staff members being named in positive comments by providing bonuses, schedule preferences, or public acknowledgment; ensure they know their excellent service is valued.",
-            "<strong>Document and share best practices:</strong> Interview high-performing staff to codify what they do right\u2014greeting approach, problem-solving, special occasion handling\u2014and train other staff on these practices to build consistency.",
-            "<strong>Performance monitoring:</strong> Establish metrics and regular check-ins to ensure service quality remains consistently high across all staff and shifts, protecting the 46-magnitude positive cultural asset.",
-            "<strong>Career development for top performers:</strong> Offer growth opportunities, leadership training, and clear advancement paths to high-performing staff to reduce turnover and maintain the positive service culture that guests value."
+            "<strong>Launch \"Guest Champion\" recognition program:</strong> Highlight and celebrate staff members who receive positive guest mentions by name, with recognition in meetings, newsletters, or bonuses to reinforce excellent service.",
+            "<strong>Document best practices from top performers:</strong> Capture what exceptional staff like Diego do well (specific attention behaviors, order follow-up, problem-solving) and share as training examples and coaching material.",
+            "<strong>Offer career development and advancement:</strong> Create pathways for excellent staff to move into supervisory or training roles, retaining top performers and preserving the practices that create memorable guest experiences.",
+            "<strong>Celebrate positive guest feedback regularly:</strong> Share guest compliments with the full team at shift meetings to reinforce the culture of excellence and show that exceptional service is noticed and valued."
           ]
         }
       }

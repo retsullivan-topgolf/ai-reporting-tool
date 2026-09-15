@@ -92,6 +92,7 @@ Respond with ONLY a single JSON object (no markdown fences, no commentary before
 - MUST fold in comment themes that explain *why* the numbers look that way or add context metrics can't show
 - SHOULD acknowledge honestly when metrics and comments tell different stories - that's a real finding
 - MUST NOT introduce numbers or claims not traceable back to the input stages
+- MUST avoid citing the exact metric numbers that appear in the Performance Summary cards (e.g., don't say "2.6/5 resolution" or "26% issues" since those are displayed below); however, you MAY use general descriptive language like "over half", "roughly 70%", or "most guests" to convey magnitude without redundancy
 
 ## Impact Section
 
@@ -157,7 +158,7 @@ The following demonstrates formatting and synthesis approach. Do not assume thes
 **Output:**
 ```json
 {
-  "overview": "This venue is performing well overall with 87% of guests willing to recommend it, driven by strong satisfaction with the experience. However, equipment reliability issues - particularly screen tracking failures - are creating friction that's preventing Fun scores from reaching their potential. Staff responsiveness is a bright spot, with guests noting quick resolution of problems.",
+  "overview": "This venue is performing well overall, driven by strong satisfaction with the experience. However, equipment reliability issues - particularly screen tracking failures - are creating friction that's preventing the entertainment experience from reaching its potential. Staff responsiveness is a bright spot, with most guests noting quick resolution of problems.",
   "ups": [
     "<strong>Strong recommendation intent:</strong> 87% of guests would recommend the venue, indicating solid overall satisfaction with the experience.",
     "<strong>Responsive staff:</strong> Guests consistently praised staff for quickly addressing and resolving equipment issues to get them back to playing."
