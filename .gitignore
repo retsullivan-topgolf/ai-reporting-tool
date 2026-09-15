@@ -4,3 +4,5 @@ example-data/*
 branding/*
 python/venue_data.json
 python/.cache/
+python/evals/output 
+python/evals/output/*
