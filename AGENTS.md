@@ -171,6 +171,204 @@ All skills work from the same **combined ranking** of metrics + comment themes, 
 
 ---
 
+---
+
+## API Module Architecture
+
+### Overview
+
+The `api/` module provides clean separation between CSV parsing logic and report generation. It handles:
+- **Schema detection** - Automatically identifies POC vs Real survey formats
+- **CSV parsing** - Reads and validates Qualtrics CSV files
+- **Venue data aggregation** - Calculates metrics and groups by venue
+- **Optional REST wrapper** - Flask app for future web-based usage
+
+### Module Structure
+
+```
+api/
+├── __init__.py              # Package initialization
+├── schemas.py              # JSON Schema definitions (POC & Real)
+├── csv_parser.py           # CSV reading, validation, field extraction
+├── venue_processor.py      # Venue grouping and metrics calculation
+└── app.py                  # Optional Flask REST API (future use)
+```
+
+### Using the API in Python
+
+```python
+from api import csv_parser, venue_processor
+
+# Step 1: Parse CSV file
+rows, fieldnames = csv_parser.parse_csv('../qualtrics/Grand_Prarie.csv')
+
+# Step 2: Detect schema type
+schema_type = csv_parser.detect_schema(fieldnames)  # Returns 'poc' or 'real'
+
+# Step 3: Build venue data
+venue_data = venue_processor.build_venue_data_dict(rows, schema_type)
+
+# Result: {
+#   "grand_prairie": {
+#     "venue": "Grand Prairie",
+#     "responses": 475,
+#     "ltr_avg": 8.3,
+#     "fun_avg": 4.4,
+#     ...
+#   }
+# }
+```
+
+### API Functions
+
+#### csv_parser module
+
+- **`parse_csv(file_path)`** - Read CSV and return (rows, fieldnames)
+  - Handles Qualtrics format with header rows
+  - Returns list of dicts and column names
+  - Raises `CSVParseError` on failure
+
+- **`detect_schema(fieldnames)`** - Identify schema type
+  - Returns 'poc' or 'real'
+  - Raises `SchemaDetectionError` if ambiguous
+  - Checks for schema-specific field patterns
+
+- **`get_field(row, field_name, schema_name)`** - Extract field from row
+  - Uses schema mapping to find CSV column
+  - Returns trimmed string value
+  - Safe: returns empty string if not found
+
+- **`convert_field_value(value, field_name, schema_name)`** - Convert to proper type
+  - Handles categorical→numeric mapping
+  - Converts text booleans to bool
+  - Parses integers and floats
+  - Returns None if conversion fails
+
+- **`validate_row(row, schema_name)`** - Validate row against schema
+  - Returns (is_valid, error_message)
+  - Checks required fields
+  - Validates field types
+
+#### venue_processor module
+
+- **`group_by_venue(rows)`** - Group rows by venue
+  - Returns dict: venue_name → list of rows
+
+- **`process_venue_data(rows, schema_name)`** - Calculate metrics for one venue
+  - Aggregates scores (LTR, Fun, Helpful, etc.)
+  - Calculates averages and percentages
+  - Extracts comments
+  - Returns dict with all metrics
+
+- **`build_venue_data_dict(rows, schema_name)`** - Process all venues
+  - Groups rows by venue
+  - Processes each venue
+  - Returns final venue_data structure
+
+### Schema Definitions
+
+#### POC Schema (Original)
+- Fields: Venue, VisitDate, Q1_LTR, Q2_FUN, Q3_HELPFUL, Q4_ISSUES, Q5_ISSUE_RESOLUTION, Q6_COMMENT
+- LTR: 1-10 scale
+- Fun/Helpful: 5-point categorical ("5 - Extremely fun", etc.)
+
+#### Real Schema (Production)
+- Fields: Venue, Visit Date, Combined NPS, Fun, Helpful, Issues, Issue Resolution, Open Comment
+- Plus F&B metrics: Food/Beverage Value, Speed, Quality (1-5 scales)
+- Plus Return Likelihood, Price Value (1-5 scales)
+- LTR: 1-10 scale (called "Combined NPS")
+- All metrics: numeric 1-5 scales
+
+### Optional REST API
+
+To run the Flask REST API server:
+
+```bash
+cd api
+python app.py                    # http://localhost:5000
+python app.py --port 8080        # Custom port
+python app.py --host 0.0.0.0     # Listen on all interfaces
+```
+
+Available endpoints:
+
+- **GET /api/health** - Health check
+  ```json
+  { "status": "ok", "service": "Topgolf Reporting API", "version": "1.0.0" }
+  ```
+
+- **GET /api/schemas** - List available schemas
+  ```json
+  {
+    "schemas": [
+      {
+        "name": "poc",
+        "description": "Proof of Concept survey format",
+        "fields": ["venue", "visit_date", "ltr", ...]
+      },
+      ...
+    ]
+  }
+  ```
+
+- **POST /api/parse-csv** - Parse CSV and return venue data
+  - Request: multipart form with `file` field, OR JSON with `csv_path`
+  - Response: `{ "success": true, "schema": "real", "venues": {...} }`
+
+- **POST /api/validate-row** - Validate a single row
+  - Request: `{ "schema": "real", "row": {...} }`
+  - Response: `{ "valid": true, "error": null }`
+
+### Integration with Report Generation
+
+The `python/generate_reports.py` script now uses the API:
+
+```python
+from api import csv_parser, venue_processor
+
+# Parse and process
+rows, fieldnames = csv_parser.parse_csv(csv_file)
+schema_type = csv_parser.detect_schema(fieldnames)
+venue_data_dict = venue_processor.build_venue_data_dict(rows, schema_type)
+
+# Save to JSON
+with open('venue_data.json', 'w') as f:
+    json.dump(venue_data_dict, f, indent=2)
+```
+
+No changes needed to `generate_all_reports.py` - it calls `generate_reports.py` which now uses the API internally.
+
+### Adding Support for New Schemas
+
+To add a new survey format:
+
+1. **Add schema definition** in `api/schemas.py`:
+   ```python
+   NEW_SCHEMA = {
+       "name": "new_format",
+       "description": "New survey format",
+       "fields": {
+           "venue": { "csv_column": "...", "type": "string", ... },
+           ...
+       },
+       "detection_rule": "Checks for specific columns"
+   }
+   SCHEMAS["new_format"] = NEW_SCHEMA
+   ```
+
+2. **Update detection logic** in `csv_parser.detect_schema()`:
+   ```python
+   has_new_fields = any('NewField' in field for field in fieldnames)
+   if has_new_fields and ...:
+       return 'new_format'
+   ```
+
+3. **Update venue processor** if needed in `venue_processor.py`:
+   - Add new metric calculations if schema has new fields
+   - Ensure `process_venue_data()` handles new metrics
+
+---
+
 ## For Developers
 
 ### How the AI Analysis Pipeline Works

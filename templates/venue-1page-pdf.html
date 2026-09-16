@@ -96,8 +96,7 @@
 
         /* Sections */
         .section {
-            margin-bottom: 10px;
-            margin-top: 10px;
+            margin-bottom: 30px;
             page-break-inside: avoid;
         }
 
@@ -176,7 +175,7 @@
             border: 2px solid var(--border-light);
             border-radius: 8px;
             padding: 8px 8px;
-            margin-right: 10px;
+            margin-right: 8px;
             width: 15%;
         }
 
@@ -454,9 +453,8 @@
             <div class="header-content">
                 <h1>Topgolf Venue Report</h1>
                 <div class="header-meta">
-                    <span>📍 <strong>Venue:</strong> {{ venue }}</span>
-                    <span>📅 <strong>Period:</strong> {{ start_formatted }} - {{ end_formatted }}</span>
-                    <span>📊 <strong>Week:</strong> Week of {{ week_formatted }}</span>
+                    <span><strong>Venue:</strong> {{ venue }}</span>
+                    <span><strong>Period:</strong> {{ start_formatted }} - {{ end_formatted }}</span>
                 </div>
             </div>
         </div>
@@ -502,7 +500,7 @@
                         <span class="metric-status status-{{ issues_assessment_class }}">{{ issues_assessment }}</span>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-label">Issue Resolution</div>
+                        <div class="metric-label">Resolution</div>
                         <div class="metric-value">{{ resolution_avg_display }}</div>
                         <span class="metric-status status-{{ resolution_assessment_class }}">{{ resolution_assessment }}</span>
                     </div>
@@ -605,7 +603,7 @@
 
                 <h3 class="section-subtitle">1. {{ critical_title }}</h3>
                 <div class="list-section">
-                    <ul>
+                    <ul style="font-weight: 300; font-size: 0.7em;">
                         {% for item in critical_items %}{{ item | safe }}
                         {% endfor %}
                     </ul>
@@ -613,7 +611,7 @@
 
                 <h3 class="section-subtitle">2. {{ secondary_title }}</h3>
                 <div class="list-section">
-                    <ul>
+                    <ul style="font-weight: 300; font-size: 0.7em;">
                         {% for item in secondary_items %}{{ item | safe }}
                         {% endfor %}
                     </ul>
@@ -621,7 +619,7 @@
 
                 <h3 class="section-subtitle">3. {{ maintain_title }}</h3>
                 <div class="list-section">
-                    <ul>
+                    <ul style="font-weight: 300; font-size: 0.7em;">
                         {% for item in maintain_items %}{{ item | safe }}
                         {% endfor %}
                     </ul>

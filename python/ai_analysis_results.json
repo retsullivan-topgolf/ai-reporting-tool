@@ -2,57 +2,57 @@
   "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "Grand Prairie delivers an exceptional gameplay experience and maintains strong guest loyalty, but inconsistent service quality is undermining this strength. While select staff members provide outstanding personalized service, service delays and unprofessional behavior are creating frequent frustrations. These gaps compound with weak issue resolution and pricing concerns, leaving a disconnect between the venue's potential and actual guest satisfaction. Improving service consistency is critical to sustaining the loyalty guests currently demonstrate.",
+      "overview": "Grand Prairie delivers strong entertainment value and guest loyalty, but a critical operational gap\u2014when problems occur, they aren't being fixed\u2014undermines this foundation. Service attentiveness is the primary driver, with slow drink service and long waits cited by 20 guests preventing resolution of other issues like equipment failures and food quality problems. While individual staff members demonstrate genuine excellence, this care is inconsistently applied across the venue, suggesting capacity and consistency challenges rather than capability gaps.",
       "ups": [
-        "<strong>Exceptional personalized service:</strong> Named staff like Diego, Alyssa, Michael, and Dani deliver fast, attentive service that makes guests feel genuinely cared for and valued.",
-        "<strong>Engaging gameplay:</strong> The TopGolf experience resonates strongly with guests of all skill levels, creating an accessible and enjoyable environment where people feel comfortable.",
-        "<strong>Clean, well-maintained facility:</strong> The venue provides a pleasant, organized setting that supports the overall guest experience."
+        "<strong>Staff excellence when present:</strong> 30 guests specifically praised individual staff members by name for being attentive, friendly, professional, and going above and beyond\u2014particularly Diego and others who made celebrations memorable and handled problem-solving with genuine care.",
+        "<strong>Strong entertainment core:</strong> TopGolf itself delivers on its core promise, with guests frequently highlighting that the game is fun, engaging, and non-intimidating for first-timers and families.",
+        "<strong>Facility cleanliness:</strong> The venue is very clean and well-maintained, with a new facility appearance and organized layout contributing positively to the guest experience."
       ],
       "downs": [
-        "<strong>Service delays:</strong> Servers take extended time to appear and respond to requests, forcing guests to wait 20+ minutes for drinks and being unable to order food, undermining the core experience.",
-        "<strong>Unprofessional staff behavior:</strong> Multiple staff members display rude, dismissive, or condescending attitudes that make guests feel unwelcome and directly contradict the venue's service promise.",
-        "<strong>Pricing and fee clarity:</strong> Unexpected or unclear charges\u2014such as account setup fees and reservation charges\u2014are not adequately explained, leaving guests questioning the value they're receiving."
+        "<strong>Service attentiveness crisis:</strong> 20 guests reported slow drink service with waits ranging from 20 minutes to over an hour, with staff appearing understaffed, distracted, or unavailable at bays\u2014the dominant complaint pattern.",
+        "<strong>Equipment malfunction:</strong> 10 guests experienced machines breaking down during play, including screens losing shot tracking, systems freezing, and ball dispensers failing, with some losing 30+ minutes of playtime.",
+        "<strong>Food quality inconsistency:</strong> 8 guests reported food arriving burnt, cold, overcooked, or never arriving at all, with replacement promises unfulfilled\u2014undermining the F&B offering despite occasional positive feedback."
       ],
       "impact": [
         {
-          "title": "Service delays",
-          "description": "Service delays are the top operational issue, with guests reporting 20+ minute waits for drinks and inability to order food, forcing them to hunt down staff or accept incomplete service. This directly undermines the venue's ability to support the strong gameplay experience."
+          "title": "Service Attentiveness Crisis",
+          "description": "Slow drink service and long waits (20+ mentions, up to 60+ minutes) are the highest-impact operational issue, directly preventing the venue from addressing and resolving guest concerns in real time."
         },
         {
-          "title": "Attentive, personalized service",
-          "description": "Select staff members like Diego, Alyssa, Michael, and Dani demonstrate exceptional execution, delivering fast and caring service that guests specifically praise. This bright spot shows the venue's capability when staff behaviors align with the brand promise."
+          "title": "Discriminatory Staff Behavior",
+          "description": "One guest reported experiencing casual racism and prejudicial comments from staff, representing a critical breach of trust and inclusivity that directly violates the welcoming environment required to sustain loyalty."
         },
         {
-          "title": "Unprofessional staff behavior",
-          "description": "Unprofessional and dismissive behavior is the second-largest frustration, with staff displaying rude, condescending attitudes that make guests feel unwelcome. This directly compounds service delays and damages the relationship that strong gameplay and loyalty would otherwise support."
+          "title": "Weak Issue Resolution",
+          "description": "Issue resolution averages 2.6/5, well below the 'Strong' threshold, with guests reporting unresolved problems across equipment failures, food quality, waits, and service delays\u2014the gap between problem occurrence and adequate fix."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Eliminate service delays",
+          "title": "Fix Service Attentiveness and Drink Service",
           "items": [
-            "<strong>Implement table service pre-staging:</strong> Ensure servers check bays before guests need service, appearing within 2 minutes of guest arrival to take drink orders and pre-stage drinks at the bar to reduce delivery lag.",
-            "<strong>Streamline order workflow:</strong> Establish a clear process where food orders are submitted immediately after drinks are taken rather than after guests have been waiting, using technology (order tablets) to reduce kitchen communication delays.",
-            "<strong>Define service standards with accountability:</strong> Set explicit response-time targets (drink order within 2 min, drinks served within 5 min, food submitted within 2 min) and track adherence through manager observations and mystery shopping.",
-            "<strong>Optimize staffing for peak periods:</strong> Schedule sufficient staff during peak hours and cross-train them on the service workflow so response times remain consistent even when team members are absent."
+            "<strong>Staffing assessment and rebalancing:</strong> Audit bays during peak hours to confirm adequate server-to-bay ratio; if understaffed, add servers or cross-train to close the gap that's creating 20-60 minute drink waits.",
+            "<strong>Drink service SLA:</strong> Implement a 5-minute drink-order turnaround target with visible accountability; train staff to prioritize drink orders as the first guest interaction at each bay visit.",
+            "<strong>Proactive table check-ins:</strong> Require staff to check on tables every 10 minutes during service, with specific focus on acknowledging wait times and providing status updates rather than letting guests wait unaware.",
+            "<strong>Bay-station organization:</strong> Ensure adequate drink prep and POS access at service stations so staff aren't waiting for equipment or supplies to fulfill orders."
           ]
         },
         "secondary": {
-          "title": "Improve staff professionalism",
+          "title": "Establish Inclusive Culture and Accountability Standards",
           "items": [
-            "<strong>Implement empathy-based service training:</strong> Train all staff to recognize when guests are frustrated and respond with empathy rather than defensiveness, especially after they've waited or experienced service issues.",
-            "<strong>Create peer accountability culture:</strong> Encourage staff to gently correct dismissive behavior from teammates, and ensure managers address unprofessional behavior immediately rather than letting it continue.",
-            "<strong>Recognize attentive behavior:</strong> Celebrate and reward staff like Diego, Alyssa, Michael, and Dani who excel at personalized service, sharing specific examples of what they do well so others learn from and emulate them.",
-            "<strong>Model professional service from leadership:</strong> Ensure managers and leads visibly demonstrate attentive, caring service, showing the team that guest relationships are genuinely valued by leadership."
+            "<strong>Immediate investigation and remediation:</strong> Address the reported incident of discriminatory behavior directly with the staff member involved, documenting the conversation and corrective action taken.",
+            "<strong>Core values training:</strong> Require all staff to complete training on inclusive behavior, implicit bias, and the venue's commitment to being welcoming to all guests\u2014with clear examples of what respectful service looks like.",
+            "<strong>Guest advocacy response protocol:</strong> Establish a clear escalation and response process for discrimination or disrespect reports, including management follow-up and guest recovery outreach.",
+            "<strong>Leadership modeling:</strong> Ensure managers visibly model respectful, attentive behavior and hold staff accountable to the standard through team huddles and individual conversations."
           ]
         },
         "maintain": {
-          "title": "Sustain exceptional personalized service",
+          "title": "Protect and Scale Staff Excellence",
           "items": [
-            "<strong>Retain service excellence leaders:</strong> Ensure top performers like Diego, Alyssa, Michael, and Dani are retained through appropriate compensation, scheduling flexibility, and development opportunities\u2014they set the service standard for the venue.",
-            "<strong>Codify attentive service practices:</strong> Document the specific behaviors that top servers demonstrate (proactive problem-solving, remembering guest details, personal attention) and build these into training materials and hiring criteria.",
-            "<strong>Create mentorship from high performers:</strong> Have exemplary servers mentor others on the specific behaviors that drive guest praise\u2014fast, caring, personalized service that makes guests feel valued.",
-            "<strong>Protect and monitor service quality:</strong> Track service metrics and guest feedback regularly to ensure that the high standards exemplified by top servers are maintained across all shifts, protecting the loyalty and engagement guests currently value."
+            "<strong>Recognition and incentive program:</strong> Formally recognize staff members like Diego by name (publicly and to peers) for going above and beyond; tie bonuses or recognition to attentiveness and problem-solving metrics.",
+            "<strong>Best-practice documentation:</strong> Document and share the practices of high-performing staff (proactive engagement, problem resolution, celebration handling) so consistency improves across all team members.",
+            "<strong>Consistency training:</strong> Use top performers as mentors and trainers to bring the attentiveness and care standards that 30 guests praised up to all staff members, not just a subset.",
+            "<strong>Experience continuity metric:</strong> Track and monitor the staff excellence theme alongside LTR to ensure that reputation and loyalty are sustained as service issues are resolved."
           ]
         }
       }

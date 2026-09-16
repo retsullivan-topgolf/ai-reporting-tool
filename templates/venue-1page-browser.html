@@ -96,7 +96,7 @@
 
         /* Sections */
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .section:last-child {
@@ -310,7 +310,7 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            font-weight: 600;
+            font-weight: 400;
             box-shadow: 0 4px 12px rgba(255, 255, 0, 0.08);
             border: 1px solid rgba(255, 255, 0, 0.2);
         }
@@ -753,9 +753,8 @@
             <div class="header-content">
                 <h1>Topgolf Venue Report</h1>
                 <div class="header-meta">
-                    <span>📍 <strong>Venue:</strong> {{ venue }}</span>
-                    <span>📅 <strong>Period:</strong> {{ start_formatted }} - {{ end_formatted }}</span>
-                    <span>📊 <strong>Week:</strong> Week of {{ week_formatted }}</span>
+                    <span><strong>Venue:</strong> {{ venue }}</span>
+                    <span><strong>Period:</strong> {{ start_formatted }} - {{ end_formatted }}</span>
                 </div>
             </div>
         </div>
