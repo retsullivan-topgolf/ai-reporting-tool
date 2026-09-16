@@ -4,12 +4,24 @@
 All Python scripts have been moved to the `python/` directory for better organization.
 
 ### Scripts in `python/` folder:
-- **generate_all_reports.py** - Master orchestrator script: runs all steps in one command (recommended). Processes CSV → generates metrics → runs AI analysis once → generates report formats. After processing the CSV, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
+
+#### Report Generation (Main Entry Points)
+- **generate_all_period_reports.py** - NEW: Unified orchestrator for all report types with interactive menu. Guides users through selecting report type, time period, and output format. Supports single-venue reports, venue period comparison, multi-venue aggregation, and multi-venue period comparison.
+- **generate_all_reports.py** - Master orchestrator for single-venue reports: runs all steps in one command (recommended). Processes CSV → generates metrics → runs AI analysis once → generates report formats. After processing the CSV, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
+
+#### Single-Venue Report Scripts
 - **generate_reports.py** - Processes CSV survey data → generates JSON metrics
 - **generate_ai_analysis.py** - Runs AI analysis pipeline once for all venues and saves results to JSON. Called by `generate_all_reports.py` to avoid re-running expensive API calls for each report format.
 - **create_html_reports.py** - Generates HTML reports from JSON data and precomputed AI analysis
 - **create_markdown_reports.py** - Generates Markdown reports from JSON data and precomputed AI analysis (same analysis as the HTML report - see `report_content.py`)
 - **create_pdf_reports.py** - Generates PDF reports from JSON data and precomputed AI analysis by rendering the same HTML through headless Chromium (Playwright), so the PDF matches the HTML report's styling/layout exactly. One-time setup: `pip install playwright` then `playwright install chromium`.
+
+#### Period-Based Report Scripts (NEW)
+- **create_venue_period_comparison_report.py** - NEW: Compare a single venue's metrics between two time periods (current vs. previous month/quarter). Shows deltas, percent changes, and trend indicators.
+- **create_multi_venue_period_report.py** - NEW: Aggregate metrics across all venues for a single time period. Shows venue ranking by composite score and comment themes.
+- **create_period_comparison_report.py** - NEW: Compare aggregated metrics across all venues between two time periods. Shows ranking changes and trends.
+
+#### Shared Utilities
 - **report_content.py** - Shared, format-agnostic analysis/context logic used by `create_html_reports.py`, `create_markdown_reports.py`, and `create_pdf_reports.py`
 - **ai_analysis.py** - AI-powered analysis pipeline using Claude Code CLI (3-stage: metrics_analysis → comment_analysis → synthesis)
 - **check_venues.py** - Utility to check venues in CSV files
@@ -17,7 +29,29 @@ All Python scripts have been moved to the `python/` directory for better organiz
 
 ### Running Scripts
 
-**Recommended (single command):**
+**NEW: Unified Orchestrator (Recommended for all report types):**
+```bash
+cd python
+python generate_all_period_reports.py ../example-data/your_file.csv
+```
+This presents an interactive menu to select:
+1. **Single-Venue Reports** - One report per venue (existing functionality)
+2. **Venue Period Comparison** - Compare one venue across two time periods
+3. **Multi-Venue Single Period** - Aggregate all venues for one time period
+4. **Multi-Venue Period Comparison** - Compare aggregated metrics across two time periods
+
+The script guides you through:
+- Selecting the report type
+- Choosing time periods (with smart options: "Last month", "Last quarter", or "Custom")
+- Selecting output format (HTML, Markdown, PDF, or All)
+
+**Non-interactive mode:**
+```bash
+cd python
+python generate_all_period_reports.py ../example-data/your_file.csv --format all --no-prompt
+```
+
+**Single-Venue Reports Only (existing workflow):**
 ```bash
 cd python
 python generate_all_reports.py ../example-data/your_file.csv
@@ -82,13 +116,107 @@ You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-
 - Impact drivers ranking
 - Actionable recommendations
 
+## Period-Based Reports (NEW)
+
+Three new report types enable period analysis and multi-venue aggregation:
+
+### Report Type 1: Venue Period Comparison
+Compare a single venue's performance between two time periods (current vs. previous month/quarter).
+
+**Usage:**
+```bash
+cd python
+python create_venue_period_comparison_report.py ../example-data/survey.csv "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+```
+
+**Features:**
+- Side-by-side metric comparison (Current | Previous | Change | % Change | Trend)
+- Trend indicators: ↑ (improvement ≥+0.5), ↓ (decline ≤-0.5), → (minor change)
+- AI analysis with comparison context
+- Comments from current period only
+
+**Output:** `Topgolf_Venue_Period_Comparison_<venue>_<timestamp>_1PAGE.{html,md,pdf}`
+
+### Report Type 2: Multi-Venue Single Period
+Aggregate metrics across all venues for a given time period, ranked by composite performance score.
+
+**Usage:**
+```bash
+cd python
+python create_multi_venue_period_report.py ../example-data/survey.csv 2026-01-01 2026-01-31 --format all
+```
+
+**Features:**
+- Aggregated metrics across all venues (LTR, Fun, Helpful, Issues, Resolution)
+- Venue ranking by composite score: LTR (40%) + Fun (20%) + F&B avg (20%) + Resolution (20%)
+- Comment themes aggregated from all venues
+- Handles missing F&B data gracefully (redistributes weights)
+
+**Output:** `Topgolf_Multi_Venue_Period_<period>_<timestamp>_1PAGE.{html,md,pdf}`
+
+### Report Type 3: Multi-Venue Period Comparison
+Compare aggregated metrics across all venues between two time periods with ranking changes.
+
+**Usage:**
+```bash
+cd python
+python create_period_comparison_report.py ../example-data/survey.csv 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+```
+
+**Features:**
+- Aggregated metrics comparison with deltas and percent changes
+- Venue ranking changes (which venues moved up/down)
+- Trend indicators for significant changes (±0.5 threshold)
+- Response count comparison with warnings for ±20% differences
+- Comment themes from current period only
+
+**Output:** `Topgolf_Period_Comparison_<periods>_<timestamp>_1PAGE.{html,md,pdf}`
+
+### Composite Score Calculation
+
+The composite score weights four key metrics:
+- **LTR (Likelihood to Recommend):** 40% - Primary driver of business value
+- **Fun:** 20% - Guest experience quality
+- **F&B Average:** 20% - Food & beverage satisfaction (average of 6 metrics)
+- **Issue Resolution:** 20% - Operational excellence
+
+Formula: `(LTR × 0.4) + (Fun_normalized × 0.2) + (F&B_normalized × 0.2) + (Resolution_normalized × 0.2)`
+
+All metrics are normalized to 0-10 scale. Missing metrics have their weights redistributed to present metrics.
+
+### Trend Threshold
+
+Changes ≥ ±0.5 points are highlighted as "significant":
+- **↑ Up arrow:** Improvement of 0.5+ points (green)
+- **↓ Down arrow:** Decline of 0.5+ points (red)
+- **→ Dash:** Minor change between -0.5 and +0.5 (neutral)
+
 ## Key Files
-- `templates/venue-1page-browser.html` - HTML template for reports
-- `templates/venue-1page-pdf.html` - separate template used only for the PDF (different section order/content by request - see its docstring comment)
-- `templates/venue-1page-report.md.j2` - Markdown template for reports
+
+### Templates
+- `templates/venue-1page-browser.html` - HTML template for single-venue reports
+- `templates/venue-1page-pdf.html` - PDF template for single-venue reports
+- `templates/venue-1page-report.md.j2` - Markdown template for single-venue reports
+- `templates/period-venue-comparison-browser.html` - HTML template for Report Type 1
+- `templates/period-venue-comparison-pdf.html` - PDF template for Report Type 1
+- `templates/period-venue-comparison-report.md.j2` - Markdown template for Report Type 1
+- `templates/multi-venue-period-browser.html` - HTML template for Report Type 2
+- `templates/multi-venue-period-pdf.html` - PDF template for Report Type 2
+- `templates/multi-venue-period-report.md.j2` - Markdown template for Report Type 2
+- `templates/period-comparison-browser.html` - HTML template for Report Type 3
+- `templates/period-comparison-pdf.html` - PDF template for Report Type 3
+- `templates/period-comparison-report.md.j2` - Markdown template for Report Type 3
+
+### Directories
 - `python/` - All Python processing scripts
 - `example-data/` - Sample CSV survey data
-- Generated reports appear in `reports/` as `Topgolf_Venue_Report_*_1PAGE.html`, `.md`, and/or `.pdf`
+- `reports/` - Generated reports (created automatically)
+
+### Generated Reports
+- Single-venue: `Topgolf_Venue_Report_*_1PAGE.{html,md,pdf}`
+- Venue period comparison: `Topgolf_Venue_Period_Comparison_*_1PAGE.{html,md,pdf}`
+- Multi-venue single period: `Topgolf_Multi_Venue_Period_*_1PAGE.{html,md,pdf}`
+- Multi-venue period comparison: `Topgolf_Period_Comparison_*_1PAGE.{html,md,pdf}`
 
 ---
 
