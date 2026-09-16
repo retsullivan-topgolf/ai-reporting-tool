@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topgolf Period Comparison Report - PDF</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-dark: #050786;
+            --primary-light: #2DFFFF;
+            --primary-light-soft: rgba(45, 255, 255, 0.15);
+            --white: #FFFFFF;
+            --text-dark: #1a1a1a;
+            --border-light: #e0e0e0;
+            --border-accent: rgba(45, 255, 255, 0.3);
+            --trend-up: #2e7d32;
+            --trend-down: #c62828;
+            --trend-neutral: #666666;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: white;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container { max-width: 8.5in; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a0f8f 100%);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--primary-light-soft) 0%, transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+        .header-content { position: relative; z-index: 1; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; font-weight: 700; }
+        .header-meta { display: flex; gap: 20px; font-size: 0.9em; opacity: 0.95; flex-wrap: wrap; }
+        .section { margin-bottom: 25px; page-break-inside: avoid; }
+        .section-title {
+            font-size: 1.6em;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid rgba(255, 255, 0, 0.4);
+            font-weight: 700;
+        }
+        .table-wrapper { overflow: hidden; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border-light); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.85em; }
+        th {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td { padding: 10px; border-bottom: 1px solid var(--border-light); }
+        tr:last-child td { border-bottom: none; }
+        .metric-name { font-weight: 600; color: var(--primary-dark); }
+        .metric-value { text-align: center; font-weight: 500; }
+        .metric-delta { text-align: center; font-weight: 600; }
+        .metric-delta.positive { color: var(--trend-up); }
+        .metric-delta.negative { color: var(--trend-down); }
+        .metric-delta.neutral { color: var(--trend-neutral); }
+        .trend-indicator { font-size: 1.2em; font-weight: bold; text-align: center; }
+        .trend-indicator.up { color: var(--trend-up); }
+        .trend-indicator.down { color: var(--trend-down); }
+        .trend-indicator.neutral { color: var(--trend-neutral); }
+        .list-section { margin-bottom: 15px; }
+        .list-section ul { list-style: none; padding-left: 0; margin: 0; }
+        .list-section li { padding: 8px 0; padding-left: 25px; position: relative; border-bottom: 1px solid var(--border-light); font-size: 0.9em; }
+        .list-section li:last-child { border-bottom: none; }
+        .list-section li::before { content: '→'; position: absolute; left: 0; color: rgba(45, 255, 255, 0.5); font-weight: bold; }
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.15) 0%, rgba(255, 235, 59, 0.12) 100%);
+            color: var(--primary-dark);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 400;
+            border: 1px solid rgba(255, 255, 0, 0.2);
+            font-size: 0.9em;
+        }
+        .footer { text-align: center; font-size: 0.8em; color: #999; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-light); }
+        @media print { body { background: white; padding: 0; } .container { max-width: 100%; } .header { border-radius: 0; } .section { page-break-inside: avoid; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>Multi-Venue Period Comparison</h1>
+                <div class="header-meta">
+                    <span>📊 Current: {{ current_period }}</span>
+                    <span>📈 Previous: {{ previous_period if previous_period else 'N/A' }}</span>
+                    <span>🏢 Venues: {{ current_venues_count }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Aggregated Metrics Comparison</h2>
+            {% if previous_period %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Current</th>
+                            <th>Previous</th>
+                            <th>Change</th>
+                            <th>% Change</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="metric-name">LTR</td>
+                            <td class="metric-value">{{ "%.1f"|format(current_metrics_avg.ltr_avg) }}</td>
+                            <td class="metric-value">{{ "%.1f"|format(previous_metrics_avg.ltr_avg) if previous_metrics_avg else "N/A" }}</td>
+                            <td class="metric-delta {% if comparison.metrics_deltas.get('ltr_avg_delta', 0) > 0 %}positive{% elif comparison.metrics_deltas.get('ltr_avg_delta', 0) < 0 %}negative{% else %}neutral{% endif %}">{{ "%.2f"|format(comparison.metrics_deltas.get('ltr_avg_delta', 0)) if comparison.metrics_deltas.get('ltr_avg_delta') is not none else "N/A" }}</td>
+                            <td class="metric-delta">{{ "%.1f"|format(comparison.metrics_deltas.get('ltr_avg_percent_change', 0)) if comparison.metrics_deltas.get('ltr_avg_percent_change') is not none else "N/A" }}%</td>
+                            <td class="trend-indicator {% if comparison.metrics_deltas.get('ltr_avg_delta', 0) >= 0.5 %}up{% elif comparison.metrics_deltas.get('ltr_avg_delta', 0) <= -0.5 %}down{% else %}neutral{% endif %}">{% if comparison.metrics_deltas.get('ltr_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('ltr_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Fun</td>
+                            <td class="metric-value">{{ "%.1f"|format(current_metrics_avg.fun_avg) }}</td>
+                            <td class="metric-value">{{ "%.1f"|format(previous_metrics_avg.fun_avg) if previous_metrics_avg else "N/A" }}</td>
+                            <td class="metric-delta {% if comparison.metrics_deltas.get('fun_avg_delta', 0) > 0 %}positive{% elif comparison.metrics_deltas.get('fun_avg_delta', 0) < 0 %}negative{% else %}neutral{% endif %}">{{ "%.2f"|format(comparison.metrics_deltas.get('fun_avg_delta', 0)) if comparison.metrics_deltas.get('fun_avg_delta') is not none else "N/A" }}</td>
+                            <td class="metric-delta">{{ "%.1f"|format(comparison.metrics_deltas.get('fun_avg_percent_change', 0)) if comparison.metrics_deltas.get('fun_avg_percent_change') is not none else "N/A" }}%</td>
+                            <td class="trend-indicator {% if comparison.metrics_deltas.get('fun_avg_delta', 0) >= 0.5 %}up{% elif comparison.metrics_deltas.get('fun_avg_delta', 0) <= -0.5 %}down{% else %}neutral{% endif %}">{% if comparison.metrics_deltas.get('fun_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('fun_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Helpful</td>
+                            <td class="metric-value">{{ "%.1f"|format(current_metrics_avg.helpful_avg) }}</td>
+                            <td class="metric-value">{{ "%.1f"|format(previous_metrics_avg.helpful_avg) if previous_metrics_avg else "N/A" }}</td>
+                            <td class="metric-delta {% if comparison.metrics_deltas.get('helpful_avg_delta', 0) > 0 %}positive{% elif comparison.metrics_deltas.get('helpful_avg_delta', 0) < 0 %}negative{% else %}neutral{% endif %}">{{ "%.2f"|format(comparison.metrics_deltas.get('helpful_avg_delta', 0)) if comparison.metrics_deltas.get('helpful_avg_delta') is not none else "N/A" }}</td>
+                            <td class="metric-delta">{{ "%.1f"|format(comparison.metrics_deltas.get('helpful_avg_percent_change', 0)) if comparison.metrics_deltas.get('helpful_avg_percent_change') is not none else "N/A" }}%</td>
+                            <td class="trend-indicator {% if comparison.metrics_deltas.get('helpful_avg_delta', 0) >= 0.5 %}up{% elif comparison.metrics_deltas.get('helpful_avg_delta', 0) <= -0.5 %}down{% else %}neutral{% endif %}">{% if comparison.metrics_deltas.get('helpful_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('helpful_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="highlight-box">No previous period data available for comparison.</div>
+            {% endif %}
+        </div>
+
+        {% if comment_themes %}
+        <div class="section">
+            <h2 class="section-title">Key Comment Themes (Current Period)</h2>
+            <div class="list-section">
+                <ul>
+                    {% for theme, count, venues in comment_themes %}
+                    <li><strong>{{ theme }}</strong> ({{ count }} mentions)</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if analysis.ai_available %}
+        <div class="section">
+            <h2 class="section-title">Period Analysis</h2>
+            <div class="highlight-box">{{ analysis.overview }}</div>
+        </div>
+        {% else %}
+        <div class="section">
+            <div class="highlight-box"><strong>Note:</strong> {{ analysis.unavailable_reason }}</div>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            <p>Generated on {{ "now"|strftime("%B %d, %Y at %I:%M %p") }}</p>
+        </div>
+    </div>
+</body>
+</html>

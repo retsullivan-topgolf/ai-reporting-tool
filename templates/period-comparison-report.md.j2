@@ -1,0 +1,69 @@
+# Multi-Venue Period Comparison Report
+
+**Current Period:** {{ current_period }}  
+**Previous Period:** {{ previous_period if previous_period else 'N/A' }}  
+**Report Generated:** {{ "now"|strftime("%B %d, %Y at %I:%M %p") }}
+
+---
+
+## Period Overview
+
+| Aspect | Current | Previous |
+|--------|---------|----------|
+| **Venues** | {{ current_venues_count }} | {{ previous_venues_count if previous_venues_count else 'N/A' }} |
+| **Total Responses** | {{ current_total_responses }} | {{ previous_total_responses if previous_total_responses else 'N/A' }} |
+| **Date Range** | {{ current_date_range[0] }} to {{ current_date_range[1] }} | {{ previous_date_range[0] if previous_date_range else 'N/A' }} to {{ previous_date_range[1] if previous_date_range else 'N/A' }} |
+
+---
+
+## Aggregated Metrics Comparison
+
+{% if previous_period %}
+| Metric | Current | Previous | Change | % Change | Trend |
+|--------|---------|----------|--------|----------|-------|
+| **LTR** | {{ "%.1f"|format(current_metrics_avg.ltr_avg) }} | {{ "%.1f"|format(previous_metrics_avg.ltr_avg) if previous_metrics_avg else 'N/A' }} | {% if comparison.metrics_deltas.get('ltr_avg_delta') is not none %}{{ "%.2f"|format(comparison.metrics_deltas.get('ltr_avg_delta', 0)) }}{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('ltr_avg_percent_change') is not none %}{{ "%.1f"|format(comparison.metrics_deltas.get('ltr_avg_percent_change', 0)) }}%{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('ltr_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('ltr_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %} |
+| **Fun** | {{ "%.1f"|format(current_metrics_avg.fun_avg) }} | {{ "%.1f"|format(previous_metrics_avg.fun_avg) if previous_metrics_avg else 'N/A' }} | {% if comparison.metrics_deltas.get('fun_avg_delta') is not none %}{{ "%.2f"|format(comparison.metrics_deltas.get('fun_avg_delta', 0)) }}{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('fun_avg_percent_change') is not none %}{{ "%.1f"|format(comparison.metrics_deltas.get('fun_avg_percent_change', 0)) }}%{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('fun_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('fun_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %} |
+| **Helpful** | {{ "%.1f"|format(current_metrics_avg.helpful_avg) }} | {{ "%.1f"|format(previous_metrics_avg.helpful_avg) if previous_metrics_avg else 'N/A' }} | {% if comparison.metrics_deltas.get('helpful_avg_delta') is not none %}{{ "%.2f"|format(comparison.metrics_deltas.get('helpful_avg_delta', 0)) }}{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('helpful_avg_percent_change') is not none %}{{ "%.1f"|format(comparison.metrics_deltas.get('helpful_avg_percent_change', 0)) }}%{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('helpful_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('helpful_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %} |
+| **Issues %** | {{ "%.1f"|format(current_metrics_avg.issues_pct) }} | {{ "%.1f"|format(previous_metrics_avg.issues_pct) if previous_metrics_avg else 'N/A' }} | {% if comparison.metrics_deltas.get('issues_pct_delta') is not none %}{{ "%.2f"|format(comparison.metrics_deltas.get('issues_pct_delta', 0)) }}{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('issues_pct_percent_change') is not none %}{{ "%.1f"|format(comparison.metrics_deltas.get('issues_pct_percent_change', 0)) }}%{% else %}N/A{% endif %} | {% if comparison.metrics_deltas.get('issues_pct_delta', 0) <= -0.5 %}↑{% elif comparison.metrics_deltas.get('issues_pct_delta', 0) >= 0.5 %}↓{% else %}→{% endif %} |
+
+{% else %}
+> No previous period data available for comparison.
+
+| Metric | Current |
+|--------|---------|
+| **LTR** | {{ "%.1f"|format(current_metrics_avg.ltr_avg) }} |
+| **Fun** | {{ "%.1f"|format(current_metrics_avg.fun_avg) }} |
+| **Helpful** | {{ "%.1f"|format(current_metrics_avg.helpful_avg) }} |
+| **Issues %** | {{ "%.1f"|format(current_metrics_avg.issues_pct) }} |
+
+{% endif %}
+
+---
+
+{% if comment_themes %}
+
+## Key Comment Themes (Current Period)
+
+{% for theme, count, venues in comment_themes %}
+- **{{ theme }}** ({{ count }} mentions)
+{% endfor %}
+
+{% endif %}
+
+{% if analysis.ai_available %}
+
+## Period Analysis
+
+{{ analysis.overview }}
+
+{% else %}
+
+## Analysis Status
+
+> {{ analysis.unavailable_reason }}
+
+{% endif %}
+
+---
+
+*This report compares aggregated performance metrics across all venues between two time periods, highlighting trends and changes in key metrics.*

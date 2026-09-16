@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topgolf Venue Period Comparison Report - 1 Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #050786;
+            --primary-light: #2DFFFF;
+            --primary-light-soft: rgba(45, 255, 255, 0.15);
+            --accent-yellow: #FFFF00;
+            --accent-yellow-soft: rgba(255, 255, 0, 0.12);
+            --dark-bg: #0D1117;
+            --white: #FFFFFF;
+            --text-dark: #1a1a1a;
+            --border-light: #e0e0e0;
+            --border-accent: rgba(45, 255, 255, 0.3);
+            --trend-up: #2e7d32;
+            --trend-down: #c62828;
+            --trend-neutral: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a0f8f 100%);
+            color: var(--white);
+            padding: 40px 30px;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--primary-light-soft) 0%, transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9em;
+            opacity: 0.95;
+            flex-wrap: wrap;
+        }
+
+        .header-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Content */
+        .main {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 30px;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid rgba(255, 255, 0, 0.4);
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 1.2em;
+            color: var(--primary-dark);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Overview Box */
+        .overview-box {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-left: 5px solid var(--border-accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .overview-box.ai-unavailable-box {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+            border-left-color: #e65100;
+            font-style: italic;
+            color: #5c4a1a;
+        }
+
+        /* Comparison Table */
+        .table-wrapper {
+            overflow: hidden;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            border: 2px solid var(--border-light);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .metric-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .metric-value {
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .metric-delta {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .metric-delta.positive {
+            color: var(--trend-up);
+        }
+
+        .metric-delta.negative {
+            color: var(--trend-down);
+        }
+
+        .metric-delta.neutral {
+            color: var(--trend-neutral);
+        }
+
+        .trend-indicator {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .trend-indicator.up {
+            color: var(--trend-up);
+        }
+
+        .trend-indicator.down {
+            color: var(--trend-down);
+        }
+
+        .trend-indicator.neutral {
+            color: var(--trend-neutral);
+        }
+
+        .trend-indicator.unavailable {
+            color: #ccc;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--white) 0%, #f9f9f9 100%);
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            padding: 15px;
+            width: 18%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .metric-card:hover {
+            border-color: var(--border-accent);
+            box-shadow: 0 8px 24px rgba(45, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .metric-label {
+            font-size: 0.8em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: 500;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        /* Lists */
+        .list-section {
+            margin-bottom: 20px;
+        }
+
+        .list-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .list-section li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .list-section li:last-child {
+            border-bottom: none;
+        }
+
+        .list-section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: rgba(45, 255, 255, 0.5);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.15) 0%, rgba(255, 235, 59, 0.12) 100%);
+            color: var(--primary-dark);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 400;
+            box-shadow: 0 4px 12px rgba(255, 255, 0, 0.08);
+            border: 1px solid rgba(255, 255, 0, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                padding: 0;
+            }
+            .header {
+                border-radius: 0;
+            }
+            .main {
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1>{{ venue }} - Period Comparison</h1>
+                <div class="header-meta">
+                    <span>📊 Current: {{ current_period.start }} to {{ current_period.end }}</span>
+                    <span>📈 Previous: {{ previous_period.start if previous_period else 'N/A' }} to {{ previous_period.end if previous_period else 'N/A' }}</span>
+                    <span>📋 Responses: {{ current_period.responses }} current, {{ previous_period.responses if previous_period else 0 }} previous</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <!-- AI Analysis Section -->
+            {% if analysis.ai_available %}
+            <div class="section">
+                <h2 class="section-title">Overview</h2>
+                <div class="overview-box">
+                    {{ analysis.overview }}
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Key Findings</h2>
+                
+                {% if analysis.ups %}
+                <div class="section-subtitle">Strengths</div>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.ups %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if analysis.downs %}
+                <div class="section-subtitle">Areas for Improvement</div>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.downs %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if analysis.impact %}
+            <div class="section">
+                <h2 class="section-title">Impact Drivers</h2>
+                <div class="list-section">
+                    <ul>
+                        {% for driver in analysis.impact %}
+                        <li><strong>{{ driver.title }}:</strong> {{ driver.description }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if analysis.recommendations %}
+            <div class="section">
+                <h2 class="section-title">Recommendations</h2>
+                
+                {% if analysis.recommendations.critical %}
+                <div class="section-subtitle">{{ analysis.recommendations.critical.title }}</div>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.recommendations.critical.items %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if analysis.recommendations.secondary %}
+                <div class="section-subtitle">{{ analysis.recommendations.secondary.title }}</div>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.recommendations.secondary.items %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if analysis.recommendations.maintain %}
+                <div class="section-subtitle">{{ analysis.recommendations.maintain.title }}</div>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.recommendations.maintain.items %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="section">
+                <div class="overview-box ai-unavailable-box">
+                    {{ analysis.unavailable_reason }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Metrics Comparison Table -->
+            <div class="section">
+                <h2 class="section-title">Metrics Comparison</h2>
+                {% if previous_period %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Current</th>
+                                <th>Previous</th>
+                                <th>Change</th>
+                                <th>% Change</th>
+                                <th>Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for metric_key, metric_data in comparison.metrics_comparison.items() %}
+                            {% if metric_data.current is not none or metric_data.previous is not none %}
+                            <tr>
+                                <td class="metric-name">{{ metric_key|upper }}</td>
+                                <td class="metric-value">{{ "%.1f"|format(metric_data.current) if metric_data.current is not none else "N/A" }}</td>
+                                <td class="metric-value">{{ "%.1f"|format(metric_data.previous) if metric_data.previous is not none else "N/A" }}</td>
+                                <td class="metric-delta {% if metric_data.delta is not none %}{% if metric_data.delta > 0 %}positive{% elif metric_data.delta < 0 %}negative{% else %}neutral{% endif %}{% endif %}">
+                                    {% if metric_data.delta is not none %}
+                                        {% if metric_data.delta > 0 %}+{% endif %}{{ "%.2f"|format(metric_data.delta) }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="metric-delta {% if metric_data.percent_change is not none %}{% if metric_data.percent_change > 0 %}positive{% elif metric_data.percent_change < 0 %}negative{% else %}neutral{% endif %}{% endif %}">
+                                    {% if metric_data.percent_change is not none %}
+                                        {% if metric_data.percent_change > 0 %}+{% endif %}{{ "%.1f"|format(metric_data.percent_change) }}%
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="trend-indicator {{ metric_data.trend_class }}">{{ metric_data.trend }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="highlight-box">
+                    No previous period data available for comparison. Showing current period metrics only.
+                </div>
+                <div class="metrics-grid">
+                    {% for metric_key, metric_data in comparison.metrics_comparison.items() %}
+                    {% if metric_data.current is not none %}
+                    <div class="metric-card">
+                        <div class="metric-label">{{ metric_key }}</div>
+                        <div class="metric-value">{{ "%.1f"|format(metric_data.current) }}</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Generated on {{ "now"|strftime("%B %d, %Y at %I:%M %p") }}</p>
+        </div>
+    </div>
+</body>
+</html>

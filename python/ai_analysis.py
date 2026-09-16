@@ -414,6 +414,34 @@ def get_ai_analysis(data, use_cache=True):
     return synthesis_result, None
 
 
+def get_period_ai_analysis(period_data, use_cache=True):
+    """Run AI analysis on aggregated period data (multiple venues).
+    
+    This is a placeholder for period-level analysis. The actual implementation
+    would require:
+    1. Creating period-level skill documents in .claude/multi-venue-report/
+    2. Adapting the 3-stage pipeline for aggregated data
+    3. Handling comment themes across multiple venues
+    
+    For now, returns a placeholder indicating analysis is not yet implemented.
+    
+    Args:
+        period_data: Dict with aggregated metrics, venue rankings, and comments
+        use_cache: Whether to use cached results (not yet implemented)
+        
+    Returns:
+        (analysis, None) on success, or (None, reason) if unavailable
+    """
+    # TODO: Implement period-level AI analysis
+    # This would involve:
+    # - Loading period-level skill documents
+    # - Building period-level payloads from aggregated data
+    # - Running the 3-stage pipeline adapted for multi-venue data
+    # - Caching results separately from venue-level analysis
+    
+    return None, "Period-level AI analysis not yet implemented"
+
+
 if __name__ == "__main__":
     import sys
 

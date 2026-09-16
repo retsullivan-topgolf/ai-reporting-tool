@@ -1,0 +1,133 @@
+# {{ venue }} - Period Comparison Report
+
+**Report Generated:** {{ "now"|strftime("%B %d, %Y at %I:%M %p") }}
+
+---
+
+## Period Information
+
+| Aspect | Current | Previous |
+|--------|---------|----------|
+| **Date Range** | {{ current_period.start }} to {{ current_period.end }} | {{ previous_period.start if previous_period else 'N/A' }} to {{ previous_period.end if previous_period else 'N/A' }} |
+| **Period Type** | {{ current_period.period_type|capitalize }} | {{ previous_period.period_type|capitalize if previous_period else 'N/A' }} |
+| **Responses** | {{ current_period.responses }} | {{ previous_period.responses if previous_period else 'N/A' }} |
+
+---
+
+## Metrics Comparison
+
+{% if previous_period %}
+| Metric | Current | Previous | Change | % Change | Trend |
+|--------|---------|----------|--------|----------|-------|
+{% for metric_key, metric_data in comparison.metrics_comparison.items() %}
+{% if metric_data.current is not none or metric_data.previous is not none %}
+| **{{ metric_key|upper }}** | {{ "%.1f"|format(metric_data.current) if metric_data.current is not none else "N/A" }} | {{ "%.1f"|format(metric_data.previous) if metric_data.previous is not none else "N/A" }} | {% if metric_data.delta is not none %}{% if metric_data.delta > 0 %}+{% endif %}{{ "%.2f"|format(metric_data.delta) }}{% else %}N/A{% endif %} | {% if metric_data.percent_change is not none %}{% if metric_data.percent_change > 0 %}+{% endif %}{{ "%.1f"|format(metric_data.percent_change) }}%{% else %}N/A{% endif %} | {{ metric_data.trend }} |
+{% endif %}
+{% endfor %}
+
+{% else %}
+> **Note:** No previous period data available for comparison. Showing current period metrics only.
+
+| Metric | Current |
+|--------|---------|
+{% for metric_key, metric_data in comparison.metrics_comparison.items() %}
+{% if metric_data.current is not none %}
+| **{{ metric_key|upper }}** | {{ "%.1f"|format(metric_data.current) }} |
+{% endif %}
+{% endfor %}
+
+{% endif %}
+
+---
+
+{% if analysis.ai_available %}
+
+## Overview
+
+{{ analysis.overview }}
+
+{% if analysis.ups or analysis.downs %}
+
+## Key Findings
+
+{% if analysis.ups %}
+
+### Strengths
+
+{% for item in analysis.ups %}
+- {{ item|replace('<li>', '')|replace('</li>', '')|replace('<strong>', '**')|replace('</strong>', '**') }}
+{% endfor %}
+
+{% endif %}
+
+{% if analysis.downs %}
+
+### Areas for Improvement
+
+{% for item in analysis.downs %}
+- {{ item|replace('<li>', '')|replace('</li>', '')|replace('<strong>', '**')|replace('</strong>', '**') }}
+{% endfor %}
+
+{% endif %}
+
+{% endif %}
+
+{% if analysis.impact %}
+
+## Impact Drivers
+
+{% for driver in analysis.impact %}
+- **{{ driver.title }}:** {{ driver.description }}
+{% endfor %}
+
+{% endif %}
+
+{% if analysis.recommendations %}
+
+## Recommendations
+
+{% if analysis.recommendations.critical %}
+
+### {{ analysis.recommendations.critical.title }}
+
+{% for item in analysis.recommendations.critical.items %}
+- {{ item|replace('<li>', '')|replace('</li>', '')|replace('<strong>', '**')|replace('</strong>', '**') }}
+{% endfor %}
+
+{% endif %}
+
+{% if analysis.recommendations.secondary %}
+
+### {{ analysis.recommendations.secondary.title }}
+
+{% for item in analysis.recommendations.secondary.items %}
+- {{ item|replace('<li>', '')|replace('</li>', '')|replace('<strong>', '**')|replace('</strong>', '**') }}
+{% endfor %}
+
+{% endif %}
+
+{% if analysis.recommendations.maintain %}
+
+### {{ analysis.recommendations.maintain.title }}
+
+{% for item in analysis.recommendations.maintain.items %}
+- {{ item|replace('<li>', '')|replace('</li>', '')|replace('<strong>', '**')|replace('</strong>', '**') }}
+{% endfor %}
+
+{% endif %}
+
+{% endif %}
+
+{% else %}
+
+## Analysis Status
+
+> {{ analysis.unavailable_reason }}
+
+The metrics above come directly from this period's survey data and are unaffected.
+
+{% endif %}
+
+---
+
+*This report compares {{ venue }}'s performance between two time periods, highlighting trends and changes in key metrics.*
