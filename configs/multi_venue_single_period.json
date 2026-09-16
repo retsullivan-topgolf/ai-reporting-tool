@@ -1,0 +1,9 @@
+{
+  "report_type": "multi_venue_single_period",
+  "csv_file": "../qualtrics/texas_venues.csv",
+  "period": {
+    "start_date": "2026-06-01",
+    "end_date": "2026-06-30"
+  },
+  "output_format": "all"
+}

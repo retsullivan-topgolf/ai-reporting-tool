@@ -1,0 +1,14 @@
+{
+  "report_type": "venue_period_comparison",
+  "csv_file": "../qualtrics/Grand_Prarie.csv",
+  "venue": "Grand Prairie",
+  "current_period": {
+    "start_date": "2026-06-01",
+    "end_date": "2026-06-30"
+  },
+  "previous_period": {
+    "start_date": "2026-05-01",
+    "end_date": "2026-05-31"
+  },
+  "output_format": "all"
+}

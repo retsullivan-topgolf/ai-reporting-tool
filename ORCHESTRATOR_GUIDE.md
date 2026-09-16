@@ -2,51 +2,90 @@
 
 ## Quick Start
 
-The new unified orchestrator (`generate_all_period_reports.py`) provides an interactive menu for generating all types of reports.
+The new unified orchestrator (`generate_all_period_reports.py`) provides an interactive menu for generating all types of reports. It automatically discovers available CSV files - no need to specify a path!
 
 ### Basic Usage
+
+```bash
+cd python
+python generate_all_period_reports.py
+```
+
+This will:
+1. Show available CSV files in `../example-data/`
+2. Let you select a CSV file (or enter a custom path)
+3. Show a menu to select report type (1-4)
+4. Prompt for required parameters (venue, dates, etc.)
+5. Ask for output format (HTML, Markdown, PDF, or All)
+6. Generate the report(s)
+7. Ask if you want to generate another report
+
+### With a Specific CSV File
 
 ```bash
 cd python
 python generate_all_period_reports.py ../example-data/survey.csv
 ```
 
-This will:
-1. Show a menu to select report type (1-4)
-2. Prompt for required parameters (venue, dates, etc.)
-3. Ask for output format (HTML, Markdown, PDF, or All)
-4. Generate the report(s)
-5. Ask if you want to generate another report
+Skips the file selection menu and uses the specified file directly.
 
 ### Non-Interactive Mode
 
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/survey.csv --format all --no-prompt
+python generate_all_period_reports.py --format all --no-prompt
 ```
 
-This skips all prompts and generates all report types with all formats.
+This:
+- Auto-selects the first available CSV file
+- Skips all prompts
+- Generates all report types with all formats
 
 ---
 
 ## Report Types
 
 ### 1. Single-Venue Reports (Existing)
-Generate one report per venue in the CSV file.
+Generate reports for one or all venues in the CSV file.
 
 **What it does:**
-- Creates individual reports for each venue
+- Creates individual reports for selected venue(s)
 - Shows performance for a single time period
 - Includes AI analysis for each venue
 - Compares venue metrics against assessment thresholds
+- Lets you choose: all venues or a specific venue
 
 **When to use:**
 - You want to see how each venue is performing
 - You need detailed analysis for individual venues
 - You want to share venue-specific reports
+- You want to focus on one venue's performance
 
-**Example output:**
+**Venue Selection:**
+When you select Report Type 1, the script will:
+1. List all available venues from the CSV
+2. Ask you to choose:
+   - A specific venue (by number)
+   - All venues (generates one report per venue)
+
+**Example:**
 ```
+Available venues (3):
+  1) Grand Prairie
+  2) Chicago
+  3) Dallas
+  4) All venues
+
+Select venue (1-4): 1
+
+Output: Topgolf_Venue_Report_Grand_Prairie_20260115_143022_1PAGE.html
+```
+
+**Or for all venues:**
+```
+Select venue (1-4): 4
+
+Output:
 Topgolf_Venue_Report_Grand_Prairie_20260115_143022_1PAGE.html
 Topgolf_Venue_Report_Chicago_20260115_143022_1PAGE.html
 Topgolf_Venue_Report_Dallas_20260115_143022_1PAGE.html
@@ -201,19 +240,41 @@ Enter specific start and end dates.
 
 ## Examples
 
+### Simplest: Just run it!
+```bash
+cd python
+python generate_all_period_reports.py
+# Select CSV file from list
+# Select report type
+# Follow the prompts
+```
+
+### Generate single-venue report for a specific venue
+```bash
+cd python
+python generate_all_period_reports.py
+# CSV File: 1 (survey.csv) - or select from list
+# Report Type: 1 (Single-Venue Reports)
+# Venue: 1 (Grand Prairie) - or choose any venue from the list
+# Format: 1 (HTML)
+```
+
 ### Generate single-venue reports for all venues
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/survey.csv
-# Select: 1 (Single-Venue Reports)
+python generate_all_period_reports.py
+# CSV File: 1 (survey.csv)
+# Report Type: 1 (Single-Venue Reports)
+# Venue: 4 (All venues)
 # Format: 4 (All formats)
 ```
 
 ### Compare Grand Prairie's performance month-over-month
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/survey.csv
-# Select: 2 (Venue Period Comparison)
+python generate_all_period_reports.py
+# CSV File: 1 (survey.csv)
+# Report Type: 2 (Venue Period Comparison)
 # Venue: Grand Prairie
 # Current Period: 1 (Last month)
 # Previous Period: 1 (Last month)
@@ -223,8 +284,9 @@ python generate_all_period_reports.py ../example-data/survey.csv
 ### See which venues are top performers this month
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/survey.csv
-# Select: 3 (Multi-Venue Single Period)
+python generate_all_period_reports.py
+# CSV File: 1 (survey.csv)
+# Report Type: 3 (Multi-Venue Single Period)
 # Period: 1 (Last month)
 # Format: 2 (Markdown)
 ```
@@ -232,21 +294,35 @@ python generate_all_period_reports.py ../example-data/survey.csv
 ### Track portfolio trends quarter-over-quarter
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/survey.csv
-# Select: 4 (Multi-Venue Period Comparison)
+python generate_all_period_reports.py
+# CSV File: 1 (survey.csv)
+# Report Type: 4 (Multi-Venue Period Comparison)
 # Current Period: 2 (Last quarter)
 # Previous Period: 2 (Last quarter)
 # Format: 3 (PDF)
+```
+
+### Use a custom CSV file
+```bash
+cd python
+python generate_all_period_reports.py /path/to/custom/data.csv
+# Skips file selection, uses your file directly
+# Then follow the report type prompts
 ```
 
 ---
 
 ## Troubleshooting
 
-### "File not found" error
+### No CSV files appear in the menu
+- Make sure you have CSV files in the `../example-data/` directory
+- The script looks for `.csv` files (case-insensitive)
+- You can still enter a custom path when prompted
+
+### "File not found" error when entering custom path
 - Make sure the CSV file path is correct
-- Use relative path from the `python/` directory
-- Example: `../example-data/survey.csv`
+- Use absolute path or relative path from the `python/` directory
+- Example: `../example-data/survey.csv` or `/full/path/to/file.csv`
 
 ### "No venues found" error
 - The CSV file doesn't have a "Venue" column
@@ -267,12 +343,15 @@ python generate_all_period_reports.py ../example-data/survey.csv
 
 ## Tips
 
-1. **Start with Report Type 3 or 4** if you want a quick overview of all venues
-2. **Use Report Type 2** to drill down into specific venues
-3. **Generate all formats** (HTML, Markdown, PDF) for maximum flexibility
-4. **Use "Last month" or "Last quarter"** for quick period selection
-5. **Check the reports/ directory** for all generated files
-6. **Combine reports** - generate single-venue reports AND a multi-venue comparison for complete visibility
+1. **The script automatically lists all venues** - You don't need to know venue names; just pick from the list
+2. **Start with Report Type 3 or 4** if you want a quick overview of all venues
+3. **Use Report Type 1 with a specific venue** to focus on one location's performance
+4. **Use Report Type 2** to see how a specific venue is trending over time
+5. **Generate all formats** (HTML, Markdown, PDF) for maximum flexibility
+6. **Use "Last month" or "Last quarter"** for quick period selection
+7. **Check the reports/ directory** for all generated files
+8. **Combine reports** - generate single-venue reports AND a multi-venue comparison for complete visibility
+9. **Generate multiple reports in one session** - The script loops, so you can generate different report types without restarting
 
 ---
 
