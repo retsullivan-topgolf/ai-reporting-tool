@@ -5,9 +5,12 @@ Handles:
 - Grouping survey responses by venue
 - Calculating aggregate metrics (averages, percentages, etc.)
 - Building the final venue_data.json structure
+- Period-based aggregation and comparison
+- Composite scoring for venue ranking
 """
 
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
+from datetime import datetime
 from . import csv_parser
 
 
@@ -303,3 +306,332 @@ def build_venue_data_dict(rows: List[Dict[str, str]], schema_name: str) -> Dict[
                 venue_data_dict[safe_key] = processed_data
     
     return venue_data_dict
+
+
+def get_period_type(start_date: str, end_date: str) -> str:
+    """Determine if a date range is a month or quarter.
+    
+    Args:
+        start_date: Start date as string (YYYY-MM-DD format)
+        end_date: End date as string (YYYY-MM-DD format)
+        
+    Returns:
+        'month' or 'quarter' based on the date range
+        
+    Raises:
+        ValueError: If dates are invalid
+    """
+    try:
+        start = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end = datetime.strptime(end_date, '%Y-%m-%d').date()
+    except ValueError as e:
+        raise ValueError(f"Invalid date format. Expected YYYY-MM-DD: {e}")
+    
+    # Calculate days between dates
+    days = (end - start).days + 1
+    
+    # Month: ~28-31 days
+    if 25 <= days <= 32:
+        return 'month'
+    
+    # Quarter: ~90-92 days
+    if 88 <= days <= 93:
+        return 'quarter'
+    
+    # Default to 'month' for other ranges
+    return 'month'
+
+
+def calculate_composite_score(venue_data: Dict, schema_name: str) -> float:
+    """Calculate composite performance score for a venue.
+    
+    Weighted formula: LTR (40%) + Fun (20%) + F&B Avg (20%) + Issue Resolution (20%)
+    All metrics normalized to 0-10 scale.
+    
+    Args:
+        venue_data: Venue metrics dict
+        schema_name: Schema type ('poc' or 'real')
+        
+    Returns:
+        Composite score (0-10), or None if insufficient data
+    """
+    # Normalize LTR (already 1-10, just use as-is)
+    ltr = venue_data.get('ltr_avg', 0)
+    if not ltr:
+        return None
+    
+    # Normalize Fun (1-5 scale to 0-10)
+    fun = venue_data.get('fun_avg', 0)
+    if fun:
+        fun_normalized = ((fun - 1) / 4) * 10
+    else:
+        fun_normalized = 0
+    
+    # Calculate F&B average (only for real schema)
+    fb_avg = None
+    if schema_name == 'real':
+        fb_metrics = []
+        for metric in ['food_value_avg', 'food_speed_avg', 'food_quality_avg',
+                       'beverage_value_avg', 'beverage_speed_avg', 'beverage_quality_avg']:
+            val = venue_data.get(metric)
+            if val is not None:
+                fb_metrics.append(val)
+        
+        if fb_metrics:
+            fb_avg = sum(fb_metrics) / len(fb_metrics)
+            # Normalize F&B (1-5 scale to 0-10)
+            fb_normalized = ((fb_avg - 1) / 4) * 10
+        else:
+            fb_normalized = 0
+    else:
+        fb_normalized = 0
+    
+    # Normalize Issue Resolution (1-5 scale to 0-10)
+    resolution = venue_data.get('resolution_avg', 0)
+    if resolution:
+        resolution_normalized = ((resolution - 1) / 4) * 10
+    else:
+        resolution_normalized = 0
+    
+    # Calculate composite score with weight redistribution for missing metrics
+    weights = {'ltr': 0.4, 'fun': 0.2, 'fb': 0.2, 'resolution': 0.2}
+    total_weight = 0
+    score = 0
+    
+    # LTR (always present)
+    score += ltr * weights['ltr']
+    total_weight += weights['ltr']
+    
+    # Fun
+    if fun_normalized > 0:
+        score += fun_normalized * weights['fun']
+        total_weight += weights['fun']
+    
+    # F&B
+    if fb_normalized > 0:
+        score += fb_normalized * weights['fb']
+        total_weight += weights['fb']
+    
+    # Resolution
+    if resolution_normalized > 0:
+        score += resolution_normalized * weights['resolution']
+        total_weight += weights['resolution']
+    
+    # Normalize by actual weight used
+    if total_weight > 0:
+        final_score = score / total_weight
+        return round(final_score, 2)
+    
+    return None
+
+
+def calculate_period_summary(rows: List[Dict[str, str]], schema_name: str,
+                            start_date: str, end_date: str) -> Dict:
+    """Calculate aggregated metrics across all venues for a period.
+    
+    Args:
+        rows: CSV rows for the period
+        schema_name: Schema type ('poc' or 'real')
+        start_date: Period start date (YYYY-MM-DD)
+        end_date: Period end date (YYYY-MM-DD)
+        
+    Returns:
+        Dict with aggregated metrics and venue rankings
+    """
+    if not rows:
+        return {
+            'period': '',
+            'period_type': get_period_type(start_date, end_date),
+            'date_range': [start_date, end_date],
+            'total_responses': 0,
+            'venues_count': 0,
+            'metrics_avg': {},
+            'venues_ranked': []
+        }
+    
+    # Group by venue and process each
+    venues = group_by_venue(rows)
+    venue_metrics = []
+    
+    for venue_name in sorted(venues.keys()):
+        venue_rows = venues[venue_name]
+        if venue_rows:
+            processed = process_venue_data(venue_rows, schema_name)
+            if processed:
+                # Calculate composite score
+                composite = calculate_composite_score(processed, schema_name)
+                processed['composite_score'] = composite
+                venue_metrics.append(processed)
+    
+    # Sort by composite score (descending)
+    venue_metrics.sort(key=lambda v: (v.get('composite_score') or -1, v.get('ltr_avg', 0)), reverse=True)
+    
+    # Assign rankings
+    for idx, venue in enumerate(venue_metrics, 1):
+        venue['rank'] = idx
+    
+    # Calculate aggregated metrics
+    total_responses = sum(v['responses'] for v in venue_metrics)
+    
+    ltr_values = [v['ltr_avg'] for v in venue_metrics if v['ltr_avg']]
+    fun_values = [v['fun_avg'] for v in venue_metrics if v['fun_avg']]
+    helpful_values = [v['helpful_avg'] for v in venue_metrics if v['helpful_avg']]
+    resolution_values = [v['resolution_avg'] for v in venue_metrics if v['resolution_avg']]
+    
+    metrics_avg = {
+        'ltr_avg': round(sum(ltr_values) / len(ltr_values), 1) if ltr_values else 0,
+        'fun_avg': round(sum(fun_values) / len(fun_values), 1) if fun_values else 0,
+        'helpful_avg': round(sum(helpful_values) / len(helpful_values), 1) if helpful_values else 0,
+        'issues_pct': round(sum(v['issues_pct'] for v in venue_metrics) / len(venue_metrics), 1) if venue_metrics else 0,
+        'resolution_avg': round(sum(resolution_values) / len(resolution_values), 1) if resolution_values else None,
+    }
+    
+    # F&B metrics for real schema
+    if schema_name == 'real':
+        for fb_metric in ['food_value_avg', 'food_speed_avg', 'food_quality_avg',
+                          'beverage_value_avg', 'beverage_speed_avg', 'beverage_quality_avg']:
+            values = [v[fb_metric] for v in venue_metrics if v.get(fb_metric)]
+            metrics_avg[fb_metric] = round(sum(values) / len(values), 1) if values else None
+    
+    # Determine period name
+    try:
+        start = datetime.strptime(start_date, '%Y-%m-%d').date()
+        period_type = get_period_type(start_date, end_date)
+        if period_type == 'month':
+            period_name = start.strftime('%B %Y')
+        else:
+            quarter = (start.month - 1) // 3 + 1
+            period_name = f"Q{quarter} {start.year}"
+    except:
+        period_name = f"{start_date} to {end_date}"
+    
+    return {
+        'period': period_name,
+        'period_type': get_period_type(start_date, end_date),
+        'date_range': [start_date, end_date],
+        'total_responses': total_responses,
+        'venues_count': len(venue_metrics),
+        'metrics_avg': metrics_avg,
+        'venues_ranked': [
+            {
+                'rank': v['rank'],
+                'venue': v['venue'],
+                'composite_score': v['composite_score'],
+                'ltr_avg': v['ltr_avg'],
+                'fun_avg': v['fun_avg'],
+                'helpful_avg': v['helpful_avg'],
+                'issues_pct': v['issues_pct'],
+                'resolution_avg': v['resolution_avg'],
+                'responses': v['responses'],
+                **(
+                    {
+                        'food_value_avg': v.get('food_value_avg'),
+                        'food_speed_avg': v.get('food_speed_avg'),
+                        'food_quality_avg': v.get('food_quality_avg'),
+                        'beverage_value_avg': v.get('beverage_value_avg'),
+                        'beverage_speed_avg': v.get('beverage_speed_avg'),
+                        'beverage_quality_avg': v.get('beverage_quality_avg'),
+                    } if schema_name == 'real' else {}
+                )
+            }
+            for v in venue_metrics
+        ]
+    }
+
+
+def compare_periods(current_summary: Dict, previous_summary: Dict) -> Dict:
+    """Calculate deltas and percent changes between two period summaries.
+    
+    Args:
+        current_summary: Current period summary dict
+        previous_summary: Previous period summary dict
+        
+    Returns:
+        Dict with comparison data including deltas and ranking changes
+    """
+    comparison = {
+        'metrics_deltas': {},
+        'response_count_change': {},
+        'ranking_changes': []
+    }
+    
+    # Compare metrics
+    for metric in ['ltr_avg', 'fun_avg', 'helpful_avg', 'issues_pct', 'resolution_avg']:
+        current_val = current_summary.get('metrics_avg', {}).get(metric)
+        previous_val = previous_summary.get('metrics_avg', {}).get(metric)
+        
+        if current_val is not None and previous_val is not None:
+            delta = round(current_val - previous_val, 2)
+            if previous_val != 0:
+                pct_change = round((delta / previous_val) * 100, 1)
+            else:
+                pct_change = 0
+            
+            comparison['metrics_deltas'][f'{metric}_delta'] = delta
+            comparison['metrics_deltas'][f'{metric}_percent_change'] = pct_change
+    
+    # F&B metrics
+    for fb_metric in ['food_value_avg', 'food_speed_avg', 'food_quality_avg',
+                      'beverage_value_avg', 'beverage_speed_avg', 'beverage_quality_avg']:
+        current_val = current_summary.get('metrics_avg', {}).get(fb_metric)
+        previous_val = previous_summary.get('metrics_avg', {}).get(fb_metric)
+        
+        if current_val is not None and previous_val is not None:
+            delta = round(current_val - previous_val, 2)
+            if previous_val != 0:
+                pct_change = round((delta / previous_val) * 100, 1)
+            else:
+                pct_change = 0
+            
+            comparison['metrics_deltas'][f'{fb_metric}_delta'] = delta
+            comparison['metrics_deltas'][f'{fb_metric}_percent_change'] = pct_change
+    
+    # Response count comparison
+    current_responses = current_summary.get('total_responses', 0)
+    previous_responses = previous_summary.get('total_responses', 0)
+    
+    if previous_responses > 0:
+        response_delta = current_responses - previous_responses
+        response_pct = round((response_delta / previous_responses) * 100, 1)
+    else:
+        response_delta = 0
+        response_pct = 0
+    
+    comparison['response_count_change'] = {
+        'current': current_responses,
+        'previous': previous_responses,
+        'delta': response_delta,
+        'percent_change': response_pct
+    }
+    
+    # Ranking changes
+    current_venues = {v['venue']: v for v in current_summary.get('venues_ranked', [])}
+    previous_venues = {v['venue']: v for v in previous_summary.get('venues_ranked', [])}
+    
+    for venue_name, current_data in current_venues.items():
+        previous_data = previous_venues.get(venue_name)
+        if previous_data:
+            previous_rank = previous_data['rank']
+            current_rank = current_data['rank']
+            
+            if previous_rank != current_rank:
+                rank_change = previous_rank - current_rank
+                if rank_change > 0:
+                    change_str = f"↑ {rank_change} positions"
+                else:
+                    change_str = f"↓ {abs(rank_change)} positions"
+                
+                composite_delta = round(current_data['composite_score'] - previous_data['composite_score'], 2) if current_data['composite_score'] and previous_data['composite_score'] else 0
+                
+                comparison['ranking_changes'].append({
+                    'venue': venue_name,
+                    'previous_rank': previous_rank,
+                    'current_rank': current_rank,
+                    'change': change_str,
+                    'composite_score_delta': composite_delta
+                })
+    
+    # Sort ranking changes by magnitude
+    comparison['ranking_changes'].sort(key=lambda x: abs(x['previous_rank'] - x['current_rank']), reverse=True)
+    
+    return comparison

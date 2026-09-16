@@ -1,12 +1,12 @@
 ## 1. API Extensions - Venue Processor
 
-- [ ] 1.1 Add `filter_by_date_range()` function to `csv_parser.py` to extract records within date range
-- [ ] 1.2 Add `calculate_period_summary()` function to `venue_processor.py` to aggregate metrics across venues
-- [ ] 1.3 Add `calculate_composite_score()` function to `venue_processor.py` for venue ranking
-- [ ] 1.4 Add `compare_periods()` function to `venue_processor.py` to calculate deltas and percent changes
-- [ ] 1.5 Add `get_period_type()` function to determine if period is month or quarter from date range
-- [ ] 1.6 Add unit tests for all new venue_processor functions
-- [ ] 1.7 Add unit tests for date filtering and edge cases (empty periods, missing data, etc.)
+- [x] 1.1 Add `filter_by_date_range()` function to `csv_parser.py` to extract records within date range
+- [x] 1.2 Add `calculate_period_summary()` function to `venue_processor.py` to aggregate metrics across venues
+- [x] 1.3 Add `calculate_composite_score()` function to `venue_processor.py` for venue ranking
+- [x] 1.4 Add `compare_periods()` function to `venue_processor.py` to calculate deltas and percent changes
+- [x] 1.5 Add `get_period_type()` function to determine if period is month or quarter from date range
+- [x] 1.6 Add unit tests for all new venue_processor functions
+- [x] 1.7 Add unit tests for date filtering and edge cases (empty periods, missing data, etc.)
 
 ## 2. Report 1: Venue Period Comparison - API & Data
 

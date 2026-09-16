@@ -6,11 +6,13 @@ Handles:
 - Detecting schema type (POC vs Real)
 - Extracting and converting field values
 - Validating data against schema
+- Filtering records by date range
 """
 
 import csv
 import os
 from typing import List, Dict, Tuple, Optional
+from datetime import datetime
 from . import schemas
 
 
@@ -230,3 +232,48 @@ def extract_all_fields(row: Dict[str, str], schema_name: str) -> Dict[str, any]:
         result[field_name] = converted
     
     return result
+
+
+def filter_by_date_range(rows: List[Dict[str, str]], schema_name: str, 
+                         start_date: str, end_date: str) -> List[Dict[str, str]]:
+    """Filter CSV rows to those within a date range (inclusive).
+    
+    Args:
+        rows: List of CSV rows
+        schema_name: Schema type ('poc' or 'real')
+        start_date: Start date as string (YYYY-MM-DD format)
+        end_date: End date as string (YYYY-MM-DD format)
+        
+    Returns:
+        List of rows with visit_date within the range (inclusive)
+        
+    Raises:
+        ValueError: If date format is invalid
+    """
+    try:
+        start = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end = datetime.strptime(end_date, '%Y-%m-%d').date()
+    except ValueError as e:
+        raise ValueError(f"Invalid date format. Expected YYYY-MM-DD: {e}")
+    
+    filtered = []
+    for row in rows:
+        date_str = get_field(row, 'visit_date', schema_name)
+        if not date_str:
+            continue
+        
+        try:
+            # Try common date formats
+            for fmt in ['%m/%d/%Y', '%Y-%m-%d', '%m/%d/%y']:
+                try:
+                    row_date = datetime.strptime(date_str, fmt).date()
+                    if start <= row_date <= end:
+                        filtered.append(row)
+                    break
+                except ValueError:
+                    continue
+        except Exception:
+            # Skip rows with unparseable dates
+            continue
+    
+    return filtered
