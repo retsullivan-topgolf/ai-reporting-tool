@@ -240,23 +240,27 @@ def main():
     # PDF report
     if report_format in ['pdf', 'all']:
         try:
-            from playwright.async_api import async_playwright
-            import asyncio
+            from playwright.sync_api import sync_playwright
             
             template = jinja_env.get_template('multi-venue-period-pdf.html')
             html = template.render(**report_data)
             
-            async def generate_pdf():
-                async with async_playwright() as p:
-                    browser = await p.chromium.launch()
-                    page = await browser.new_page()
-                    await page.set_content(html)
-                    pdf_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_1PAGE.pdf")
-                    await page.pdf(path=pdf_file)
-                    await browser.close()
-                    return pdf_file
-            
-            pdf_file = asyncio.run(generate_pdf())
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page()
+                # Force print CSS and ensure background colors/gradients render
+                page.emulate_media(media="print")
+                # Wait for content to fully load before rendering PDF
+                page.set_content(html, wait_until="load")
+                pdf_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_1PAGE.pdf")
+                page.pdf(
+                    path=pdf_file,
+                    format="Letter",
+                    print_background=True,
+                    margin={"top": "0.4in", "bottom": "0.4in", "left": "0.4in", "right": "0.4in"},
+                )
+                page.close()
+                browser.close()
             print(f"[OK] PDF report: {pdf_file}")
         except ImportError:
             print(f"[ERROR] PDF report skipped: playwright not installed. Run: pip install playwright && playwright install chromium")

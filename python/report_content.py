@@ -326,11 +326,11 @@ def render_html_report(data, metrics_registry, template, precomputed_analysis=No
             'impact': analysis['impact'],
 
             'critical_title': recommendations['critical']['title'],
-            'critical_items': recommendations['critical']['items'],
+            'critical_items': recommendations['critical']['item_list'],
             'secondary_title': recommendations['secondary']['title'],
-            'secondary_items': recommendations['secondary']['items'],
+            'secondary_items': recommendations['secondary']['item_list'],
             'maintain_title': recommendations['maintain']['title'],
-            'maintain_items': recommendations['maintain']['items'],
+            'maintain_items': recommendations['maintain']['item_list'],
         })
     else:
         # The reason string ultimately comes from a subprocess's stderr (see

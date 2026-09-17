@@ -14,7 +14,7 @@ The Venue Overview is the narrative centerpiece of the report. It synthesizes me
 
 ## Output
 
-A 2-4 sentence narrative paragraph that:
+A 3-5 sentence narrative paragraph that:
 - Tells the story of what's happening at the venue
 - Explains relationships between metrics and comments
 - Acknowledges contradictions honestly
@@ -38,6 +38,8 @@ A 2-4 sentence narrative paragraph that:
 - SHOULD balance metrics-driven insights (aggregate patterns) with comment-driven insights (specific themes, named issues)
 - SHOULD use specific details from comment themes (game names, facility problems, visit phases) rather than generic labels
 - MUST NOT introduce numbers or claims not traceable back to the input stages
+- MUST be clear and concise and easy to read
+- MUST be well-structured and make sense 
 
 ### Formatting
 - MUST use inline HTML limited to `<strong>` tags only

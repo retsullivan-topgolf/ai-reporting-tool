@@ -2,57 +2,57 @@
   "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "Grand Prairie delivers strong entertainment value and guest loyalty, but a critical operational gap\u2014when problems occur, they aren't being fixed\u2014undermines this foundation. Service attentiveness is the primary driver, with slow drink service and long waits cited by 20 guests preventing resolution of other issues like equipment failures and food quality problems. While individual staff members demonstrate genuine excellence, this care is inconsistently applied across the venue, suggesting capacity and consistency challenges rather than capability gaps.",
+      "overview": "Grand Prairie delivers an excellent core gameplay experience that drives strong loyalty\u2014guests appreciate the fun, accessible activity and consistently show intent to return. However, the venue is significantly undermined by serious service failures: staff are slow and difficult to locate, some are dismissive and rude, and critically, at least one guest experienced casual racism from staff. These issues affect many guests and create substantial friction, preventing the venue from achieving the operational consistency that its clean facilities and occasional exceptional staff (like Diego, Alyssa, Dani, and Sofia) suggest is possible.",
       "ups": [
-        "<strong>Staff excellence when present:</strong> 30 guests specifically praised individual staff members by name for being attentive, friendly, professional, and going above and beyond\u2014particularly Diego and others who made celebrations memorable and handled problem-solving with genuine care.",
-        "<strong>Strong entertainment core:</strong> TopGolf itself delivers on its core promise, with guests frequently highlighting that the game is fun, engaging, and non-intimidating for first-timers and families.",
-        "<strong>Facility cleanliness:</strong> The venue is very clean and well-maintained, with a new facility appearance and organized layout contributing positively to the guest experience."
+        "<strong>Excellent core gameplay:</strong> Guests consistently praise the experience as fun, accessible to newcomers, and engaging for all skill levels\u2014the core activity delivers strongly enough to drive return visits despite service issues.",
+        "<strong>Exceptional service from named staff:</strong> Diego, Alyssa, Dani, Sofia, and others are praised for attentiveness and going above and beyond, showing that great service is possible at this venue.",
+        "<strong>Clean, well-maintained facility:</strong> New equipment, clean mats, and good organization create a solid physical foundation that guests appreciate and that sets the stage for a quality experience."
       ],
       "downs": [
-        "<strong>Service attentiveness crisis:</strong> 20 guests reported slow drink service with waits ranging from 20 minutes to over an hour, with staff appearing understaffed, distracted, or unavailable at bays\u2014the dominant complaint pattern.",
-        "<strong>Equipment malfunction:</strong> 10 guests experienced machines breaking down during play, including screens losing shot tracking, systems freezing, and ball dispensers failing, with some losing 30+ minutes of playtime.",
-        "<strong>Food quality inconsistency:</strong> 8 guests reported food arriving burnt, cold, overcooked, or never arriving at all, with replacement promises unfulfilled\u2014undermining the F&B offering despite occasional positive feedback."
+        "<strong>Casual racism and discrimination:</strong> One guest reported experiencing casual racist remarks and blatant prejudice from staff, describing the experience as degrading and humiliating. This represents a critical failure in basic human decency.",
+        "<strong>Slow service and inattentive staff:</strong> The dominant complaint\u2014guests report 20-60+ minute waits for drinks, staff difficult to locate, and minimal check-ins during their session, creating significant frustration.",
+        "<strong>Rude and dismissive staff behavior:</strong> Beyond slowness, some staff are dismissive of legitimate requests, unapologetic about errors, and provide insufficient service recovery when issues arise."
       ],
       "impact": [
         {
-          "title": "Service Attentiveness Crisis",
-          "description": "Slow drink service and long waits (20+ mentions, up to 60+ minutes) are the highest-impact operational issue, directly preventing the venue from addressing and resolving guest concerns in real time."
+          "title": "Casual Racism & Discrimination",
+          "description": "One guest reported experiencing casual racist remarks and blatant prejudice from staff, an experience they described as degrading and humiliating. This represents a critical failure in inclusion, regardless of frequency."
         },
         {
-          "title": "Discriminatory Staff Behavior",
-          "description": "One guest reported experiencing casual racism and prejudicial comments from staff, representing a critical breach of trust and inclusivity that directly violates the welcoming environment required to sustain loyalty."
+          "title": "Slow Service & Inattentive Staff",
+          "description": "Guests report long waits for drinks (20-60+ minutes), staff difficult to locate, and minimal check-ins during sessions\u2014the single most commonly mentioned complaint affecting many guests' experiences."
         },
         {
-          "title": "Weak Issue Resolution",
-          "description": "Issue resolution averages 2.6/5, well below the 'Strong' threshold, with guests reporting unresolved problems across equipment failures, food quality, waits, and service delays\u2014the gap between problem occurrence and adequate fix."
+          "title": "Server Rudeness & Dismissiveness",
+          "description": "Beyond slowness, some staff respond to legitimate complaints with dismissive attitudes and unapologetic behavior, failing to provide genuine service recovery when issues occur."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Fix Service Attentiveness and Drink Service",
+          "title": "Address Discrimination & Ensure Safe Environment",
           "items": [
-            "<strong>Staffing assessment and rebalancing:</strong> Audit bays during peak hours to confirm adequate server-to-bay ratio; if understaffed, add servers or cross-train to close the gap that's creating 20-60 minute drink waits.",
-            "<strong>Drink service SLA:</strong> Implement a 5-minute drink-order turnaround target with visible accountability; train staff to prioritize drink orders as the first guest interaction at each bay visit.",
-            "<strong>Proactive table check-ins:</strong> Require staff to check on tables every 10 minutes during service, with specific focus on acknowledging wait times and providing status updates rather than letting guests wait unaware.",
-            "<strong>Bay-station organization:</strong> Ensure adequate drink prep and POS access at service stations so staff aren't waiting for equipment or supplies to fulfill orders."
+            "<strong>Immediate investigation:</strong> Conduct a thorough investigation into the incident reported by the guest to identify the staff member and determine appropriate disciplinary action.",
+            "<strong>Diversity & inclusion training:</strong> Implement mandatory training for all staff on inclusion, cultural sensitivity, and anti-discrimination policies to reset behavioral expectations.",
+            "<strong>Guest recovery & accountability:</strong> Reach out to the affected guest to apologize, acknowledge the severity of the incident, and offer meaningful recovery (service credits, etc.).",
+            "<strong>Cultural values reinforcement:</strong> Communicate clearly from leadership that discrimination is unacceptable and reaffirm the venue's commitment to providing a welcoming environment for all guests."
           ]
         },
         "secondary": {
-          "title": "Establish Inclusive Culture and Accountability Standards",
+          "title": "Fix Slow Service & Inattentive Staff",
           "items": [
-            "<strong>Immediate investigation and remediation:</strong> Address the reported incident of discriminatory behavior directly with the staff member involved, documenting the conversation and corrective action taken.",
-            "<strong>Core values training:</strong> Require all staff to complete training on inclusive behavior, implicit bias, and the venue's commitment to being welcoming to all guests\u2014with clear examples of what respectful service looks like.",
-            "<strong>Guest advocacy response protocol:</strong> Establish a clear escalation and response process for discrimination or disrespect reports, including management follow-up and guest recovery outreach.",
-            "<strong>Leadership modeling:</strong> Ensure managers visibly model respectful, attentive behavior and hold staff accountable to the standard through team huddles and individual conversations."
+            "<strong>Service standards & accountability:</strong> Establish clear response time expectations for drink orders (e.g., within 5-10 minutes of bay start) and create accountability mechanisms for staff who are difficult to locate.",
+            "<strong>Staffing review:</strong> Analyze server-to-guest ratio and peak-hour staffing to ensure adequate coverage so guests aren't waiting 20-60+ minutes for initial service.",
+            "<strong>Proactive check-in training:</strong> Train servers to make initial contact within the first few minutes of guest arrival and conduct regular check-ins during sessions, not just reactive responses to guest needs.",
+            "<strong>Mobile ordering as backup:</strong> Ensure the mobile ordering option is prominently available and functional as a fallback when staff are unavailable, so guests can independently place orders."
           ]
         },
         "maintain": {
-          "title": "Protect and Scale Staff Excellence",
+          "title": "Protect & Amplify Core Gameplay Strength",
           "items": [
-            "<strong>Recognition and incentive program:</strong> Formally recognize staff members like Diego by name (publicly and to peers) for going above and beyond; tie bonuses or recognition to attentiveness and problem-solving metrics.",
-            "<strong>Best-practice documentation:</strong> Document and share the practices of high-performing staff (proactive engagement, problem resolution, celebration handling) so consistency improves across all team members.",
-            "<strong>Consistency training:</strong> Use top performers as mentors and trainers to bring the attentiveness and care standards that 30 guests praised up to all staff members, not just a subset.",
-            "<strong>Experience continuity metric:</strong> Track and monitor the staff excellence theme alongside LTR to ensure that reputation and loyalty are sustained as service issues are resolved."
+            "<strong>Game selection & rotation:</strong> Continue curating game variety and freshness that guests consistently praise, as this is the primary driver of return visits.",
+            "<strong>Equipment reliability:</strong> Ensure screens, ball dispensers, and tracking systems are regularly maintained and quickly repaired when failures occur, protecting the seamless gameplay experience.",
+            "<strong>Staff training on gameplay support:</strong> Make sure all staff understand the games well enough to answer guest questions and provide assistance, reinforcing the accessibility that appeals to newcomers.",
+            "<strong>Marketing emphasis:</strong> Highlight the fun, accessible gameplay experience in marketing while you work on service recovery\u2014this is the venue's strongest differentiator."
           ]
         }
       }

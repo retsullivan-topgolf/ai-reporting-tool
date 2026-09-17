@@ -31,23 +31,22 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: white;
             color: var(--text-dark);
-            line-height: 1.6;
+            line-height: 1.35;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
         .container {
-            max-width: 8.5in;
-            margin: 0 auto;
+            max-width: 100%;
         }
 
         /* Header */
         .header {
             background: linear-gradient(135deg, var(--primary-dark) 0%, #1a0f8f 100%);
             color: var(--white);
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            padding: 16px 20px;
+            border-radius: 12px 12px 0 0;
+            page-break-after: avoid;
             position: relative;
             overflow: hidden;
         }
@@ -70,16 +69,18 @@
         }
 
         .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 1.6em;
+            margin-bottom: 6px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            border-radius: 12px 12px 0 0;
+            page-break-after: avoid;
         }
 
         .header-meta {
             display: flex;
-            gap: 20px;
-            font-size: 0.9em;
+            gap: 16px;
+            font-size: 0.85em;
             opacity: 0.95;
             flex-wrap: wrap;
         }
@@ -90,65 +91,85 @@
             gap: 8px;
         }
 
+        /* Main Content */
+        .main {
+            background: var(--white);
+            padding: 16px 20px;
+        }
+
         /* Sections */
         .section {
-            margin-bottom: 25px;
+            margin-top: 20px;
+            margin-bottom: 30px;
             page-break-inside: avoid;
         }
 
+        .section:first-child {
+            margin-top: 0;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Recommendations is usually the tallest section (3 subsections of
+           up to 4 items each) - let it flow across a page boundary instead
+           of forcing the whole block to jump to a fresh page whenever it
+           doesn't quite fit in what's left of the page. */
+        #recommendations-section {
+            page-break-inside: auto;
+        }
+
         .section-title {
-            font-size: 1.6em;
+            font-size: 1.25em;
             color: var(--primary-dark);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid rgba(255, 255, 0, 0.4);
+            margin-bottom: 8px;
             font-weight: 700;
         }
 
         .section-subtitle {
-            font-size: 1.1em;
+            font-size: 1em;
             color: var(--primary-dark);
-            margin-top: 15px;
-            margin-bottom: 10px;
+            margin-top: 10px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         /* Overview Box */
         .overview-box {
-            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            background: #f8f9ff;
             border-left: 5px solid var(--border-accent);
-            padding: 15px;
+            padding: 10px 14px;
             border-radius: 8px;
-            margin-bottom: 15px;
-            line-height: 1.8;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            line-height: 1.4;
         }
 
         .overview-box.ai-unavailable-box {
-            background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+            background: #fff3e0;
             border-left-color: #e65100;
             font-style: italic;
             color: #5c4a1a;
         }
 
-        /* Comparison Table */
+        /* Table */
         .table-wrapper {
             overflow: hidden;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border-light);
+            margin-bottom: 4px;
+            border-radius: 12px;
+            border: 2px solid var(--border-light);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 0.9em;
         }
 
         th {
             background: var(--primary-dark);
             color: var(--white);
-            padding: 12px;
+            padding: 7px 10px;
             text-align: left;
             font-weight: 600;
             font-size: 0.85em;
@@ -157,7 +178,8 @@
         }
 
         td {
-            padding: 12px;
+             padding: 7px 10px;
+            font-size: 0.85em;
             border-bottom: 1px solid var(--border-light);
         }
 
@@ -178,6 +200,7 @@
         .metric-delta {
             text-align: center;
             font-weight: 600;
+            font-size: 0.85em;
         }
 
         .metric-delta.positive {
@@ -193,7 +216,7 @@
         }
 
         .trend-indicator {
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: bold;
             text-align: center;
         }
@@ -216,21 +239,20 @@
 
         /* Lists */
         .list-section {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .list-section ul {
             list-style: none;
-            padding-left: 0;
+            padding: 0;
             margin: 0;
         }
 
         .list-section li {
-            padding: 8px 0;
-            padding-left: 25px;
+            padding: 6px 0 6px 20px;
             position: relative;
             border-bottom: 1px solid var(--border-light);
-            font-size: 0.95em;
+            font-size: 0.85em;
         }
 
         .list-section li:last-child {
@@ -238,35 +260,43 @@
         }
 
         .list-section li::before {
-            content: '→';
             position: absolute;
             left: 0;
             color: rgba(45, 255, 255, 0.5);
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1em;
         }
 
         /* Highlight Box */
         .highlight-box {
-            background: linear-gradient(135deg, rgba(255, 255, 0, 0.15) 0%, rgba(255, 235, 59, 0.12) 100%);
+            background: rgba(255, 255, 0, 0.15);
             color: var(--primary-dark);
-            padding: 15px;
+            padding: 10px 14px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-weight: 400;
-            box-shadow: 0 4px 12px rgba(255, 255, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(255, 255, 0, 0.08);
             border: 1px solid rgba(255, 255, 0, 0.2);
-            font-size: 0.95em;
+            font-size: 0.85em;
+        }
+
+        /* Page breaks for multi-page layout */
+        #ups-downs-section {
+            page-break-before: always;
+        }
+
+        #recommendations-section {
+            page-break-before: always;
         }
 
         /* Footer */
         .footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 12px;
+            border-radius: 12px;
             text-align: center;
-            font-size: 0.8em;
-            color: #999;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-light);
+            font-size: 0.75em;
         }
 
         @media print {
@@ -300,9 +330,20 @@
             </div>
         </div>
 
-        <!-- Metrics Comparison Table (First for PDF) -->
-        <div class="section">
-            <h2 class="section-title">Metrics Comparison</h2>
+        <!-- Main Content -->
+        <div class="main">
+            <!-- AI Analysis Section -->
+            {% if analysis.ai_available %}
+            <div class="section" id="overview-section">
+                <h2 class="section-title">Overview</h2>
+                <div class="overview-box">
+                    {{ analysis.overview }}
+                </div>
+            </div>
+
+            <!-- Metrics Comparison Table (First for PDF) -->
+            <div class="section" id="metrics-section">
+                <h2 class="section-title">Metrics Comparison</h2>
             {% if previous_period %}
             <div class="table-wrapper">
                 <table>
@@ -349,108 +390,105 @@
                 No previous period data available for comparison. Showing current period metrics only.
             </div>
             {% endif %}
-        </div>
-
-        <!-- AI Analysis Section -->
-        {% if analysis.ai_available %}
-        <div class="section">
-            <h2 class="section-title">Overview</h2>
-            <div class="overview-box">
-                {{ analysis.overview }}
             </div>
-        </div>
 
-        {% if analysis.ups or analysis.downs %}
-        <div class="section">
-            <h2 class="section-title">Key Findings</h2>
-            
-            {% if analysis.ups %}
-            <div class="section-subtitle">Strengths</div>
-            <div class="list-section">
-                <ul>
-                    {% for item in analysis.ups %}
-                    <li>{{ item|safe }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
+            <!-- Key Findings (forced onto page 2) -->
+            {% if analysis.ups or analysis.downs %}
+            <div class="section" id="ups-downs-section">
+                {% if analysis.ups %}
+                <div style="margin-bottom: 20px;">
+                    <h2 class="section-title">Strengths</h2>
+                    <div class="list-section">
+                        <ul>
+                            {% for item in analysis.ups %}
+                            <li>{{ item|safe }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
 
-            {% if analysis.downs %}
-            <div class="section-subtitle">Areas for Improvement</div>
-            <div class="list-section">
-                <ul>
-                    {% for item in analysis.downs %}
-                    <li>{{ item|safe }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        {% if analysis.impact %}
-        <div class="section">
-            <h2 class="section-title">Impact Drivers</h2>
-            <div class="list-section">
-                <ul>
-                    {% for driver in analysis.impact %}
-                    <li><strong>{{ driver.title }}:</strong> {{ driver.description }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        {% endif %}
-
-        {% if analysis.recommendations %}
-        <div class="section">
-            <h2 class="section-title">Recommendations</h2>
-            
-            {% if analysis.recommendations.critical %}
-            <div class="section-subtitle">{{ analysis.recommendations.critical.title }}</div>
-            <div class="list-section">
-                <ul>
-                    {% for item in analysis.recommendations.critical.item_list %}
-                    <li>{{ item|safe }}</li>
-                    {% endfor %}
-                </ul>
+                {% if analysis.downs %}
+                <div style="margin-bottom: 20px;">
+                    <h2 class="section-title">Areas for Improvement</h2>
+                    <div class="list-section">
+                        <ul>
+                            {% for item in analysis.downs %}
+                            <li>{{ item|safe }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
 
-            {% if analysis.recommendations.secondary %}
-            <div class="section-subtitle">{{ analysis.recommendations.secondary.title }}</div>
-            <div class="list-section">
-                <ul>
-                    {% for item in analysis.recommendations.secondary.item_list %}
-                    <li>{{ item|safe }}</li>
-                    {% endfor %}
-                </ul>
+            <!-- Impact Drivers (page 2 after Ups/Downs) -->
+            {% if analysis.impact %}
+            <div class="section" id="impact-section">
+                <h2 class="section-title">Impact Drivers</h2>
+                <div class="list-section">
+                    <ul>
+                        {% for driver in analysis.impact %}
+                        <li><strong>{{ driver.title }}:</strong> {{ driver.description }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
             {% endif %}
 
-            {% if analysis.recommendations.maintain %}
-            <div class="section-subtitle">{{ analysis.recommendations.maintain.title }}</div>
-            <div class="list-section">
-                <ul>
-                    {% for item in analysis.recommendations.maintain.item_list %}
-                    <li>{{ item|safe }}</li>
-                    {% endfor %}
-                </ul>
+            <!-- Recommendations (forced onto page 3) -->
+            {% if analysis.recommendations %}
+            <div class="section" id="recommendations-section">
+                <h2 class="section-title">Recommendations</h2>
+                
+                {% if analysis.recommendations.critical %}
+                <h3 class="section-subtitle">{{ analysis.recommendations.critical.title }}</h3>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.recommendations.critical.item_list %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if analysis.recommendations.secondary %}
+                <h3 class="section-subtitle">{{ analysis.recommendations.secondary.title }}</h3>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.recommendations.secondary.item_list %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if analysis.recommendations.maintain %}
+                <h3 class="section-subtitle">{{ analysis.recommendations.maintain.title }}</h3>
+                <div class="list-section">
+                    <ul>
+                        {% for item in analysis.recommendations.maintain.item_list %}
+                        <li>{{ item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
-        </div>
-        {% endif %}
 
-        {% else %}
-        <div class="section">
-            <div class="overview-box ai-unavailable-box">
-                {{ analysis.unavailable_reason }}
+            {% else %}
+            <div class="section">
+                <div class="overview-box ai-unavailable-box">
+                    {{ analysis.unavailable_reason }}
+                </div>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>Generated on {{ generated_date }}</p>
+            <!-- Footer -->
+            <div class="footer">
+                <p>Generated on {{ generated_date }}</p>
+            </div>
         </div>
     </div>
 </body>

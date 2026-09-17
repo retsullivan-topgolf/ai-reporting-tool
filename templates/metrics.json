@@ -51,9 +51,9 @@
     "higher_is_better": false,
     "weak_explanation": "a significant portion of customers experienced problems during their visit",
     "assessment_thresholds": [
-      {"max": 30, "level": "Low", "class": "good"},
-      {"max": 40, "level": "Moderate", "class": "moderate"},
-      {"max": 50, "level": "High", "class": "poor"},
+      {"max": 10, "level": "Low", "class": "good"},
+      {"max": 20, "level": "Moderate", "class": "moderate"},
+      {"max": 30, "level": "High", "class": "poor"},
       {"max": null, "level": "Critical", "class": "poor"}
     ]
   },
