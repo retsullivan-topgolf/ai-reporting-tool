@@ -1,0 +1,5 @@
+{
+  "report_type": "single_venue",
+  "csv_file": "../qualtrics/Grand_Prarie.csv",
+  "output_format": "all"
+}

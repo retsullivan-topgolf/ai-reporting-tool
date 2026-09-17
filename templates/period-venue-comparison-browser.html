@@ -410,7 +410,7 @@
                 <div class="section-subtitle">{{ analysis.recommendations.critical.title }}</div>
                 <div class="list-section">
                     <ul>
-                        {% for item in analysis.recommendations.critical.items %}
+                        {% for item in analysis.recommendations.critical.item_list %}
                         <li>{{ item|safe }}</li>
                         {% endfor %}
                     </ul>
@@ -421,7 +421,7 @@
                 <div class="section-subtitle">{{ analysis.recommendations.secondary.title }}</div>
                 <div class="list-section">
                     <ul>
-                        {% for item in analysis.recommendations.secondary.items %}
+                        {% for item in analysis.recommendations.secondary.item_list %}
                         <li>{{ item|safe }}</li>
                         {% endfor %}
                     </ul>
@@ -432,7 +432,7 @@
                 <div class="section-subtitle">{{ analysis.recommendations.maintain.title }}</div>
                 <div class="list-section">
                     <ul>
-                        {% for item in analysis.recommendations.maintain.items %}
+                        {% for item in analysis.recommendations.maintain.item_list %}
                         <li>{{ item|safe }}</li>
                         {% endfor %}
                     </ul>
@@ -513,7 +513,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Generated on {{ "now"|strftime("%B %d, %Y at %I:%M %p") }}</p>
+            <p>Generated on {{ generated_date }}</p>
         </div>
     </div>
 </body>

@@ -45,7 +45,7 @@ def _format_analysis_as_html(ai_result):
         'recommendations': {
             tier: {
                 'title': ai_result['recommendations'][tier]['title'],
-                'items': as_list_items(ai_result['recommendations'][tier]['items']),
+                'item_list': as_list_items(ai_result['recommendations'][tier]['items']),
             }
             for tier in ('critical', 'secondary', 'maintain')
         },

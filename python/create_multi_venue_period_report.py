@@ -51,15 +51,15 @@ def filter_rows_by_date_range(rows, start_date, end_date):
     
     filtered = []
     for row in rows:
-        row_date_str = row.get('Visit Date') or row.get('VisitDate') or ''
+        row_date_str = row.get('Visit Date (+00:00 GMT)') or row.get('Visit Date') or row.get('VisitDate') or ''
         if not row_date_str:
             continue
-        
+
         try:
             # Try common date formats
             for fmt in ['%m/%d/%Y', '%Y-%m-%d', '%m/%d/%y']:
                 try:
-                    row_date = datetime.strptime(row_date_str, fmt).date()
+                    row_date = datetime.strptime(row_date_str.split(' ')[0], fmt).date()
                     if start <= row_date <= end:
                         filtered.append(row)
                     break
@@ -221,9 +221,9 @@ def main():
             html_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_1PAGE.html")
             with open(html_file, 'w', encoding='utf-8') as f:
                 f.write(html)
-            print(f"✓ HTML report: {html_file}")
+            print(f"[OK] HTML report: {html_file}")
         except Exception as e:
-            print(f"✗ HTML report failed: {e}")
+            print(f"[ERROR] HTML report failed: {e}")
     
     # Markdown report
     if report_format in ['markdown', 'all']:
@@ -233,9 +233,9 @@ def main():
             md_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_1PAGE.md")
             with open(md_file, 'w', encoding='utf-8') as f:
                 f.write(markdown)
-            print(f"✓ Markdown report: {md_file}")
+            print(f"[OK] Markdown report: {md_file}")
         except Exception as e:
-            print(f"✗ Markdown report failed: {e}")
+            print(f"[ERROR] Markdown report failed: {e}")
     
     # PDF report
     if report_format in ['pdf', 'all']:
@@ -257,11 +257,11 @@ def main():
                     return pdf_file
             
             pdf_file = asyncio.run(generate_pdf())
-            print(f"✓ PDF report: {pdf_file}")
+            print(f"[OK] PDF report: {pdf_file}")
         except ImportError:
-            print(f"✗ PDF report skipped: playwright not installed. Run: pip install playwright && playwright install chromium")
+            print(f"[ERROR] PDF report skipped: playwright not installed. Run: pip install playwright && playwright install chromium")
         except Exception as e:
-            print(f"✗ PDF report failed: {e}")
+            print(f"[ERROR] PDF report failed: {e}")
     
     print(f"\nReport generation complete!")
 

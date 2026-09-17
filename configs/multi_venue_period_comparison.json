@@ -2,12 +2,12 @@
   "report_type": "multi_venue_period_comparison",
   "csv_file": "../qualtrics/texas_venues.csv",
   "current_period": {
-    "start_date": "2026-06-01",
-    "end_date": "2026-06-30"
+    "start_date": "2026-03-01",
+    "end_date": "2026-03-31"
   },
   "previous_period": {
-    "start_date": "2026-05-01",
-    "end_date": "2026-05-31"
+    "start_date": "2026-02-01",
+    "end_date": "2026-02-28"
   },
   "output_format": "all"
 }
