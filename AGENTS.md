@@ -6,7 +6,8 @@ All Python scripts have been moved to the `python/` directory for better organiz
 ### Scripts in `python/` folder:
 
 #### Report Generation (Main Entry Points)
-- **generate_venue_reports.py** - Master orchestrator for single-venue reports: runs all steps in one command (recommended). Processes data → generates metrics → runs AI analysis once → generates report formats. After processing the data, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
+- **generate_report.py** - **Unified entry point** for all report types (recommended). Single command to generate any report: single-venue snapshot, single-venue comparison, multi-venue snapshot, or multi-venue comparison. Supports interactive prompts or command-line arguments for all parameters (report type, venue, dates, format).
+- **generate_venue_reports.py** - Legacy master orchestrator for single-venue reports (CSV-based). Processes data → generates metrics → runs AI analysis once → generates report formats. After processing the data, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
 
 #### Data Processing
 - **generate_venue_data.py** - Loads survey data (defaults to all venues from texas_venues, can filter by venue) → generates JSON metrics
@@ -71,28 +72,42 @@ cd python
 python generate_venue_data.py --dataset Grand_Prairie
 ```
 
-**Single-Venue Reports (Recommended):**
+**Unified Report Generator (Recommended - All Report Types):**
 ```bash
 cd python
-python generate_venue_reports.py "Grand Prairie"
-# You'll be prompted: 1) HTML  2) Markdown  3) PDF  4) All
-# Or skip the prompt:
-python generate_venue_reports.py "Grand Prairie" --format all
+# Interactive mode - prompts for report type, venue, dates, and format
+python generate_report.py
+
+# Or specify parameters directly
+# Single-venue snapshot for Grand Prairie
+python generate_report.py --report-type snapshot --venue "Grand Prairie" --format all
+
+# Single-venue comparison between two periods
+python generate_report.py --report-type comparison --venue "Grand Prairie" --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format html
+
+# Multi-venue snapshot for a period
+python generate_report.py --report-type multi-snapshot --start-date 2026-01-01 --end-date 2026-01-31 --format all
+
+# Multi-venue comparison between two periods
+python generate_report.py --report-type multi-comparison --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format pdf
 ```
 
-**Or run individually (with precomputed analysis):**
+**Or run individual scripts (advanced):**
 ```bash
 cd python
+# Single-venue snapshot - manual steps
 python generate_venue_data.py "Grand Prairie"
 python run_analyze_venues.py venue_data.json
 python create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json
-```
 
-**Or run without precomputed analysis (backward compatible - slower):**
-```bash
-cd python
-python generate_venue_data.py "Grand Prairie"
-python create_single_venue_snapshot_report.py venue_data.json --format all
+# Single-venue comparison
+python create_single_venue_comparison_report.py texas_venues "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+
+# Multi-venue snapshot
+python create_multi_venue_snapshot_report.py texas_venues 2026-01-01 2026-01-31 --format all
+
+# Multi-venue comparison
+python create_multi_venue_comparison_report.py texas_venues 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
 ```
 
 ### File Paths
@@ -105,17 +120,28 @@ python create_single_venue_snapshot_report.py venue_data.json --format all
 
 ## Report Generation Workflow
 
-**Quick way (recommended):**
+**Unified approach (recommended for all report types):**
 ```bash
 cd python
-python generate_venue_reports.py "Grand Prairie"
+python generate_report.py
 ```
-You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-f`) to choose non-interactively - useful for scripting - with any of: `html`, `markdown`, `pdf`, `both` (html+markdown, legacy alias), `all` (all three), or a comma-separated combo like `html,pdf`. A non-interactive session (piped input, no real terminal) skips the prompt and defaults to all three automatically.
+This interactive script guides you through:
+1. Selecting report type (snapshot, comparison, multi-snapshot, multi-comparison)
+2. Entering required parameters (venue name, date ranges)
+3. Choosing output format (HTML, Markdown, PDF, or All)
+4. Automatically running all necessary steps
 
-**Manual steps (recommended with AI analysis):**
-1. Run `python/generate_venue_data.py "Grand Prairie"` to create `python/venue_data.json`
-2. Run `python/run_analyze_venues.py venue_data.json` to create `python/ai_analysis_results.json` (runs AI analysis once)
-3. Run `python/create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json` to generate reports in `reports/`
+**Or use command-line arguments to skip prompts:**
+```bash
+cd python
+python generate_report.py --report-type snapshot --venue "Grand Prairie" --format all
+```
+
+**For single-venue snapshots specifically:**
+The `generate_report.py` script with `--report-type snapshot` automatically:
+1. Runs `generate_venue_data.py` to create `venue_data.json`
+2. Runs `run_analyze_venues.py` to create `ai_analysis_results.json` (AI analysis runs once)
+3. Runs `create_single_venue_snapshot_report.py` with precomputed analysis to generate reports in all selected formats
 
 ## Report Features
 - Color-coded status pills in Experience Metrics table

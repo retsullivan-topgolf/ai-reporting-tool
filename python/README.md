@@ -6,18 +6,34 @@ All scripts use the `api.data_loader` module to load survey data by identifier, 
 
 ## Quick Start
 
-Generate all reports with a single command:
+Generate any report type with a single unified command:
 
 ```bash
 cd python
-python generate_venue_reports.py Grand_Prairie
+python generate_report.py
 ```
 
-This will:
-1. Load survey data for Grand_Prairie
-2. Process and create `venue_data.json`
-3. Run AI analysis and create `ai_analysis_results.json`
-4. Generate HTML, Markdown, and/or PDF reports in the `reports/` directory
+This interactive script lets you:
+1. Choose report type (single-venue snapshot, comparison, multi-venue snapshot, or comparison)
+2. Enter required parameters (venue name, date ranges)
+3. Select output format (HTML, Markdown, PDF, or All)
+4. Automatically runs all necessary steps and generates reports in `reports/` directory
+
+**Or skip prompts with command-line arguments:**
+```bash
+cd python
+# Single-venue snapshot
+python generate_report.py --report-type snapshot --venue "Grand Prairie" --format all
+
+# Single-venue comparison
+python generate_report.py --report-type comparison --venue "Grand Prairie" --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format all
+
+# Multi-venue snapshot
+python generate_report.py --report-type multi-snapshot --start-date 2026-01-01 --end-date 2026-01-31 --format all
+
+# Multi-venue comparison
+python generate_report.py --report-type multi-comparison --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format all
+```
 
 ## Available Datasets
 
@@ -29,15 +45,45 @@ python generate_venue_data.py --list
 
 ## Scripts
 
-### 0. `generate_venue_reports.py` (Recommended)
-Master orchestrator that runs the complete workflow: data generation, AI analysis, and report creation in one command.
+### 0. `generate_report.py` (Recommended - Unified Entry Point)
+Single command to generate any report type: single-venue snapshot, single-venue comparison, multi-venue snapshot, or multi-venue comparison.
+
+**Interactive mode (prompts for all inputs):**
+```bash
+cd python
+python generate_report.py
+```
+
+**Command-line mode (skip prompts):**
+```bash
+cd python
+# Single-venue snapshot
+python generate_report.py --report-type snapshot --venue "Grand Prairie" --format all
+
+# Single-venue comparison
+python generate_report.py --report-type comparison --venue "Grand Prairie" --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format all
+
+# Multi-venue snapshot
+python generate_report.py --report-type multi-snapshot --start-date 2026-01-01 --end-date 2026-01-31 --format all
+
+# Multi-venue comparison
+python generate_report.py --report-type multi-comparison --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format all
+```
+
+**Output:**
+- For snapshots: Creates `venue_data.json`, `ai_analysis_results.json`, and report files in `../reports/`
+- For comparisons: Creates report files directly in `../reports/`
+
+---
+
+### 0b. `generate_venue_reports.py` (Legacy - CSV-based)
+Master orchestrator for single-venue reports using CSV files directly (legacy approach).
 
 **Usage:**
 ```bash
 cd python
-python generate_venue_reports.py Grand_Prairie
-python generate_venue_reports.py Grand_Prairie --format all
-python generate_venue_reports.py texas_venues --format html,pdf
+python generate_venue_reports.py ../example-data/survey.csv
+python generate_venue_reports.py ../example-data/survey.csv --format all
 ```
 
 **Output:**
@@ -140,15 +186,19 @@ Utility script to test CSV parsing and display venue information.
 
 ## Workflow
 
-**Recommended (One Command):**
+**Recommended (Unified Entry Point - All Report Types):**
 ```bash
-python generate_venue_reports.py Grand_Prairie
+python generate_report.py
 ```
+Interactive prompts guide you through all options, or use command-line arguments to skip prompts.
 
-**Manual Steps:**
-1. Run `generate_venue_data.py Grand_Prairie` to create `venue_data.json`
+**Advanced (Individual Scripts):**
+For single-venue snapshots:
+1. Run `generate_venue_data.py "Grand Prairie"` to create `venue_data.json`
 2. Run `run_analyze_venues.py venue_data.json` to create `ai_analysis_results.json`
 3. Run `create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json` to generate reports
+
+For comparisons or multi-venue reports, use the individual `create_*_report.py` scripts directly.
 
 ## File Paths
 

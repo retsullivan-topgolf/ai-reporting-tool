@@ -56,7 +56,7 @@ while i < len(sys.argv):
         if i + 1 >= len(sys.argv):
             print("Error: --format requires a value")
             sys.exit(1)
-        formats = arg.split(',')
+        formats = sys.argv[i + 1].split(',')
         i += 2
     else:
         json_file = arg
@@ -68,10 +68,19 @@ if not formats:
 
 # Normalize format names
 formats = [f.strip().lower() for f in formats]
+
+# Handle format shortcuts
+if len(formats) == 1:
+    if formats[0] == 'all':
+        formats = ['html', 'markdown', 'pdf']
+    elif formats[0] == 'both':  # legacy alias for html+markdown
+        formats = ['html', 'markdown']
+
+# Validate formats
 valid_formats = {'html', 'markdown', 'pdf'}
 for fmt in formats:
     if fmt not in valid_formats:
-        print(f"Error: invalid format '{fmt}'. Must be one of: html, markdown, pdf")
+        print(f"Error: invalid format '{fmt}'. Must be one of: html, markdown, pdf, all")
         sys.exit(1)
 
 # Check if files exist
