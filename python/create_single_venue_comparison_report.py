@@ -10,10 +10,11 @@ This report shows:
 - Comments from current period only
 
 Usage:
-    python create_single_venue_comparison_report.py <csv_file> <venue_name> <current_start> <current_end> <previous_start> <previous_end> [--format html|markdown|pdf|all]
+    python create_single_venue_comparison_report.py <data_identifier> <venue_name> <current_start> <current_end> <previous_start> <previous_end> [--format html|markdown|pdf|all]
 
 Example:
-    python create_single_venue_comparison_report.py ../example-data/survey.csv "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31
+    python create_single_venue_comparison_report.py Grand_Prairie "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31
+    python create_single_venue_comparison_report.py texas_venues "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31
 """
 
 import json
@@ -25,7 +26,7 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from api import csv_parser, venue_processor
+from api import csv_parser, venue_processor, data_loader
 import report_engine
 import report_content
 from jinja2 import Environment, FileSystemLoader
@@ -252,7 +253,7 @@ def main():
         print(__doc__)
         sys.exit(1)
     
-    csv_file = sys.argv[1]
+    data_identifier = sys.argv[1]
     venue_name = sys.argv[2]
     current_start = sys.argv[3]
     current_end = sys.argv[4]
@@ -265,23 +266,22 @@ def main():
         if sys.argv[7] == '--format':
             report_format = sys.argv[8] if len(sys.argv) > 8 else 'all'
     
-    # Validate CSV file
-    if not os.path.exists(csv_file):
-        print(f"Error: CSV file not found: {csv_file}")
-        sys.exit(1)
-    
     print(f"Processing venue period comparison report...")
+    print(f"  Data: {data_identifier}")
     print(f"  Venue: {venue_name}")
     print(f"  Current period: {current_start} to {current_end}")
     print(f"  Previous period: {previous_start} to {previous_end}")
     
-    # Parse CSV
+    # Load survey data
     try:
-        rows, fieldnames = csv_parser.parse_csv(csv_file)
+        rows, fieldnames = data_loader.load_survey_data(data_identifier)
         schema_type = csv_parser.detect_schema(fieldnames)
         print(f"  Schema detected: {schema_type}")
+    except data_loader.DataLoaderError as e:
+        print(f"Error loading data: {e}")
+        sys.exit(1)
     except Exception as e:
-        print(f"Error parsing CSV: {e}")
+        print(f"Error processing data: {e}")
         sys.exit(1)
     
     # Filter by venue

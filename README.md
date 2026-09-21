@@ -6,10 +6,15 @@ Generate professional venue reports from survey data with AI-powered analysis.
 
 ```bash
 cd python
-python generate_venue_reports.py ../example-data/your_file.csv
+python generate_venue_reports.py Grand_Prairie
 ```
 
 Choose your report format(s): HTML, Markdown, PDF, or All. Reports are generated in the `reports/` directory.
+
+To see available datasets:
+```bash
+python generate_venue_data.py --list
+```
 
 ## Features
 
@@ -46,12 +51,12 @@ Choose your report format(s): HTML, Markdown, PDF, or All. Reports are generated
 
 ```bash
 cd python
-python generate_venue_reports.py ../example-data/your_file.csv
+python generate_venue_reports.py Grand_Prairie
 # Choose format: 1) HTML  2) Markdown  3) PDF  4) All
 
 # Or skip the prompt:
-python generate_venue_reports.py ../example-data/your_file.csv --format all
-python generate_venue_reports.py ../example-data/your_file.csv --format html,pdf
+python generate_venue_reports.py Grand_Prairie --format all
+python generate_venue_reports.py texas_venues --format html,pdf
 ```
 
 ### Step-by-Step Generation
@@ -59,8 +64,8 @@ python generate_venue_reports.py ../example-data/your_file.csv --format html,pdf
 ```bash
 cd python
 
-# Step 1: Process CSV and generate metrics
-python generate_venue_data.py ../example-data/your_file.csv
+# Step 1: Load survey data and generate metrics
+python generate_venue_data.py Grand_Prairie
 
 # Step 2: Run AI analysis (optional but recommended)
 python run_analyze_venues.py venue_data.json
@@ -73,12 +78,17 @@ python create_single_venue_snapshot_report.py venue_data.json --format all --ana
 
 ```
 ai-reporting-tool/
+├── api/                       # API module
+│   ├── data_loader.py                      # Data loading abstraction (CSV → future API)
+│   ├── csv_parser.py                       # CSV parsing and schema detection
+│   ├── venue_processor.py                  # Venue metrics aggregation
+│   ├── schemas.py                          # Survey schema definitions
+│   └── qualtrics/                          # Survey data files (CSV)
 ├── python/                    # All Python scripts
-│   ├── generate_venue_reports.py            # Master orchestrator (recommended)
-│   ├── generate_period_reports.py           # Period-based reports orchestrator
-│   ├── generate_venue_data.py               # CSV → JSON metrics
-│   ├── run_analyze_venues.py                # Runs AI analysis pipeline
-│   ├── analyze_venues.py                    # AI analysis core module
+│   ├── generate_venue_reports.py           # Master orchestrator (recommended)
+│   ├── generate_venue_data.py              # Load data → JSON metrics
+│   ├── run_analyze_venues.py               # Runs AI analysis pipeline
+│   ├── analyze_venues.py                   # AI analysis core module
 │   ├── create_single_venue_snapshot_report.py    # Single-venue snapshot reports
 │   ├── create_single_venue_comparison_report.py  # Single-venue comparison reports
 │   ├── create_multi_venue_snapshot_report.py     # Multi-venue snapshot reports
@@ -87,14 +97,13 @@ ai-reporting-tool/
 │   ├── report_engine.py                    # Metrics registry and assessment
 │   └── requirements.txt
 ├── templates/                 # Report templates (HTML, Markdown, PDF)
-├── example-data/              # Sample CSV files
 ├── reports/                   # Generated reports (output)
 └── AGENTS.md                  # Detailed workflow documentation
 ```
 
 ## File Paths
 
-- **Input**: CSV files in `example-data/`
+- **Input**: Survey data loaded by `api.data_loader` from `api/qualtrics/`
 - **Intermediate**: `python/venue_data.json` (metrics), `python/ai_analysis_results.json` (AI analysis)
 - **Output**: Reports in `reports/` as `Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_1PAGE.{html,md,pdf}`
 
