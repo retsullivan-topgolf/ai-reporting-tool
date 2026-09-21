@@ -75,7 +75,7 @@ def process_venue_data(rows: List[Dict[str, str]], schema_name: str) -> Optional
     
     # Initialize F&B metric lists for real schema
     if schema_name == 'real':
-        results['return_likelihood_scores'] = []
+        results['nps_scores'] = []
         results['price_value_scores'] = []
         results['food_value_scores'] = []
         results['food_speed_scores'] = []
@@ -132,15 +132,15 @@ def process_venue_data(rows: List[Dict[str, str]], schema_name: str) -> Optional
             if resolution_val is not None and 1 <= resolution_val <= 5:
                 results['resolution_scores'].append(resolution_val)
         
-        # Real schema: Return Likelihood
+        # Real schema: Combined NPS
         if schema_name == 'real':
-            return_likelihood_val = csv_parser.convert_field_value(
-                csv_parser.get_field(row, 'return_likelihood', schema_name),
-                'return_likelihood',
+            nps_val = csv_parser.convert_field_value(
+                csv_parser.get_field(row, 'nps', schema_name),
+                'nps',
                 schema_name
             )
-            if return_likelihood_val is not None and 1 <= return_likelihood_val <= 5:
-                results['return_likelihood_scores'].append(return_likelihood_val)
+            if nps_val is not None and 1 <= nps_val <= 10:
+                results['nps_scores'].append(nps_val)
             
             # Price Value
             price_value_val = csv_parser.convert_field_value(
@@ -214,9 +214,9 @@ def process_venue_data(rows: List[Dict[str, str]], schema_name: str) -> Optional
                 'text': comment
             })
             
-            if ltr_val is not None and ltr_val >= 8:
+            if ltr_val is not None and ltr_val >= 4:
                 results['high_ltr_comments'].append(comment)
-            elif ltr_val is not None and ltr_val <= 6:
+            elif ltr_val is not None and ltr_val <= 2:
                 results['low_ltr_comments'].append(comment)
     
     # Calculate averages
@@ -242,9 +242,9 @@ def process_venue_data(rows: List[Dict[str, str]], schema_name: str) -> Optional
     
     # Calculate F&B averages for real schema
     if schema_name == 'real':
-        results['return_likelihood_avg'] = (
-            round(sum(results['return_likelihood_scores']) / len(results['return_likelihood_scores']), 1)
-            if results['return_likelihood_scores'] else None
+        results['nps_avg'] = (
+            round(sum(results['nps_scores']) / len(results['nps_scores']), 1)
+            if results['nps_scores'] else None
         )
         results['price_value_avg'] = (
             round(sum(results['price_value_scores']) / len(results['price_value_scores']), 1)
@@ -343,86 +343,30 @@ def get_period_type(start_date: str, end_date: str) -> str:
 
 
 def calculate_composite_score(venue_data: Dict, schema_name: str) -> float:
-    """Calculate composite performance score for a venue.
-    
-    Weighted formula: LTR (40%) + Fun (20%) + F&B Avg (20%) + Issue Resolution (20%)
-    All metrics normalized to 0-10 scale.
+    """Calculate composite performance score for venue ranking.
+
+    Combined NPS (Qualtrics-computed) is used directly as the ranking score,
+    since it is already a composite of underlying satisfaction signals -
+    blending it into an additional weighted formula on top of Fun/F&B/
+    Resolution would double-count that signal. Only the 'real' schema has an
+    NPS field; other schemas have no composite ranking score.
     
     Args:
         venue_data: Venue metrics dict
         schema_name: Schema type ('poc' or 'real')
         
     Returns:
-        Composite score (0-10), or None if insufficient data
+        Composite score (0-10, matching the Combined NPS scale), or None if
+        unavailable
     """
-    # Normalize LTR (already 1-10, just use as-is)
-    ltr = venue_data.get('ltr_avg', 0)
-    if not ltr:
+    if schema_name != 'real':
         return None
     
-    # Normalize Fun (1-5 scale to 0-10)
-    fun = venue_data.get('fun_avg', 0)
-    if fun:
-        fun_normalized = ((fun - 1) / 4) * 10
-    else:
-        fun_normalized = 0
+    nps = venue_data.get('nps_avg')
+    if nps is None:
+        return None
     
-    # Calculate F&B average (only for real schema)
-    fb_avg = None
-    if schema_name == 'real':
-        fb_metrics = []
-        for metric in ['food_value_avg', 'food_speed_avg', 'food_quality_avg',
-                       'beverage_value_avg', 'beverage_speed_avg', 'beverage_quality_avg']:
-            val = venue_data.get(metric)
-            if val is not None:
-                fb_metrics.append(val)
-        
-        if fb_metrics:
-            fb_avg = sum(fb_metrics) / len(fb_metrics)
-            # Normalize F&B (1-5 scale to 0-10)
-            fb_normalized = ((fb_avg - 1) / 4) * 10
-        else:
-            fb_normalized = 0
-    else:
-        fb_normalized = 0
-    
-    # Normalize Issue Resolution (1-5 scale to 0-10)
-    resolution = venue_data.get('resolution_avg', 0)
-    if resolution:
-        resolution_normalized = ((resolution - 1) / 4) * 10
-    else:
-        resolution_normalized = 0
-    
-    # Calculate composite score with weight redistribution for missing metrics
-    weights = {'ltr': 0.4, 'fun': 0.2, 'fb': 0.2, 'resolution': 0.2}
-    total_weight = 0
-    score = 0
-    
-    # LTR (always present)
-    score += ltr * weights['ltr']
-    total_weight += weights['ltr']
-    
-    # Fun
-    if fun_normalized > 0:
-        score += fun_normalized * weights['fun']
-        total_weight += weights['fun']
-    
-    # F&B
-    if fb_normalized > 0:
-        score += fb_normalized * weights['fb']
-        total_weight += weights['fb']
-    
-    # Resolution
-    if resolution_normalized > 0:
-        score += resolution_normalized * weights['resolution']
-        total_weight += weights['resolution']
-    
-    # Normalize by actual weight used
-    if total_weight > 0:
-        final_score = score / total_weight
-        return round(final_score, 2)
-    
-    return None
+    return round(nps, 2)
 
 
 def calculate_period_summary(rows: List[Dict[str, str]], schema_name: str,
@@ -488,6 +432,9 @@ def calculate_period_summary(rows: List[Dict[str, str]], schema_name: str,
     
     # F&B metrics for real schema
     if schema_name == 'real':
+        nps_values = [v['nps_avg'] for v in venue_metrics if v.get('nps_avg') is not None]
+        metrics_avg['nps_avg'] = round(sum(nps_values) / len(nps_values), 1) if nps_values else None
+        
         for fb_metric in ['food_value_avg', 'food_speed_avg', 'food_quality_avg',
                           'beverage_value_avg', 'beverage_speed_avg', 'beverage_quality_avg']:
             values = [v[fb_metric] for v in venue_metrics if v.get(fb_metric)]
@@ -525,6 +472,7 @@ def calculate_period_summary(rows: List[Dict[str, str]], schema_name: str,
                 'responses': v['responses'],
                 **(
                     {
+                        'nps_avg': v.get('nps_avg'),
                         'food_value_avg': v.get('food_value_avg'),
                         'food_speed_avg': v.get('food_speed_avg'),
                         'food_quality_avg': v.get('food_quality_avg'),
@@ -556,7 +504,7 @@ def compare_periods(current_summary: Dict, previous_summary: Dict) -> Dict:
     }
     
     # Compare metrics
-    for metric in ['ltr_avg', 'fun_avg', 'helpful_avg', 'issues_pct', 'resolution_avg']:
+    for metric in ['ltr_avg', 'nps_avg', 'fun_avg', 'helpful_avg', 'issues_pct', 'resolution_avg']:
         current_val = current_summary.get('metrics_avg', {}).get(metric)
         previous_val = previous_summary.get('metrics_avg', {}).get(metric)
         

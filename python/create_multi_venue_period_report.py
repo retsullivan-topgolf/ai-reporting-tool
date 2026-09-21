@@ -5,7 +5,7 @@ for a given time period and ranking them by composite performance score.
 
 This report shows:
 - Aggregated metrics across all venues
-- Venue ranking by composite score (LTR + Fun + F&B avg + Issue Resolution)
+- Venue ranking by composite score (Combined NPS)
 - Comment themes aggregated from current period
 - Period-level AI analysis synthesizing insights across venues
 
@@ -169,6 +169,7 @@ def main():
         sys.exit(1)
     
     print(f"  Venues: {period_summary['venues_count']}")
+    print(f"  Aggregated NPS: {period_summary['metrics_avg'].get('nps_avg', 'N/A')}")
     print(f"  Aggregated LTR: {period_summary['metrics_avg'].get('ltr_avg', 'N/A')}")
     
     # Extract comment themes

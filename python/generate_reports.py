@@ -70,7 +70,7 @@ def main():
             
             # Print F&B metrics if available
             if schema_type == 'real':
-                print(f"Return Likelihood: {processed_data.get('return_likelihood_avg')}")
+                print(f"NPS: {processed_data.get('nps_avg')}")
                 print(f"Price Value: {processed_data.get('price_value_avg')}")
                 print(f"Food Value: {processed_data.get('food_value_avg')}")
                 print(f"Food Speed: {processed_data.get('food_speed_avg')}")

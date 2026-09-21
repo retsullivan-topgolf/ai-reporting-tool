@@ -20,7 +20,8 @@
 
 | Metric | Average |
 |--------|---------|
-| **Likelihood to Recommend (LTR)** | {{ "%.1f"|format(metrics_avg.ltr_avg) }} / 10 |
+| **NPS (Combined)** | {{ "%.1f"|format(metrics_avg.nps_avg) if metrics_avg.nps_avg else "N/A" }} / 10 |
+| **Likelihood to Return (LTR)** | {{ "%.1f"|format(metrics_avg.ltr_avg) }} / 5 |
 | **Fun** | {{ "%.1f"|format(metrics_avg.fun_avg) }} / 5 |
 | **Helpful** | {{ "%.1f"|format(metrics_avg.helpful_avg) }} / 5 |
 | **Issues Reported** | {{ "%.1f"|format(metrics_avg.issues_pct) }}% |
@@ -30,7 +31,7 @@
 
 ## Venue Ranking
 
-| Rank | Venue | Composite Score | LTR | Fun | Resolution | Responses |
+| Rank | Venue | NPS (Composite) | LTR | Fun | Resolution | Responses |
 |------|-------|-----------------|-----|-----|------------|-----------|
 {% for venue in venues_ranked %}
 | {{ venue.rank }} | {{ venue.venue }} | {{ "%.2f"|format(venue.composite_score) if venue.composite_score else "N/A" }} | {{ "%.1f"|format(venue.ltr_avg) }} | {{ "%.1f"|format(venue.fun_avg) }} | {{ "%.1f"|format(venue.resolution_avg) if venue.resolution_avg else "N/A" }} | {{ venue.responses }} |

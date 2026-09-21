@@ -107,14 +107,14 @@ Three recommendation tiers:
 }
 ```
 
-**Maintain Tier (reinforcing strong LTR/recommendation intent):**
+**Maintain Tier (reinforcing strong NPS/recommendation intent):**
 ```json
 {
-  "title": "Protect Recommendation Intent",
+  "title": "Protect NPS",
   "items": [
-    "<strong>Guest satisfaction tracking:</strong> Continue monitoring LTR and Fun scores to ensure equipment fixes maintain the strong recommendation intent.",
+    "<strong>Guest satisfaction tracking:</strong> Continue monitoring NPS and Fun scores to ensure equipment fixes maintain the strong satisfaction level.",
     "<strong>Staff recognition:</strong> Acknowledge and reward the responsive staff behaviors that guests are noticing and appreciating.",
-    "<strong>Experience consistency:</strong> Protect the overall experience quality that's driving the 87% recommendation rate.",
+    "<strong>Experience consistency:</strong> Protect the overall experience quality that's driving the strong NPS.",
     "<strong>Feedback loop:</strong> Regularly share positive guest feedback with staff to reinforce what's working well."
   ]
 }

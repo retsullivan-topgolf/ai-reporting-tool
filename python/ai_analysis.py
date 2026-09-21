@@ -122,10 +122,10 @@ def _build_metrics_payload(data):
         "resolution": report_engine.get_assessment("resolution", metrics["resolution_avg"], registry),
     }
 
-    # Add optional Return Likelihood and Price Value metrics if present
-    if "return_likelihood_avg" in data and data["return_likelihood_avg"] is not None:
-        metrics["return_likelihood_avg"] = data["return_likelihood_avg"]
-        assessment_tiers["return_likelihood"] = report_engine.get_assessment("return_likelihood", data["return_likelihood_avg"], registry)
+    # Add optional NPS and Price Value metrics if present
+    if "nps_avg" in data and data["nps_avg"] is not None:
+        metrics["nps_avg"] = data["nps_avg"]
+        assessment_tiers["nps"] = report_engine.get_assessment("nps", data["nps_avg"], registry)
 
     if "price_value_avg" in data and data["price_value_avg"] is not None:
         metrics["price_value_avg"] = data["price_value_avg"]

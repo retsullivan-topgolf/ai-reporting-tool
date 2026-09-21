@@ -31,11 +31,18 @@ REAL_SCHEMA = {
             "description": "Date of visit"
         },
         "ltr": {
+            "csv_column": "Likelihood to Return - How likely are you to return to this or another Topgolf venue?",
+            "type": "integer",
+            "range": [1, 5],
+            "required": True,
+            "description": "Likelihood to Return (1-5 scale)"
+        },
+        "nps": {
             "csv_column": "Combined NPS",
             "type": "integer",
             "range": [1, 10],
             "required": True,
-            "description": "Likelihood to Return (1-10 scale, called Combined NPS)"
+            "description": "Combined Net Promoter Score, Qualtrics-computed recommend-intent metric (1-10 scale)"
         },
         "fun": {
             "csv_column": "Fun - How much fun did you have during your visit at Topgolf [Field-Venue_Name]?",
@@ -70,13 +77,6 @@ REAL_SCHEMA = {
             "type": "string",
             "required": False,
             "description": "Open-ended comment"
-        },
-        "return_likelihood": {
-            "csv_column": "Likelihood to Return - How likely are you to return to this or another Topgolf venue?",
-            "type": "integer",
-            "range": [1, 5],
-            "required": False,
-            "description": "Return likelihood (1-5 scale)"
         },
         "price_value": {
             "csv_column": "Price Value - How would you rate Topgolf's price compared to the value of your experience...",

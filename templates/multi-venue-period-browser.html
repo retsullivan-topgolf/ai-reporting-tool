@@ -359,6 +359,10 @@
                 <h2 class="section-title">Performance Summary</h2>
                 <div class="metrics-grid">
                     <div class="metric-card">
+                        <div class="metric-label">Avg NPS</div>
+                        <div class="metric-value">{{ "%.1f"|format(metrics_avg.nps_avg) if metrics_avg.nps_avg else "N/A" }}</div>
+                    </div>
+                    <div class="metric-card">
                         <div class="metric-label">Avg LTR</div>
                         <div class="metric-value">{{ "%.1f"|format(metrics_avg.ltr_avg) }}</div>
                     </div>
@@ -390,7 +394,7 @@
                             <tr>
                                 <th style="width: 60px;">Rank</th>
                                 <th>Venue</th>
-                                <th style="width: 120px;">Composite Score</th>
+                                <th style="width: 120px;">NPS (Composite)</th>
                                 <th style="width: 80px;">LTR</th>
                                 <th style="width: 80px;">Fun</th>
                                 <th style="width: 80px;">Resolution</th>

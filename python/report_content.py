@@ -148,7 +148,7 @@ def build_overall_assessment(data, metrics_registry=None):
     
     # Optional metrics
     optional_metrics = [
-        ('return_likelihood', data.get('return_likelihood_avg')),
+        ('nps', data.get('nps_avg')),
         ('price_value', data.get('price_value_avg')),
     ]
     
@@ -243,11 +243,11 @@ def build_metrics_context(data, metrics_registry):
         'overall_assessment': build_overall_assessment(data, metrics_registry),
     }
 
-    # Add optional Return Likelihood and Price Value metrics (if present in data)
-    if 'return_likelihood_avg' in data and data['return_likelihood_avg'] is not None:
-        context['return_likelihood_avg_display'] = f"{data['return_likelihood_avg']:.1f}"
-        context['return_likelihood_assessment'] = report_engine.get_assessment('return_likelihood', data['return_likelihood_avg'], metrics_registry)
-        context['return_likelihood_assessment_class'] = report_engine.get_assessment_class('return_likelihood', data['return_likelihood_avg'], metrics_registry)
+    # Add optional NPS and Price Value metrics (if present in data)
+    if 'nps_avg' in data and data['nps_avg'] is not None:
+        context['nps_avg_display'] = f"{data['nps_avg']:.1f}"
+        context['nps_assessment'] = report_engine.get_assessment('nps', data['nps_avg'], metrics_registry)
+        context['nps_assessment_class'] = report_engine.get_assessment_class('nps', data['nps_avg'], metrics_registry)
 
     if 'price_value_avg' in data and data['price_value_avg'] is not None:
         context['price_value_avg_display'] = f"{data['price_value_avg']:.1f}"

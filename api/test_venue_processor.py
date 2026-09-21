@@ -34,67 +34,47 @@ class TestGetPeriodType(unittest.TestCase):
 
 
 class TestCalculateCompositeScore(unittest.TestCase):
-    """Tests for calculate_composite_score() function."""
+    """Tests for calculate_composite_score() function.
     
-    def test_complete_metric_data_real_schema(self):
-        """Test composite score with all metrics available (real schema)."""
+    The composite/ranking score is Combined NPS (nps_avg) directly, since
+    Qualtrics NPS is already a composite of underlying satisfaction signals -
+    it is only available for the 'real' schema.
+    """
+    
+    def test_uses_nps_directly_real_schema(self):
+        """Test composite score equals nps_avg for the real schema."""
         venue_data = {
-            'ltr_avg': 8.0,
+            'nps_avg': 8.0,
+            'ltr_avg': 4.0,
             'fun_avg': 4.2,
             'food_value_avg': 4.0,
-            'food_speed_avg': 3.8,
-            'food_quality_avg': 4.2,
-            'beverage_value_avg': 4.1,
-            'beverage_speed_avg': 3.9,
-            'beverage_quality_avg': 4.0,
             'resolution_avg': 4.5
         }
         
         score = venue_processor.calculate_composite_score(venue_data, 'real')
-        self.assertIsNotNone(score)
-        self.assertGreater(score, 0)
-        self.assertLessEqual(score, 10)
+        self.assertEqual(score, 8.0)
     
-    def test_missing_fb_data(self):
-        """Test composite score with missing F&B data."""
+    def test_missing_nps_returns_none(self):
+        """Test that missing nps_avg returns None for the real schema."""
         venue_data = {
-            'ltr_avg': 8.0,
+            'ltr_avg': 4.0,
             'fun_avg': 4.2,
             'resolution_avg': 4.5
         }
         
         score = venue_processor.calculate_composite_score(venue_data, 'real')
-        self.assertIsNotNone(score)
-        self.assertGreater(score, 0)
-        
-        score = venue_processor.calculate_composite_score(venue_data, 'poc')
-        self.assertIsNotNone(score)
-        self.assertGreater(score, 0)
+        self.assertIsNone(score)
     
-    def test_missing_ltr(self):
-        """Test that missing LTR returns None."""
+    def test_non_real_schema_returns_none(self):
+        """Test that schemas without an NPS field have no composite score."""
         venue_data = {
+            'ltr_avg': 8.0,
             'fun_avg': 4.2,
             'resolution_avg': 4.5
         }
         
         score = venue_processor.calculate_composite_score(venue_data, 'poc')
         self.assertIsNone(score)
-    
-    def test_partial_fb_data(self):
-        """Test composite score with partial F&B data."""
-        venue_data = {
-            'ltr_avg': 8.0,
-            'fun_avg': 4.2,
-            'food_value_avg': 4.0,
-            'food_speed_avg': 3.8,
-            'food_quality_avg': 4.2,
-            'resolution_avg': 4.5
-        }
-        
-        score = venue_processor.calculate_composite_score(venue_data, 'real')
-        self.assertIsNotNone(score)
-        self.assertGreater(score, 0)
 
 
 class TestFilterByDateRange(unittest.TestCase):

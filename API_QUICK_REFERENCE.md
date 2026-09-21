@@ -37,7 +37,7 @@ with open('venue_data.json', 'w') as f:
 ```python
 from api import csv_parser
 
-row = {"Venue": "Grand Prairie", "Combined NPS": "8", ...}
+row = {"Venue": "Grand Prairie", "Likelihood to Return - How likely are you to return to this or another Topgolf venue?": "4", ...}
 is_valid, error = csv_parser.validate_row(row, 'real')
 
 if not is_valid:
@@ -49,9 +49,9 @@ if not is_valid:
 ```python
 from api import csv_parser
 
-row = {"Combined NPS": "8"}
-value = csv_parser.get_field(row, 'ltr', 'real')  # "8"
-converted = csv_parser.convert_field_value(value, 'ltr', 'real')  # 8 (int)
+row = {"Likelihood to Return - How likely are you to return to this or another Topgolf venue?": "4"}
+value = csv_parser.get_field(row, 'ltr', 'real')  # "4"
+converted = csv_parser.convert_field_value(value, 'ltr', 'real')  # 4 (int)
 ```
 
 ### List Available Schemas
@@ -175,14 +175,15 @@ curl -X POST http://localhost:5000/api/validate-row \
 - **Comment**: Q6_COMMENT (text)
 
 ### Real Schema
-- **LTR**: Combined NPS (1-10 integer)
+- **LTR**: Likelihood to Return field (1-5 integer)
+- **NPS**: Combined NPS (1-10 integer, Qualtrics-computed)
 - **Fun**: Fun field (1-5 integer)
 - **Helpful**: Helpfulness field (1-5 integer)
 - **Issues**: Issues During Visit (yes/no)
 - **Resolution**: Issue Resolution Sat (1-5 integer)
 - **Comment**: Open Comment (text)
 - **Plus F&B metrics**: Food/Beverage Value, Speed, Quality (1-5 integers)
-- **Plus**: Return Likelihood, Price Value (1-5 integers)
+- **Plus**: Price Value (1-5 integer)
 
 ## Output Structure
 
@@ -192,13 +193,13 @@ curl -X POST http://localhost:5000/api/validate-row \
     "venue": "Grand Prairie",
     "responses": 475,
     "date_range": ["1/16/2026 0:00", "9/8/2026 0:00"],
-    "ltr_avg": 8.3,
+    "ltr_avg": 4.3,
+    "nps_avg": 8.3,
     "fun_avg": 4.4,
     "helpful_avg": 4.2,
     "issues_count": 125,
     "issues_pct": 26.3,
     "resolution_avg": 2.6,
-    "return_likelihood_avg": 4.4,
     "price_value_avg": 3.2,
     "food_value_avg": 3.8,
     "food_speed_avg": 4.1,

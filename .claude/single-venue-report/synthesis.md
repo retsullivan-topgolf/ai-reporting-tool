@@ -147,11 +147,11 @@ Respond with ONLY a single JSON object (no markdown fences, no commentary before
 The following demonstrates formatting and synthesis approach. Do not assume these requirements apply to the user's source.
 
 **Input:**
-- Metrics: characterization = "Strong overall satisfaction with high LTR (87%) but equipment reliability issues are dragging down Fun scores"; metric_flags = [{metric: "LTR", polarity: "positive", magnitude: 82, note: "87% would recommend"}, {metric: "Equipment reliability", polarity: "negative", magnitude: 71, note: "Screen tracking failures in 14 comments"}]
+- Metrics: characterization = "Strong overall satisfaction with a high NPS (8.7/10) but equipment reliability issues are dragging down Fun scores"; metric_flags = [{metric: "nps", polarity: "positive", magnitude: 82, note: "NPS of 8.7/10 is Excellent"}, {metric: "Equipment reliability", polarity: "negative", magnitude: 71, note: "Screen tracking failures in 14 comments"}]
 - Comments: themes = [{label: "Equipment reliability", polarity: "negative", magnitude: 71, summary: "Screens losing shot tracking mid-session"}, {label: "Staff responsiveness", polarity: "positive", magnitude: 65, summary: "Staff quickly addressing issues"}]
 
 **Combined ranking (by magnitude):**
-1. LTR (positive, 82)
+1. NPS (positive, 82)
 2. Equipment reliability (negative, 71)
 3. Staff responsiveness (positive, 65)
 
@@ -160,14 +160,14 @@ The following demonstrates formatting and synthesis approach. Do not assume thes
 {
   "overview": "This venue is performing well overall, driven by strong satisfaction with the experience. However, equipment reliability issues - particularly screen tracking failures - are creating friction that's preventing the entertainment experience from reaching its potential. Staff responsiveness is a bright spot, with most guests noting quick resolution of problems.",
   "ups": [
-    "<strong>Strong recommendation intent:</strong> 87% of guests would recommend the venue, indicating solid overall satisfaction with the experience.",
+    "<strong>Strong NPS:</strong> A Combined NPS of 8.7/10 indicates solid overall satisfaction and recommend intent for the venue.",
     "<strong>Responsive staff:</strong> Guests consistently praised staff for quickly addressing and resolving equipment issues to get them back to playing."
   ],
   "downs": [
     "<strong>Equipment reliability:</strong> Screen tracking failures are the dominant complaint, mentioned in 14 comments and cited as a frequent frustration even when quickly resolved."
   ],
   "impact": [
-    {"title": "Recommendation Intent", "description": "87% LTR indicates strong overall satisfaction and loyalty, the primary driver of venue performance."},
+    {"title": "NPS", "description": "A Combined NPS of 8.7/10 indicates strong overall satisfaction and loyalty, the primary driver of venue performance."},
     {"title": "Equipment Reliability", "description": "Screen tracking failures mentioned in 14 comments are the most significant operational issue, directly impacting the Fun experience."},
     {"title": "Staff Responsiveness", "description": "Quick problem resolution is a valued differentiator, with 8 guests specifically praising staff for getting them back to playing quickly."}
   ],
@@ -188,11 +188,11 @@ The following demonstrates formatting and synthesis approach. Do not assume thes
       ]
     },
     "maintain": {
-      "title": "Protect Recommendation Intent",
+      "title": "Protect NPS",
       "items": [
-        "<strong>Guest satisfaction tracking:</strong> Continue monitoring LTR and Fun scores to ensure equipment fixes maintain the strong recommendation intent.",
+        "<strong>Guest satisfaction tracking:</strong> Continue monitoring NPS and Fun scores to ensure equipment fixes maintain the strong satisfaction level.",
         "<strong>Staff recognition:</strong> Acknowledge and reward the responsive staff behaviors that guests are noticing and appreciating.",
-        "<strong>Experience consistency:</strong> Protect the overall experience quality that's driving the 87% recommendation rate."
+        "<strong>Experience consistency:</strong> Protect the overall experience quality that's driving the strong NPS."
       ]
     }
   }

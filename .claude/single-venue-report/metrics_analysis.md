@@ -7,7 +7,7 @@ description: Analyze aggregate survey metrics for a venue and produce a characte
 
 Analyze the aggregate survey metrics for a single venue and produce a short characterization of what the numbers say together, plus a set of comparable "concern magnitudes" that a later synthesis step can rank against comment themes on the same scale. This is Stage 1 of 3 in a venue report analysis pipeline.
 
-Metrics may include core metrics (LTR, Fun, Helpfulness, Issues, Resolution) and optional metrics (Return Likelihood, Price Value, F&B metrics).
+Metrics may include core metrics (LTR, Fun, Helpfulness, Issues, Resolution) and optional metrics (NPS, Price Value, F&B metrics).
 
 # Inputs
 
@@ -16,7 +16,7 @@ Required:
 - `venue`: venue name
 - `responses`: survey count for the period
 - `metrics`: object containing:
-  - `ltr_avg` (0-10 scale)
+  - `ltr_avg` (0-5 scale) - Likelihood to Return: customer intent to return to this or another venue
   - `fun_avg` (0-5 scale)
   - `helpful_avg` (0-5 scale)
   - `issues_pct` (0-100 scale)
@@ -25,7 +25,7 @@ Required:
 
 Optional (if present in data):
 
-- `return_likelihood_avg` (0-5 scale) - customer intent to return
+- `nps_avg` (0-10 scale) - Combined NPS, a Qualtrics-computed recommend-intent metric distinct from LTR
 - `price_value_avg` (0-5 scale) - perceived value for money
 - `food_value_avg` (0-5 scale) - food offering value
 - `food_speed_avg` (0-5 scale) - food service speed
@@ -58,7 +58,7 @@ Treat the provided metrics and assessment tiers as the source of truth. Do not i
 2. Review the assessment tiers to understand how each metric rates in isolation.
 3. Analyze cross-metric patterns and relationships to form a characterization (1-2 sentences).
    - If F&B metrics are present, consider how they relate to overall satisfaction (e.g., strong F&B may offset operational issues, or weak F&B may be dragging down satisfaction)
-   - If Return Likelihood or Price Value are present, consider what they reveal about customer intent and value perception
+   - If NPS or Price Value are present, consider what they reveal about customer intent and value perception
 4. Identify metrics worth flagging (typically anything not squarely "Moderate"/middle-of-the-road).
 5. For each flagged metric, compute magnitude using the scoring rules below.
 6. Order metric_flags by magnitude, highest first.
@@ -94,7 +94,7 @@ Example sythesized characterisation: "Strong Fun and Helpfulness scores indicate
 
 **`metric_flags`**: One entry per metric that's worth calling out. Each entry must include:
 
-- `metric`: one of `ltr`, `fun`, `helpful`, `issues`, `resolution`, `return_likelihood`, `price_value`, `food_value`, `food_speed`, `food_quality`, `beverage_value`, `beverage_speed`, `beverage_quality`, `fb_average`
+- `metric`: one of `ltr`, `fun`, `helpful`, `issues`, `resolution`, `nps`, `price_value`, `food_value`, `food_speed`, `food_quality`, `beverage_value`, `beverage_speed`, `beverage_quality`, `fb_average`
 - `polarity`: `"positive"` or `"negative"`
 - `magnitude`: 0-100, representing how much this metric matters to overall guest satisfaction for this venue
 - `note`: one sentence, cite the actual number
@@ -114,7 +114,7 @@ Example sythesized characterisation: "Strong Fun and Helpfulness scores indicate
 - MUST include one entry per metric worth calling out (typically anything not "Moderate")
 - MUST NOT flag metrics with nothing notable to say (e.g., a "Strong" Fun score with nothing unusual)
 - MUST NOT flag `resolution_avg` as a concern if it is `null` (this is normal for low issue rates)
-- MUST NOT flag optional metrics (Return Likelihood, Price Value, F&B) if they are not present in the input data
+- MUST NOT flag optional metrics (NPS, Price Value, F&B) if they are not present in the input data
 - MUST order flags by magnitude, highest first
 - if all metrics are moderate, return an array with all of them with their respective magnitudes
 - When F&B metrics are present, consider flagging the `fb_average` if it's notably strong or weak, as it represents the overall food & beverage experience
@@ -145,7 +145,7 @@ The following demonstrates formatting only. Do not assume these requirements app
       "metric": "ltr",
       "polarity": "negative",
       "magnitude": 35,
-      "note": "LTR of 6.8/10 is below the Strong threshold, likely depressed by the high issue rate"
+      "note": "LTR of 3.2/5 is below the Good threshold, likely depressed by the high issue rate"
     },
     {
       "metric": "fun",

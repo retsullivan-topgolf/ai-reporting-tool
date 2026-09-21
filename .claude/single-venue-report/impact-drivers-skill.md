@@ -61,8 +61,8 @@ An array of 3 impact drivers:
 {
   "impact": [
     {
-      "title": "Recommendation Intent",
-      "description": "87% LTR indicates strong overall satisfaction and loyalty, the primary driver of venue performance. This is the strongest signal of guest satisfaction."
+      "title": "NPS",
+      "description": "A Combined NPS of 8.7/10 indicates strong overall satisfaction and loyalty, the primary driver of venue performance. This is the strongest signal of guest satisfaction."
     },
     {
       "title": "Equipment Reliability",

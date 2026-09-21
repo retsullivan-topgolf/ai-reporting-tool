@@ -174,15 +174,9 @@ python create_period_comparison_report.py ../example-data/survey.csv 2026-01-01 
 
 ### Composite Score Calculation
 
-The composite score weights four key metrics:
-- **LTR (Likelihood to Recommend):** 40% - Primary driver of business value
-- **Fun:** 20% - Guest experience quality
-- **F&B Average:** 20% - Food & beverage satisfaction (average of 6 metrics)
-- **Issue Resolution:** 20% - Operational excellence
+The venue ranking/composite score is the venue's **Combined NPS** (`nps_avg`), used directly rather than blended into a weighted formula. NPS is a Qualtrics-computed metric that's already a composite of underlying satisfaction signals, so folding it into an additional weighted formula alongside Fun/F&B/Resolution would double-count that signal. Only the `real` schema (which includes a Combined NPS field) has a composite score; venues/schemas without NPS data get `None`.
 
-Formula: `(LTR × 0.4) + (Fun_normalized × 0.2) + (F&B_normalized × 0.2) + (Resolution_normalized × 0.2)`
-
-All metrics are normalized to 0-10 scale. Missing metrics have their weights redistributed to present metrics.
+Note: `nps` (Combined NPS, 1-10 scale) and `ltr` (Likelihood to Return, 1-5 scale) are two distinct survey fields - do not conflate them. NPS is a recommend-intent metric; LTR is a retention-intent metric.
 
 ### Trend Threshold
 

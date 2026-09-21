@@ -17,7 +17,7 @@ Required:
 - `responses`: total survey count for the period (not all respondents left a comment)
 - `comments`: list of comment objects, each containing:
   - `text`: the guest's free-text comment
-  - `ltr`: that guest's Likelihood to Recommend score (0-10)
+  - `ltr`: that guest's Likelihood to Return score (1-5)
   - `fun`: that guest's Fun score (0-5)
 - `metric_flags`: list of metric flags from Step 1, each containing:
   - `metric`: the metric name

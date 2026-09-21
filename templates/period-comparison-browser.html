@@ -382,6 +382,32 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="metric-name">NPS</td>
+                                <td class="metric-value">{{ "%.1f"|format(current_metrics_avg.nps_avg) if current_metrics_avg.nps_avg else "N/A" }}</td>
+                                <td class="metric-value">{{ "%.1f"|format(previous_metrics_avg.nps_avg) if previous_metrics_avg and previous_metrics_avg.nps_avg else "N/A" }}</td>
+                                <td class="metric-delta {% if comparison.metrics_deltas.get('nps_avg_delta', 0) > 0 %}positive{% elif comparison.metrics_deltas.get('nps_avg_delta', 0) < 0 %}negative{% else %}neutral{% endif %}">
+                                    {% if comparison.metrics_deltas.get('nps_avg_delta') is not none %}
+                                        {% if comparison.metrics_deltas.get('nps_avg_delta', 0) > 0 %}+{% endif %}{{ "%.2f"|format(comparison.metrics_deltas.get('nps_avg_delta', 0)) }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="metric-delta {% if comparison.metrics_deltas.get('nps_avg_percent_change', 0) > 0 %}positive{% elif comparison.metrics_deltas.get('nps_avg_percent_change', 0) < 0 %}negative{% else %}neutral{% endif %}">
+                                    {% if comparison.metrics_deltas.get('nps_avg_percent_change') is not none %}
+                                        {% if comparison.metrics_deltas.get('nps_avg_percent_change', 0) > 0 %}+{% endif %}{{ "%.1f"|format(comparison.metrics_deltas.get('nps_avg_percent_change', 0)) }}%
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="trend-indicator {% if comparison.metrics_deltas.get('nps_avg_delta', 0) >= 0.5 %}up{% elif comparison.metrics_deltas.get('nps_avg_delta', 0) <= -0.5 %}down{% else %}neutral{% endif %}">
+                                    {% if comparison.metrics_deltas.get('nps_avg_delta') is not none %}
+                                        {% if comparison.metrics_deltas.get('nps_avg_delta', 0) >= 0.5 %}↑{% elif comparison.metrics_deltas.get('nps_avg_delta', 0) <= -0.5 %}↓{% else %}→{% endif %}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="metric-name">Fun</td>
                                 <td class="metric-value">{{ "%.1f"|format(current_metrics_avg.fun_avg) }}</td>
                                 <td class="metric-value">{{ "%.1f"|format(previous_metrics_avg.fun_avg) if previous_metrics_avg else "N/A" }}</td>

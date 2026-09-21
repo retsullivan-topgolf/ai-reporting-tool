@@ -3,8 +3,22 @@
   "_no_benchmark_comment": "An earlier version of this file had a 'benchmark' (network average) per metric, used to show 'Above/On par/Below average' vs. other venues. That was removed: individual venue reports are usually generated from a single venue's data, so a hardcoded 'network average' constant was often stale or simply fictional for whatever CSV was actually being processed. Cross-venue comparison belongs in the separate Venue Rankings Weekly report (see templates/REPORT_TEMPLATES_VENUE_RANKINGS.md), which computes real averages/ranks from all venues present in that run's data. If a per-venue report ever needs a benchmark again, compute it live from the venues actually loaded in that run rather than reintroducing a static constant.",
 
   "ltr": {
-    "label": "Likelihood to Recommend",
+    "label": "LTR",
     "data_field": "ltr_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "weak_explanation": "customers are unlikely to return to this venue",
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "moderate"},
+      {"min": null, "level": "Poor", "class": "poor"}
+    ]
+  },
+
+  "nps": {
+    "label": "NPS",
+    "data_field": "nps_avg",
     "unit_display": "/ 10",
     "higher_is_better": true,
     "weak_explanation": "customers are unlikely to recommend this venue to others",
@@ -69,20 +83,6 @@
       {"min": 3.5, "level": "Strong", "class": "good"},
       {"min": 3.0, "level": "Moderate", "class": "moderate"},
       {"min": null, "level": "Weak", "class": "poor"}
-    ]
-  },
-
-  "return_likelihood": {
-    "label": "Return Likelihood",
-    "data_field": "return_likelihood_avg",
-    "unit_display": "/ 5",
-    "higher_is_better": true,
-    "weak_explanation": "customers are unlikely to return to this venue",
-    "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
-      {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
     ]
   },
 

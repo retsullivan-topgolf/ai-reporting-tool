@@ -139,6 +139,14 @@ def build_comparison_data(current_venue_data, previous_venue_data):
                     'trend': '—',
                     'trend_class': 'unavailable'
                 },
+                'nps': {
+                    'current': current_venue_data.get('nps_avg'),
+                    'previous': None,
+                    'delta': None,
+                    'percent_change': None,
+                    'trend': '—',
+                    'trend_class': 'unavailable'
+                },
                 'fun': {
                     'current': current_venue_data.get('fun_avg'),
                     'previous': None,
@@ -184,6 +192,7 @@ def build_comparison_data(current_venue_data, previous_venue_data):
     # Compare each metric
     metrics_to_compare = [
         ('ltr', 'ltr_avg'),
+        ('nps', 'nps_avg'),
         ('fun', 'fun_avg'),
         ('helpful', 'helpful_avg'),
         ('issues', 'issues_pct'),
