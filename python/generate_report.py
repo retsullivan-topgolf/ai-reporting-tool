@@ -9,7 +9,7 @@ This script provides a single command to generate any report type:
 - Multi-venue comparison (two periods, all venues)
 
 Usage:
-    python generate_report.py [--report-type TYPE] [--venue VENUE] [--format FORMAT] [--start-date DATE] [--end-date DATE] [--prev-start DATE] [--prev-end DATE]
+    python generate_report.py [--report-type TYPE] [--venue VENUE] [--format FORMAT] [--start-date DATE] [--end-date DATE] [--prev-start DATE] [--prev-end DATE] [--force-analysis]
 
 Examples:
     # Interactive mode - prompts for all inputs
@@ -17,6 +17,9 @@ Examples:
 
     # Single-venue snapshot for Grand Prairie
     python generate_report.py --report-type snapshot --venue "Grand Prairie" --format all
+
+    # Single-venue snapshot with fresh AI analysis (bypass cache)
+    python generate_report.py --report-type snapshot --venue "Grand Prairie" --format all --force-analysis
 
     # Single-venue comparison
     python generate_report.py --report-type comparison --venue "Grand Prairie" --start-date 2026-01-01 --end-date 2026-01-31 --prev-start 2025-12-01 --prev-end 2025-12-31 --format html
@@ -81,6 +84,7 @@ def parse_args():
         'end_date': None,
         'prev_start': None,
         'prev_end': None,
+        'force_analysis': False,
     }
     
     i = 1
@@ -128,6 +132,9 @@ def parse_args():
                 sys.exit(1)
             args['prev_end'] = sys.argv[i + 1]
             i += 2
+        elif arg == '--force-analysis':
+            args['force_analysis'] = True
+            i += 1
         else:
             print(f"Error: Unknown argument '{arg}'")
             sys.exit(1)
@@ -401,9 +408,15 @@ def main():
         
         print("\n" + "="*60)
         print("STEP 2: Generating AI analysis...")
+        if args['force_analysis']:
+            print("(--force-analysis: bypassing cache)")
         print("="*60)
         
-        if not run_command('run_analyze_venues.py', ['venue_data.json', '--output', 'ai_analysis_results.json']):
+        analyze_args = ['venue_data.json', '--output', 'ai_analysis_results.json']
+        if args['force_analysis']:
+            analyze_args.append('--force')
+        
+        if not run_command('run_analyze_venues.py', analyze_args):
             print("\nFailed to generate AI analysis. Aborting.")
             sys.exit(1)
         

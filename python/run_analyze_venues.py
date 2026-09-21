@@ -9,6 +9,8 @@ same analysis without re-running the expensive Claude API calls.
 Usage:
     python run_analyze_venues.py venue_data.json
     python run_analyze_venues.py venue_data.json --output ai_analysis_results.json
+    python run_analyze_venues.py venue_data.json --force
+    python run_analyze_venues.py venue_data.json --output ai_analysis_results.json --force
 """
 import json
 import sys
@@ -21,6 +23,7 @@ def main():
     # Parse command line arguments
     json_file = 'venue_data.json'
     output_file = 'ai_analysis_results.json'
+    force_refresh = False
     
     i = 1
     while i < len(sys.argv):
@@ -31,6 +34,9 @@ def main():
                 sys.exit(1)
             output_file = sys.argv[i + 1]
             i += 2
+        elif arg == '--force':
+            force_refresh = True
+            i += 1
         else:
             json_file = arg
             i += 1
@@ -38,14 +44,22 @@ def main():
     # Check if input file exists
     if not os.path.exists(json_file):
         print(f"Error: File not found: {json_file}")
-        print(f"\nUsage: python run_analyze_venues.py <path_to_json_file> [--output <output_file>]")
+        print(f"\nUsage: python run_analyze_venues.py <path_to_json_file> [--output <output_file>] [--force]")
         print(f"\nExamples:")
         print(f"  python run_analyze_venues.py venue_data.json")
         print(f"  python run_analyze_venues.py venue_data.json --output ai_analysis_results.json")
+        print(f"  python run_analyze_venues.py venue_data.json --force")
+        print(f"  python run_analyze_venues.py venue_data.json --output ai_analysis_results.json --force")
         print(f"\nNote: First run 'python generate_venue_data.py <csv_file>' to create venue_data.json")
+        print(f"      Use --force to bypass cache and regenerate analysis from scratch")
         sys.exit(1)
     
     print(f"Reading venue data from: {json_file}")
+    
+    # Set environment variable for force refresh if requested
+    if force_refresh:
+        os.environ['AI_ANALYSIS_FORCE_REFRESH'] = '1'
+        print("Force refresh enabled - bypassing cache")
     
     # Load the venue data
     with open(json_file, 'r') as f:
