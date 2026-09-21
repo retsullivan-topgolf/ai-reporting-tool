@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 Shared, format-agnostic report content: the AI analysis fetch and the
-metric-assessment/date/display context that both create_html_reports.py and
-create_markdown_reports.py need.
+metric-assessment/date/display context that all report builders need.
 
 Neither of the two output scripts should reimplement this logic - if HTML and
 Markdown reports ever say something different about the same venue_data.json,
@@ -11,9 +10,9 @@ itself differs by output format.
 
 get_analysis() returns the "HTML-ready" shape (recommendation items are
 already `<li>...</li>` strings, matching what templates/venue-snapshot-browser.html
-expects - see create_html_reports.py). create_markdown_reports.py calls the
+expects - see create_single_venue_snapshot_report.py). Markdown reports call the
 AI analysis independently and converts the inline HTML (`<strong>`, `<li>`)
-to Markdown - see create_markdown_reports.py.
+to Markdown - see create_single_venue_snapshot_report.py.
 
 There is no keyword/metric-based fallback narrative any more. If the AI
 analysis (ai_analysis.get_ai_analysis()) isn't available - CLI missing,
@@ -79,7 +78,7 @@ def get_analysis(data, precomputed_analysis=None):
 
     Recommendation items are HTML `<li>` strings in this return value (ready
     to drop into the HTML template) - Markdown consumers should not call
-    this function directly; see create_markdown_reports.py.
+    this function directly; see create_single_venue_snapshot_report.py.
 
     When AI analysis isn't available, returns:
 
@@ -191,7 +190,7 @@ def build_overall_assessment(data, metrics_registry=None):
 def build_metrics_context(data, metrics_registry):
     """Dates, metric displays, and assessments/status-classes shared by both
     output formats. Recommendation/ups/downs/impact content is NOT included
-    here - see get_analysis() (HTML) or create_markdown_reports.py (Markdown),
+    here - see get_analysis() (HTML) or create_single_venue_snapshot_report.py (Markdown),
     since the two formats need that content shaped differently."""
     start_date = data['date_range'][0]
     end_date = data['date_range'][1]
@@ -281,8 +280,8 @@ def build_metrics_context(data, metrics_registry):
 def render_html_report(data, metrics_registry, template, precomputed_analysis=None):
     """Render templates/venue-snapshot-browser.html for this venue's data.
 
-    Used by both create_html_reports.py (writes the .html file directly) and
-    create_pdf_reports.py (feeds this same HTML string into headless Chromium
+    Used by create_single_venue_snapshot_report.py (writes the .html file directly and
+    feeds this same HTML string into headless Chromium for PDF generation
     via Playwright). Routing the PDF through this exact function - not a
     second template or a re-derived context - is what keeps the PDF's
     styling/layout identical to the HTML report instead of a hand-maintained

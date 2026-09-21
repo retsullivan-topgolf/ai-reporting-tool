@@ -6,7 +6,7 @@ Generate professional venue reports from survey data with AI-powered analysis.
 
 ```bash
 cd python
-python generate_all_reports.py ../example-data/your_file.csv
+python generate_venue_reports.py ../example-data/your_file.csv
 ```
 
 Choose your report format(s): HTML, Markdown, PDF, or All. Reports are generated in the `reports/` directory.
@@ -46,12 +46,12 @@ Choose your report format(s): HTML, Markdown, PDF, or All. Reports are generated
 
 ```bash
 cd python
-python generate_all_reports.py ../example-data/your_file.csv
+python generate_venue_reports.py ../example-data/your_file.csv
 # Choose format: 1) HTML  2) Markdown  3) PDF  4) All
 
 # Or skip the prompt:
-python generate_all_reports.py ../example-data/your_file.csv --format all
-python generate_all_reports.py ../example-data/your_file.csv --format html,pdf
+python generate_venue_reports.py ../example-data/your_file.csv --format all
+python generate_venue_reports.py ../example-data/your_file.csv --format html,pdf
 ```
 
 ### Step-by-Step Generation
@@ -60,15 +60,13 @@ python generate_all_reports.py ../example-data/your_file.csv --format html,pdf
 cd python
 
 # Step 1: Process CSV and generate metrics
-python generate_reports.py ../example-data/your_file.csv
+python generate_venue_data.py ../example-data/your_file.csv
 
 # Step 2: Run AI analysis (optional but recommended)
-python generate_ai_analysis.py venue_data.json
+python run_analyze_venues.py venue_data.json
 
 # Step 3: Generate reports
-python create_html_reports.py venue_data.json --analysis ai_analysis_results.json
-python create_markdown_reports.py venue_data.json --analysis ai_analysis_results.json
-python create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json
+python create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json
 ```
 
 ## Project Structure
@@ -76,16 +74,19 @@ python create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json
 ```
 ai-reporting-tool/
 ├── python/                    # All Python scripts
-│   ├── generate_all_reports.py       # Master orchestrator (recommended)
-│   ├── generate_reports.py           # CSV → JSON metrics
-│   ├── generate_ai_analysis.py       # Runs AI analysis pipeline
-│   ├── create_html_reports.py        # Generate HTML reports
-│   ├── create_markdown_reports.py    # Generate Markdown reports
-│   ├── create_pdf_reports.py         # Generate PDF reports
-│   ├── report_content.py             # Shared analysis logic
-│   ├── ai_analysis.py                # AI analysis pipeline
+│   ├── generate_venue_reports.py            # Master orchestrator (recommended)
+│   ├── generate_period_reports.py           # Period-based reports orchestrator
+│   ├── generate_venue_data.py               # CSV → JSON metrics
+│   ├── run_analyze_venues.py                # Runs AI analysis pipeline
+│   ├── analyze_venues.py                    # AI analysis core module
+│   ├── create_single_venue_snapshot_report.py    # Single-venue snapshot reports
+│   ├── create_single_venue_comparison_report.py  # Single-venue comparison reports
+│   ├── create_multi_venue_snapshot_report.py     # Multi-venue snapshot reports
+│   ├── create_multi_venue_comparison_report.py   # Multi-venue comparison reports
+│   ├── report_content.py                   # Shared analysis logic
+│   ├── report_engine.py                    # Metrics registry and assessment
 │   └── requirements.txt
-├── templates/                 # Report templates (HTML, Markdown)
+├── templates/                 # Report templates (HTML, Markdown, PDF)
 ├── example-data/              # Sample CSV files
 ├── reports/                   # Generated reports (output)
 └── AGENTS.md                  # Detailed workflow documentation

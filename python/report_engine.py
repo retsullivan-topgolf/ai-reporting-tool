@@ -10,8 +10,7 @@ _no_benchmark_comment for why individual venue reports don't compare a venue
 against "the network."
 
 Edit templates/metrics.json to tune a threshold; this module is the only
-place that knows how to interpret it, so create_html_reports.py /
-create_pdf_reports.py / create_markdown_reports.py never need a code change
+place that knows how to interpret it, so the report builders never need a code change
 for that.
 
 Note: this module used to also hold a keyword/metric-driven "fallback"

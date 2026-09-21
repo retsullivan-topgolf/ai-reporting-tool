@@ -15,9 +15,6 @@ All Python scripts have been moved to the `python/` directory for better organiz
 #### AI Analysis
 - **analyze_venues.py** - Core module implementing the 3-stage AI analysis pipeline (metrics_analysis → comment_analysis → synthesis)
 - **run_analyze_venues.py** - Orchestrator that runs AI analysis for all venues and caches results to JSON. Called by `generate_venue_reports.py` to avoid re-running expensive API calls for each report format.
-- **create_html_reports.py** - Generates HTML reports from JSON data and precomputed AI analysis
-- **create_markdown_reports.py** - Generates Markdown reports from JSON data and precomputed AI analysis (same analysis as the HTML report - see `report_content.py`)
-- **create_pdf_reports.py** - Generates PDF reports from JSON data and precomputed AI analysis by rendering the same HTML through headless Chromium (Playwright), so the PDF matches the HTML report's styling/layout exactly. One-time setup: `pip install playwright` then `playwright install chromium`.
 
 #### Report Builder Scripts
 **Snapshot Reports (single period):**
@@ -29,10 +26,10 @@ All Python scripts have been moved to the `python/` directory for better organiz
 - **create_multi_venue_comparison_report.py** - Multi-venue period comparison (HTML, Markdown, PDF). Shows ranking changes and trends.
 
 #### Shared Utilities
-- **report_content.py** - Shared, format-agnostic analysis/context logic used by `create_html_reports.py`, `create_markdown_reports.py`, and `create_pdf_reports.py`
-- **ai_analysis.py** - AI-powered analysis pipeline using Claude Code CLI (3-stage: metrics_analysis → comment_analysis → synthesis)
-- **check_venues.py** - Utility to check venues in CSV files
-- **test_csv.py** - Utility to test CSV parsing
+- **report_content.py** - Shared, format-agnostic analysis/context logic used by all report builders
+- **report_engine.py** - Metrics registry and assessment logic
+- **check_venues.py** - Utility to check venues in CSV files (deprecated)
+- **test_csv.py** - Utility to test CSV parsing (deprecated)
 
 ### Running Scripts
 
@@ -73,18 +70,14 @@ python generate_venue_reports.py ../example-data/your_file.csv --format html,pdf
 cd python
 python generate_venue_data.py ../example-data/your_file.csv
 python run_analyze_venues.py venue_data.json
-python create_html_reports.py venue_data.json --analysis ai_analysis_results.json
-python create_markdown_reports.py venue_data.json --analysis ai_analysis_results.json
-python create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json
+python create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json
 ```
 
 **Or run without precomputed analysis (backward compatible - slower):**
 ```bash
 cd python
 python generate_venue_data.py ../example-data/your_file.csv
-python create_html_reports.py venue_data.json
-python create_markdown_reports.py venue_data.json
-python create_pdf_reports.py venue_data.json
+python create_single_venue_snapshot_report.py venue_data.json --format all
 ```
 
 ### File Paths
@@ -108,11 +101,7 @@ You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-
 1. Place survey data file in `example-data/` folder
 2. Run `python/generate_venue_data.py <data_file>` to create `python/venue_data.json`
 3. Run `python/run_analyze_venues.py venue_data.json` to create `python/ai_analysis_results.json` (runs AI analysis once)
-4. Run any of:
-   - `python/create_html_reports.py venue_data.json --analysis ai_analysis_results.json`
-   - `python/create_markdown_reports.py venue_data.json --analysis ai_analysis_results.json`
-   - `python/create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json`
-   to generate reports in `reports/`
+4. Run `python/create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json` to generate reports in `reports/`
 
 ## Report Features
 - Color-coded status pills in Experience Metrics table
@@ -195,18 +184,25 @@ Changes ≥ ±0.5 points are highlighted as "significant":
 ## Key Files
 
 ### Templates
-- `templates/venue-snapshot-browser.html` - HTML template for single-venue reports
-- `templates/venue-snapshot-pdf.html` - PDF template for single-venue reports
-- `templates/venue-snapshot-report.md.j2` - Markdown template for single-venue reports
-- `templates/period-venue-comparison-browser.html` - HTML template for Report Type 1
-- `templates/period-venue-comparison-pdf.html` - PDF template for Report Type 1
-- `templates/period-venue-comparison-report.md.j2` - Markdown template for Report Type 1
-- `templates/multi-venue-period-browser.html` - HTML template for Report Type 2
-- `templates/multi-venue-period-pdf.html` - PDF template for Report Type 2
-- `templates/multi-venue-period-report.md.j2` - Markdown template for Report Type 2
-- `templates/period-comparison-browser.html` - HTML template for Report Type 3
-- `templates/period-comparison-pdf.html` - PDF template for Report Type 3
-- `templates/period-comparison-report.md.j2` - Markdown template for Report Type 3
+**Single-Venue Snapshots:**
+- `templates/venue-snapshot-browser.html` - HTML template
+- `templates/venue-snapshot-pdf.html` - PDF template
+- `templates/venue-snapshot-report.md.j2` - Markdown template
+
+**Single-Venue Comparisons:**
+- `templates/venue-comparison-browser.html` - HTML template
+- `templates/venue-comparison-pdf.html` - PDF template
+- `templates/venue-comparison-report.md.j2` - Markdown template
+
+**Multi-Venue Snapshots:**
+- `templates/multi-venue-snapshot-browser.html` - HTML template
+- `templates/multi-venue-snapshot-pdf.html` - PDF template
+- `templates/multi-venue-snapshot-report.md.j2` - Markdown template
+
+**Multi-Venue Comparisons:**
+- `templates/multi-venue-comparison-browser.html` - HTML template
+- `templates/multi-venue-comparison-pdf.html` - PDF template
+- `templates/multi-venue-comparison-report.md.j2` - Markdown template
 
 ### Directories
 - `python/` - All Python processing scripts
@@ -227,12 +223,12 @@ Changes ≥ ±0.5 points are highlighted as "significant":
 The report generation pipeline now uses a **3-stage AI analysis pipeline** that runs once and is reused across all report formats (HTML, Markdown, PDF). This avoids redundant API calls and ensures consistency.
 
 ### Pipeline Flow
-1. **generate_all_reports.py** (orchestrator)
-   - Step 1: Runs `generate_reports.py` → creates `venue_data.json`
-   - Step 2: Runs `generate_ai_analysis.py` → creates `ai_analysis_results.json` (AI analysis runs once here)
-   - Step 3: Runs `create_html_reports.py`, `create_markdown_reports.py`, `create_pdf_reports.py` with `--analysis ai_analysis_results.json`
+1. **generate_venue_reports.py** (orchestrator)
+   - Step 1: Runs `generate_venue_data.py` → creates `venue_data.json`
+   - Step 2: Runs `run_analyze_venues.py` → creates `ai_analysis_results.json` (AI analysis runs once here)
+   - Step 3: Runs `create_single_venue_snapshot_report.py` with `--analysis ai_analysis_results.json`
 
-2. **generate_ai_analysis.py** (new script)
+2. **run_analyze_venues.py** (orchestrator script)
    - Loads all venues from `venue_data.json`
    - Calls `ai_analysis.get_ai_analysis()` for each venue
    - Saves results to `ai_analysis_results.json` with structure:
@@ -256,10 +252,10 @@ The report generation pipeline now uses a **3-stage AI analysis pipeline** that 
    - `render_html_report(..., precomputed_analysis=None)` - Passes analysis to template rendering
    - Falls back to on-the-fly analysis if precomputed not provided (backward compatible)
 
-5. **Report scripts** (create_html_reports.py, create_markdown_reports.py, create_pdf_reports.py)
+5. **Report builder scripts** (create_single_venue_snapshot_report.py, create_single_venue_comparison_report.py, etc.)
    - Accept `--analysis <file>` parameter
    - Load precomputed analysis and pass to report generation
-   - No longer call `get_ai_analysis()` directly
+   - Support `--format` parameter to choose HTML, Markdown, PDF, or all
 
 ### Benefits
 ✅ **Single AI analysis run** - Expensive API calls happen once, not 3 times

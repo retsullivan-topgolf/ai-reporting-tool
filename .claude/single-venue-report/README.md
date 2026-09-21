@@ -93,11 +93,11 @@ All skills work from the same **combined ranking** of metrics + comment themes, 
 ```
 CSV Survey Data
     ↓
-generate_reports.py (Python)
+generate_venue_data.py (Python)
     ↓ (creates venue_data.json)
-generate_ai_analysis.py (Python)
+run_analyze_venues.py (Python)
     ↓
-ai_analysis.py (Python) loads this directory
+analyze_venues.py (Python) loads this directory
     ├─ Stage 1: Loads metrics_analysis.md
     │           Calls Claude with metrics payload
     │           Gets: characterization + metric_flags
@@ -113,7 +113,7 @@ ai_analysis.py (Python) loads this directory
     ↓
 ai_analysis_results.json (cached)
     ↓
-create_html_reports.py / create_markdown_reports.py / create_pdf_reports.py
+create_single_venue_snapshot_report.py (Python)
     ↓
 Reports (HTML/Markdown/PDF)
 ```

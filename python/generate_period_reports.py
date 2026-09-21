@@ -402,20 +402,11 @@ def report_type_1_single_venue(csv_file, output_format):
                 print("[ERROR] Failed to run AI analysis")
                 return False
             
-            # Generate reports for all venues, then filter to just the selected one
-            # (We'll generate all then the user can ignore the others, or we could modify the scripts)
+            # Generate reports for all venues
             print("Step 3: Generating reports...")
             format_arg = f"--format {output_format}" if output_format != "all" else ""
-            cmd_reports = f"python create_html_reports.py venue_data.json --analysis ai_analysis_results.json {format_arg}"
+            cmd_reports = f"python create_single_venue_snapshot_report.py venue_data.json --analysis ai_analysis_results.json {format_arg}"
             result = subprocess.run(cmd_reports, shell=True, cwd=os.path.dirname(os.path.abspath(__file__)))
-            
-            if output_format in ["markdown", "all"]:
-                cmd_md = f"python create_markdown_reports.py venue_data.json --analysis ai_analysis_results.json"
-                subprocess.run(cmd_md, shell=True, cwd=os.path.dirname(os.path.abspath(__file__)))
-            
-            if output_format in ["pdf", "all"]:
-                cmd_pdf = f"python create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json"
-                subprocess.run(cmd_pdf, shell=True, cwd=os.path.dirname(os.path.abspath(__file__)))
             
             print(f"\n[OK] Report generated for {selected_venue}")
             print(f"  (Note: Reports for all venues were generated; look for {selected_venue} in the reports/ directory)")

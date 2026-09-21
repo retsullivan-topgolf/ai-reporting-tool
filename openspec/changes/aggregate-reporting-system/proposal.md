@@ -35,9 +35,9 @@ Current reporting is limited to single-venue snapshots. Users need to understand
 - `python/` - Add three new report generation scripts
 
 **New Files:**
-- `templates/period-venue-comparison-*.html/pdf/md.j2` - Templates for Report 1
-- `templates/multi-venue-period-*.html/pdf/md.j2` - Templates for Report 2
-- `templates/period-comparison-*.html/pdf/md.j2` - Templates for Report 3
+- `templates/venue-comparison-*.html/pdf/md.j2` - Templates for Report 1
+- `templates/multi-venue-snapshot-*.html/pdf/md.j2` - Templates for Report 2
+- `templates/multi-venue-comparison-*.html/pdf/md.j2` - Templates for Report 3
 - `python/create_venue_period_comparison_report.py` - Report 1 orchestrator
 - `python/create_multi_venue_period_report.py` - Report 2 orchestrator
 - `python/create_period_comparison_report.py` - Report 3 orchestrator

@@ -20,9 +20,9 @@
 
 ## 3. Report 1: Venue Period Comparison - Templates
 
-- [x] 3.1 Create `templates/period-venue-comparison-browser.html` template
-- [x] 3.2 Create `templates/period-venue-comparison-pdf.html` template
-- [x] 3.3 Create `templates/period-venue-comparison-report.md.j2` template
+- [x] 3.1 Create `templates/venue-comparison-browser.html` template
+- [x] 3.2 Create `templates/venue-comparison-pdf.html` template
+- [x] 3.3 Create `templates/venue-comparison-report.md.j2` template
 - [x] 3.4 Add CSS styling for trend indicators (↑ ↓ →) and comparison columns
 - [x] 3.5 Add delta and percent change display in metric cards
 - [ ] 3.6 Test template rendering with sample data
@@ -39,9 +39,9 @@
 
 ## 5. Report 2: Multi-Venue Single Period - Templates
 
-- [x] 5.1 Create `templates/multi-venue-period-browser.html` template
-- [x] 5.2 Create `templates/multi-venue-period-pdf.html` template
-- [x] 5.3 Create `templates/multi-venue-period-report.md.j2` template
+- [x] 5.1 Create `templates/multi-venue-snapshot-browser.html` template
+- [x] 5.2 Create `templates/multi-venue-snapshot-pdf.html` template
+- [x] 5.3 Create `templates/multi-venue-snapshot-report.md.j2` template
 - [x] 5.4 Add CSS styling for venue ranking table and composite score display
 - [x] 5.5 Add metric cards showing aggregated metrics
 - [x] 5.6 Add venue ranking section with composite scores and component breakdown
@@ -63,9 +63,9 @@
 
 ## 7. Report 3: Multi-Venue Period Comparison - Templates
 
-- [x] 7.1 Create `templates/period-comparison-browser.html` template
-- [x] 7.2 Create `templates/period-comparison-pdf.html` template
-- [x] 7.3 Create `templates/period-comparison-report.md.j2` template
+- [x] 7.1 Create `templates/multi-venue-comparison-browser.html` template
+- [x] 7.2 Create `templates/multi-venue-comparison-pdf.html` template
+- [x] 7.3 Create `templates/multi-venue-comparison-report.md.j2` template
 - [x] 7.4 Add CSS styling for comparison columns (Current | Previous | Change | % Change | Trend)
 - [x] 7.5 Add metric cards showing aggregated metrics with deltas
 - [x] 7.6 Add venue ranking comparison section with ranking changes
