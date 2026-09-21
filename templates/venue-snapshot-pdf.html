@@ -7,7 +7,7 @@
         /*
          * Dedicated PDF layout - rendered only by python/create_pdf_reports.py
          * through headless Chromium. This is deliberately a SEPARATE file from
-         * templates/venue-1page-browser.html rather than one shared template
+         * templates/venue-snapshot-browser.html rather than one shared template
          * reused via @media print:
          *
          * - The PDF's section order and content differ from the browser report by
@@ -153,7 +153,7 @@
 
         /* Shown in place of the overview (and instead of Ups/Downs, Impact,
            and Recommendations entirely) when AI analysis wasn't available -
-           see venue-1page-browser.html for the matching browser-report rule. */
+           see venue-snapshot-browser.html for the matching browser-report rule. */
         .overview-box.ai-unavailable-box {
             background: #fff3e0;
             border-left-color: #e65100;
@@ -203,14 +203,29 @@
             font-weight: 600;
         }
 
-        .status-good {
-            background: #e8f5e9;
+        .status-excellent {
+            background: #c8e6c9;
             color: #2e7d32;
+        }
+
+        .status-good {
+            background: rgba(45, 255, 255, 0.15);
+            color: #0277bd;
+        }
+
+        .status-fair {
+            background: #fff3e0;
+            color: #e65100;
         }
 
         .status-moderate {
             background: #fff3e0;
             color: #e65100;
+        }
+
+        .status-weak {
+            background: #ffebee;
+            color: #c62828;
         }
 
         .status-poor {
@@ -261,14 +276,29 @@
             font-weight: 600;
         }
 
-        .status-pill.good {
-            background: #e8f5e9;
+        .status-pill.excellent {
+            background: #c8e6c9;
             color: #2e7d32;
+        }
+
+        .status-pill.good {
+            background: rgba(45, 255, 255, 0.15);
+            color: #0277bd;
+        }
+
+        .status-pill.fair {
+            background: #fff3e0;
+            color: #e65100;
         }
 
         .status-pill.moderate {
             background: #fff3e0;
             color: #e65100;
+        }
+
+        .status-pill.weak {
+            background: #ffebee;
+            color: #c62828;
         }
 
         .status-pill.poor {

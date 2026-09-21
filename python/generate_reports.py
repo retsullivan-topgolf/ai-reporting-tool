@@ -61,6 +61,7 @@ def main():
             
             print(f"\n=== {processed_data['venue'].upper()} ===")
             print(f"Responses: {processed_data['responses']}")
+            print(f"NPS: {processed_data.get('nps_avg')}")
             print(f"LTR: {processed_data['ltr_avg']}")
             print(f"Fun: {processed_data['fun_avg']}")
             print(f"Helpful: {processed_data['helpful_avg']}")
@@ -70,7 +71,7 @@ def main():
             
             # Print F&B metrics if available
             if schema_type == 'real':
-                print(f"NPS: {processed_data.get('nps_avg')}")
+             
                 print(f"Price Value: {processed_data.get('price_value_avg')}")
                 print(f"Food Value: {processed_data.get('food_value_avg')}")
                 print(f"Food Speed: {processed_data.get('food_speed_avg')}")

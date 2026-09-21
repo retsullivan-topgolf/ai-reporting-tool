@@ -2,20 +2,6 @@
   "_comment": "Standardized definition of each Performance Summary / Experience Metrics row. Edit thresholds here instead of in create_html_reports.py. 'higher_is_better' controls which end of 'assessment_thresholds' is 'good'. Each threshold tier carries its own 'class' (good/moderate/poor) for the status pill color - assessment is judged against a fixed quality bar for the metric itself, NOT against other venues (there is deliberately no network benchmark here - see below).",
   "_no_benchmark_comment": "An earlier version of this file had a 'benchmark' (network average) per metric, used to show 'Above/On par/Below average' vs. other venues. That was removed: individual venue reports are usually generated from a single venue's data, so a hardcoded 'network average' constant was often stale or simply fictional for whatever CSV was actually being processed. Cross-venue comparison belongs in the separate Venue Rankings Weekly report (see templates/REPORT_TEMPLATES_VENUE_RANKINGS.md), which computes real averages/ranks from all venues present in that run's data. If a per-venue report ever needs a benchmark again, compute it live from the venues actually loaded in that run rather than reintroducing a static constant.",
 
-  "ltr": {
-    "label": "LTR",
-    "data_field": "ltr_avg",
-    "unit_display": "/ 5",
-    "higher_is_better": true,
-    "weak_explanation": "customers are unlikely to return to this venue",
-    "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
-      {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
-    ]
-  },
-
   "nps": {
     "label": "NPS",
     "data_field": "nps_avg",
@@ -23,10 +9,24 @@
     "higher_is_better": true,
     "weak_explanation": "customers are unlikely to recommend this venue to others",
     "assessment_thresholds": [
-      {"min": 8.0, "level": "Excellent", "class": "good"},
-      {"min": 7.0, "level": "Strong", "class": "good"},
-      {"min": 6.0, "level": "Moderate", "class": "moderate"},
-      {"min": null, "level": "Weak", "class": "poor"}
+      {"min": 8.0, "level": "Excellent", "class": "excellent"},
+      {"min": 7.0, "level": "Good", "class": "good"},
+      {"min": 6.0, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
+    ]
+  },
+
+  "ltr": {
+    "label": "LTR",
+    "data_field": "ltr_avg",
+    "unit_display": "/ 5",
+    "higher_is_better": true,
+    "weak_explanation": "customers are unlikely to return to this venue",
+    "assessment_thresholds": [
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -37,10 +37,10 @@
     "higher_is_better": true,
     "weak_explanation": "the entertainment experience is not meeting customer expectations",
     "assessment_thresholds": [
-      {"min": 4.2, "level": "Excellent", "class": "good"},
-      {"min": 3.8, "level": "Strong", "class": "good"},
-      {"min": 3.4, "level": "Moderate", "class": "moderate"},
-      {"min": null, "level": "Weak", "class": "poor"}
+      {"min": 4.2, "level": "Excellent", "class": "excellent"},
+      {"min": 3.8, "level": "Good", "class": "good"},
+      {"min": 3.4, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -51,10 +51,10 @@
     "higher_is_better": true,
     "weak_explanation": "staff are not providing adequate assistance to customers",
     "assessment_thresholds": [
-      {"min": 4.2, "level": "Excellent", "class": "good"},
-      {"min": 3.8, "level": "Strong", "class": "good"},
-      {"min": 3.4, "level": "Moderate", "class": "moderate"},
-      {"min": null, "level": "Weak", "class": "poor"}
+      {"min": 4.2, "level": "Excellent", "class": "excellent"},
+      {"min": 3.8, "level": "Good", "class": "good"},
+      {"min": 3.4, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -65,10 +65,10 @@
     "higher_is_better": false,
     "weak_explanation": "a significant portion of customers experienced problems during their visit",
     "assessment_thresholds": [
-      {"max": 10, "level": "Low", "class": "good"},
-      {"max": 20, "level": "Moderate", "class": "moderate"},
-      {"max": 30, "level": "High", "class": "poor"},
-      {"max": null, "level": "Critical", "class": "poor"}
+      {"max": 10, "level": "Low", "class": "excellent"},
+      {"max": 20, "level": "Moderate", "class": "good"},
+      {"max": 30, "level": "High", "class": "fair"},
+      {"max": null, "level": "Critical", "class": "weak"}
     ]
   },
 
@@ -79,10 +79,10 @@
     "higher_is_better": true,
     "weak_explanation": "customers are frequently very unsatisfied with how issues are resolved during their visit",
     "assessment_thresholds": [
-      {"min": 4.0, "level": "Excellent", "class": "good"},
-      {"min": 3.5, "level": "Strong", "class": "good"},
-      {"min": 3.0, "level": "Moderate", "class": "moderate"},
-      {"min": null, "level": "Weak", "class": "poor"}
+      {"min": 4.0, "level": "Excellent", "class": "excellent"},
+      {"min": 3.5, "level": "Good", "class": "good"},
+      {"min": 3.0, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -93,10 +93,10 @@
     "higher_is_better": true,
     "weak_explanation": "customers feel the pricing does not provide good value for money",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -107,10 +107,10 @@
     "higher_is_better": true,
     "weak_explanation": "customers feel food pricing does not provide good value",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -121,10 +121,10 @@
     "higher_is_better": true,
     "weak_explanation": "food service is too slow and impacting customer satisfaction",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -135,10 +135,10 @@
     "higher_is_better": true,
     "weak_explanation": "food quality is not meeting customer expectations",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -149,10 +149,10 @@
     "higher_is_better": true,
     "weak_explanation": "customers feel beverage pricing does not provide good value",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -163,10 +163,10 @@
     "higher_is_better": true,
     "weak_explanation": "beverage service is too slow and impacting customer satisfaction",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -177,10 +177,10 @@
     "higher_is_better": true,
     "weak_explanation": "beverage quality is not meeting customer expectations",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -191,10 +191,10 @@
     "higher_is_better": true,
     "weak_explanation": "food service is not meeting customer expectations",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -205,10 +205,10 @@
     "higher_is_better": true,
     "weak_explanation": "beverage service is not meeting customer expectations",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   },
 
@@ -219,10 +219,10 @@
     "higher_is_better": true,
     "weak_explanation": "overall food and beverage service is not meeting customer expectations",
     "assessment_thresholds": [
-      {"min": 4.5, "level": "Excellent", "class": "good"},
+      {"min": 4.5, "level": "Excellent", "class": "excellent"},
       {"min": 3.5, "level": "Good", "class": "good"},
-      {"min": 2.5, "level": "Fair", "class": "moderate"},
-      {"min": null, "level": "Poor", "class": "poor"}
+      {"min": 2.5, "level": "Fair", "class": "fair"},
+      {"min": null, "level": "Weak", "class": "weak"}
     ]
   }
 }

@@ -2,9 +2,9 @@
 """
 Generate PDF venue reports from venue_data.json.
 
-Renders templates/venue-1page-pdf.html - a layout dedicated to the PDF
+Renders templates/venue-snapshot-pdf.html - a layout dedicated to the PDF
 output (see that file's docstring comment for why it's a separate template
-from venue-1page-browser.html) - through headless Chromium, using
+from venue-snapshot-browser.html) - through headless Chromium, using
 Playwright's page.pdf(). The data behind it (metrics, assessments, overview,
 ups/downs, impact, recommendations) still comes from report_content.py, the
 same module create_html_reports.py uses, so the PDF and HTML reports always
@@ -88,8 +88,8 @@ if analysis_file:
 # Same registries create_html_reports.py uses - see report_engine.py.
 metrics_registry = report_engine.load_metrics_registry()
 
-# PDF renders from its own template (venue-1page-pdf.html), not
-# venue-1page-browser.html - see that file's docstring comment for why the
+# PDF renders from its own template (venue-snapshot-pdf.html), not
+# venue-snapshot-browser.html - see that file's docstring comment for why the
 # layout is kept separate (section order/content differs by request, and
 # reordering a shared template via print CSS turned out to fight with
 # Chromium's print pagination). The analysis/metrics context passed in below
@@ -97,7 +97,7 @@ metrics_registry = report_engine.load_metrics_registry()
 # so the numbers and narrative always match - only this layout differs.
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')
 jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
-report_template = jinja_env.get_template('venue-1page-pdf.html')
+report_template = jinja_env.get_template('venue-snapshot-pdf.html')
 
 reports_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'reports')
 os.makedirs(reports_dir, exist_ok=True)
@@ -173,7 +173,7 @@ try:
             sys.exit(1)
 
         page = browser.new_page()
-        # Force print CSS (the @media print rules in venue-1page-browser.html)
+        # Force print CSS (the @media print rules in venue-snapshot-browser.html)
         # rather than relying on page.pdf()'s implicit default, so this stays
         # correct even if that default ever changes.
         page.emulate_media(media="print")

@@ -188,9 +188,9 @@ Changes ≥ ±0.5 points are highlighted as "significant":
 ## Key Files
 
 ### Templates
-- `templates/venue-1page-browser.html` - HTML template for single-venue reports
-- `templates/venue-1page-pdf.html` - PDF template for single-venue reports
-- `templates/venue-1page-report.md.j2` - Markdown template for single-venue reports
+- `templates/venue-snapshot-browser.html` - HTML template for single-venue reports
+- `templates/venue-snapshot-pdf.html` - PDF template for single-venue reports
+- `templates/venue-snapshot-report.md.j2` - Markdown template for single-venue reports
 - `templates/period-venue-comparison-browser.html` - HTML template for Report Type 1
 - `templates/period-venue-comparison-pdf.html` - PDF template for Report Type 1
 - `templates/period-venue-comparison-report.md.j2` - Markdown template for Report Type 1

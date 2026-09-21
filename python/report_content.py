@@ -10,7 +10,7 @@ it's because one of them drifted from this module, not because the analysis
 itself differs by output format.
 
 get_analysis() returns the "HTML-ready" shape (recommendation items are
-already `<li>...</li>` strings, matching what templates/venue-1page-browser.html
+already `<li>...</li>` strings, matching what templates/venue-snapshot-browser.html
 expects - see create_html_reports.py). create_markdown_reports.py calls the
 AI analysis independently and converts the inline HTML (`<strong>`, `<li>`)
 to Markdown - see create_markdown_reports.py.
@@ -279,7 +279,7 @@ def build_metrics_context(data, metrics_registry):
 
 
 def render_html_report(data, metrics_registry, template, precomputed_analysis=None):
-    """Render templates/venue-1page-browser.html for this venue's data.
+    """Render templates/venue-snapshot-browser.html for this venue's data.
 
     Used by both create_html_reports.py (writes the .html file directly) and
     create_pdf_reports.py (feeds this same HTML string into headless Chromium

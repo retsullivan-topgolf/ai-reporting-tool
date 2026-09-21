@@ -2,57 +2,57 @@
   "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "Grand Prairie delivers an excellent core gameplay experience that drives strong loyalty\u2014guests appreciate the fun, accessible activity and consistently show intent to return. However, the venue is significantly undermined by serious service failures: staff are slow and difficult to locate, some are dismissive and rude, and critically, at least one guest experienced casual racism from staff. These issues affect many guests and create substantial friction, preventing the venue from achieving the operational consistency that its clean facilities and occasional exceptional staff (like Diego, Alyssa, Dani, and Sofia) suggest is possible.",
+      "overview": "This venue boasts an exceptional core Topgolf experience with 35 guests praising the engaging gameplay and strong staff service from experienced team members. However, serious systemic issues are eroding this foundation: a documented case of racist and prejudicial staff behavior created profound guest harm; equipment failures are preventing guests from playing; and reservation and pricing confusion are creating friction at multiple touchpoints. Despite strong recommendation intent, a significant portion of guests report problems, and the perceived ineffectiveness at resolving those issues prevents this venue from reaching its potential.",
       "ups": [
-        "<strong>Excellent core gameplay:</strong> Guests consistently praise the experience as fun, accessible to newcomers, and engaging for all skill levels\u2014the core activity delivers strongly enough to drive return visits despite service issues.",
-        "<strong>Exceptional service from named staff:</strong> Diego, Alyssa, Dani, Sofia, and others are praised for attentiveness and going above and beyond, showing that great service is possible at this venue.",
-        "<strong>Clean, well-maintained facility:</strong> New equipment, clean mats, and good organization create a solid physical foundation that guests appreciate and that sets the stage for a quality experience."
+        "<strong>Engaging core gameplay:</strong> Guests consistently praise the Topgolf experience itself as fun and enjoyable, with 35 comments celebrating it as worth doing again, both for first-timers and returning guests.",
+        "<strong>Exceptional staff service when present:</strong> Many guests specifically name staff members like Diego, praising attentiveness, friendliness, and going above and beyond for special occasions.",
+        "<strong>Clean, modern facility:</strong> The venue is well-maintained and modern, creating a positive first impression for guests."
       ],
       "downs": [
-        "<strong>Casual racism and discrimination:</strong> One guest reported experiencing casual racist remarks and blatant prejudice from staff, describing the experience as degrading and humiliating. This represents a critical failure in basic human decency.",
-        "<strong>Slow service and inattentive staff:</strong> The dominant complaint\u2014guests report 20-60+ minute waits for drinks, staff difficult to locate, and minimal check-ins during their session, creating significant frustration.",
-        "<strong>Rude and dismissive staff behavior:</strong> Beyond slowness, some staff are dismissive of legitimate requests, unapologetic about errors, and provide insufficient service recovery when issues arise."
+        "<strong>Discrimination and hostile behavior from staff:</strong> A guest experienced casual racism and blatant prejudice from staff, including derogatory comments that created an unwelcoming and hostile atmosphere, causing them to leave and not return.",
+        "<strong>Equipment and technology failures:</strong> Multiple guests reported bay machines not working, screens failing to track shots or freezing mid-game, and scoring system failures requiring bay switches after 45+ minutes of downtime.",
+        "<strong>Reservation chaos and long waits:</strong> Several guests experienced lost or confused reservations, wrong bay assignments, and extended waits of 45 minutes to 2 hours despite confirmed bookings."
       ],
       "impact": [
         {
-          "title": "Casual Racism & Discrimination",
-          "description": "One guest reported experiencing casual racist remarks and blatant prejudice from staff, an experience they described as degrading and humiliating. This represents a critical failure in inclusion, regardless of frequency."
+          "title": "Discriminatory staff conduct",
+          "description": "A documented incident of racist and prejudicial treatment toward a guest created severe harm and loss of that customer. This represents a critical reputational risk and directly violates basic standards of respectful hospitality."
         },
         {
-          "title": "Slow Service & Inattentive Staff",
-          "description": "Guests report long waits for drinks (20-60+ minutes), staff difficult to locate, and minimal check-ins during sessions\u2014the single most commonly mentioned complaint affecting many guests' experiences."
+          "title": "Core gameplay experience",
+          "description": "The Topgolf game itself is the primary competitive strength with 35 guests specifically praising engaging, fun gameplay despite operational challenges; this strength directly drives strong recommendation intent and guest loyalty."
         },
         {
-          "title": "Server Rudeness & Dismissiveness",
-          "description": "Beyond slowness, some staff respond to legitimate complaints with dismissive attitudes and unapologetic behavior, failing to provide genuine service recovery when issues occur."
+          "title": "Exceptional staff service",
+          "description": "When delivered well, staff service is a major differentiator with 32 guests naming staff members and praising attentiveness, friendliness, and going above and beyond; this strength provides the foundation for building consistency across the team."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Address Discrimination & Ensure Safe Environment",
+          "title": "Eliminate discriminatory staff conduct",
           "items": [
-            "<strong>Immediate investigation:</strong> Conduct a thorough investigation into the incident reported by the guest to identify the staff member and determine appropriate disciplinary action.",
-            "<strong>Diversity & inclusion training:</strong> Implement mandatory training for all staff on inclusion, cultural sensitivity, and anti-discrimination policies to reset behavioral expectations.",
-            "<strong>Guest recovery & accountability:</strong> Reach out to the affected guest to apologize, acknowledge the severity of the incident, and offer meaningful recovery (service credits, etc.).",
-            "<strong>Cultural values reinforcement:</strong> Communicate clearly from leadership that discrimination is unacceptable and reaffirm the venue's commitment to providing a welcoming environment for all guests."
+            "<strong>Zero-tolerance policy:</strong> Implement and enforce a strict zero-tolerance policy for any discriminatory, racist, or prejudicial behavior from staff. Any confirmed incident should result in immediate suspension and termination review.",
+            "<strong>Mandatory diversity and inclusion training:</strong> Require all staff to complete comprehensive diversity, inclusion, and respectful workplace training, with annual refreshers and clear accountability for violations.",
+            "<strong>Incident review and escalation:</strong> Establish a process to flag and review any guest feedback mentioning discrimination or hostility, escalate to management and ownership, and notify affected guests of corrective action taken.",
+            "<strong>Safe reporting mechanism:</strong> Create a confidential reporting channel where both guests and staff can report discriminatory behavior without fear of retaliation, with clear escalation paths to senior leadership."
           ]
         },
         "secondary": {
-          "title": "Fix Slow Service & Inattentive Staff",
+          "title": "Restore equipment reliability",
           "items": [
-            "<strong>Service standards & accountability:</strong> Establish clear response time expectations for drink orders (e.g., within 5-10 minutes of bay start) and create accountability mechanisms for staff who are difficult to locate.",
-            "<strong>Staffing review:</strong> Analyze server-to-guest ratio and peak-hour staffing to ensure adequate coverage so guests aren't waiting 20-60+ minutes for initial service.",
-            "<strong>Proactive check-in training:</strong> Train servers to make initial contact within the first few minutes of guest arrival and conduct regular check-ins during sessions, not just reactive responses to guest needs.",
-            "<strong>Mobile ordering as backup:</strong> Ensure the mobile ordering option is prominently available and functional as a fallback when staff are unavailable, so guests can independently place orders."
+            "<strong>Daily pre-opening diagnostics:</strong> Run comprehensive equipment checks on all bays each morning before guests arrive to identify and resolve bay machine failures, screen tracking issues, and scoring system problems before impact.",
+            "<strong>Rapid response protocol:</strong> Train staff to resolve equipment issues within 10 minutes; if unable to fix, move guests to a working bay with compensation for downtime to maintain experience quality.",
+            "<strong>Preventive maintenance schedule:</strong> Implement weekly screen calibration and quarterly deep maintenance on all equipment to catch tracking failures and functionality issues before guests encounter them.",
+            "<strong>Guest compensation for extended downtime:</strong> Establish clear policy: guests experiencing 45+ minutes of equipment downtime receive automatic credit or discount to restore confidence in future visits."
           ]
         },
         "maintain": {
-          "title": "Protect & Amplify Core Gameplay Strength",
+          "title": "Protect and amplify core gameplay excellence",
           "items": [
-            "<strong>Game selection & rotation:</strong> Continue curating game variety and freshness that guests consistently praise, as this is the primary driver of return visits.",
-            "<strong>Equipment reliability:</strong> Ensure screens, ball dispensers, and tracking systems are regularly maintained and quickly repaired when failures occur, protecting the seamless gameplay experience.",
-            "<strong>Staff training on gameplay support:</strong> Make sure all staff understand the games well enough to answer guest questions and provide assistance, reinforcing the accessibility that appeals to newcomers.",
-            "<strong>Marketing emphasis:</strong> Highlight the fun, accessible gameplay experience in marketing while you work on service recovery\u2014this is the venue's strongest differentiator."
+            "<strong>Preserve gameplay accessibility:</strong> Continue ensuring game difficulty and mechanics are balanced for both newcomers and experienced players, as guests specifically praise the fun and engaging experience.",
+            "<strong>Staff training on game explanation:</strong> Train all staff to explain Topgolf mechanics and gameplay options to guests, helping them understand how to optimize their experience and maximize enjoyment.",
+            "<strong>Recognize exceptional staff service:</strong> Identify and celebrate the staff members (like Diego) who are delivering exceptional service guests mention by name; use them as mentors to elevate team-wide consistency.",
+            "<strong>Continuous gameplay feedback:</strong> Gather guest feedback specifically about gameplay features and mechanics to ensure this core strength remains protected as operational improvements roll out."
           ]
         }
       }

@@ -66,13 +66,13 @@ if analysis_file:
 metrics_registry = report_engine.load_metrics_registry()
 
 # Jinja2 environment for the single-source-of-truth HTML template. The
-# template lives in ../templates/venue-1page-browser.html so it can also be
+# template lives in ../templates/venue-snapshot-browser.html so it can also be
 # opened directly to preview markup/CSS changes (it renders with Jinja
 # placeholders visible when opened raw - render a real report to preview it
 # with data).
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')
 jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
-report_template = jinja_env.get_template('venue-1page-browser.html')
+report_template = jinja_env.get_template('venue-snapshot-browser.html')
 
 
 # Generate reports for all venues in the data

@@ -90,7 +90,7 @@ jinja_env = Environment(
     trim_blocks=True,
     lstrip_blocks=True,
 )
-report_template = jinja_env.get_template('venue-1page-report.md.j2')
+report_template = jinja_env.get_template('venue-snapshot-report.md.j2')
 
 def _to_markdown(html_fragment):
     """Convert the limited inline HTML the AI analysis produces
@@ -152,7 +152,7 @@ def get_markdown_analysis(data, precomputed_analysis=None):
 
 def generate_markdown_report(data, precomputed_analysis=None):
     """Generate a complete Markdown report by rendering
-    templates/venue-1page-report.md.j2 with this venue's data.
+    templates/venue-snapshot-report.md.j2 with this venue's data.
     
     If precomputed_analysis is provided, it will be used instead of calling
     get_ai_analysis(). This allows multiple report formats to reuse the same
