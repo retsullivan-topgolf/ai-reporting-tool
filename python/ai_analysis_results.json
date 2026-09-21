@@ -2,57 +2,57 @@
   "grand_prairie": {
     "ai_available": true,
     "analysis": {
-      "overview": "The TopGolf experience itself is genuinely fun and drives strong loyalty and recommendation intent from most guests. Staff at their best are friendly, attentive, and go above and beyond, particularly for special occasions. However, the venue faces two critical challenges: a reported incident of staff discrimination and prejudiced comments created a profoundly unwelcoming experience for those guests, and operational issues are frequent (affecting roughly 1 in 4 visits) with weak resolution when problems occur. These issues represent systemic failures in safety and operational reliability that must be addressed to protect the venue's core strength.",
+      "overview": "This venue delivers an excellent core entertainment experience with strong recommendation intent. Yet an internal contradiction exists: while staff hospitality is exceptional and warm, slowness and occasional rudeness undermine that strength. More significantly, a substantial share of guests encounter problems during visits, but the venue's resolution capability is too weak to address them effectively. Hidden costs and per-account fees compound this frustration, limiting perceived value despite the strong core experience.",
       "ups": [
-        "<strong>Core activity is engaging:</strong> TopGolf itself consistently delivers on the fun promise, with 47 guests specifically praising the engaging and enjoyable game experience regardless of other service issues.",
-        "<strong>Staff excellence when present:</strong> When staff are engaged, they're praised for friendliness, attentiveness, and going above and beyond\u2014with specific servers called out by name for exceptional service during special occasions.",
-        "<strong>Modern, clean facility:</strong> Guests appreciate the new venue and well-maintained environment, with clean bays and modern equipment contributing to the overall experience."
+        "<strong>Staff friendliness and hospitality:</strong> Servers and staff consistently go above and beyond, with named standouts like Diego remembered for warmth and attentiveness during celebrations\u2014this is a genuine differentiator that guests specifically call out and value.",
+        "<strong>Fun experience and gameplay:</strong> The core activity delivers on its promise, especially for first-timers; guests are genuinely excited and delighted, creating memorable first-time experiences and repeat visit interest.",
+        "<strong>Strong recommendation intent:</strong> Most guests still intend to recommend the venue despite operational challenges, indicating the core experience is strong enough to overcome the friction and drive positive word-of-mouth."
       ],
       "downs": [
-        "<strong>Discrimination and hostile behavior:</strong> A guest reported experiencing casual racism and prejudiced comments from staff, describing the encounter as humiliating and unwelcoming\u2014a critical failure in creating a safe, inclusive environment.",
-        "<strong>High issue frequency with weak resolution:</strong> Operational issues (equipment failures, service problems) affect roughly 1 in 4 visits, and when they occur, resolution is weak (2.6/5), leaving guests frustrated despite enjoying the core activity.",
-        "<strong>Inconsistent server attentiveness:</strong> Service speed varies dramatically, with guests frequently waiting 20-30+ minutes for drinks or having to hunt down staff, creating friction during their visit."
+        "<strong>Issue resolution failure:</strong> When a substantial share of guests encounter problems, the weak resolution capability means the venue isn't solving them\u2014leaving guests frustrated even when staff initially acknowledge the issue.",
+        "<strong>Service slowness and inattentiveness:</strong> 20+ minute waits for drinks, ignored refill requests, and servers hard to locate create unnecessary friction despite low occupancy, directly contradicting the venue's strengths in hospitality.",
+        "<strong>Staff rudeness and inconsistency:</strong> Multiple guests reported dismissive, rude, or condescending behavior that made them feel unwelcome and directly drove away repeat visitors, sharply contradicting the venue's best staff examples."
       ],
       "impact": [
         {
-          "title": "Discrimination and hostile behavior",
-          "description": "A guest reported experiencing casual racism and prejudiced comments from staff, representing the most serious documented failure and requiring immediate intervention to restore a safe, welcoming environment for all guests."
+          "title": "Issue Resolution",
+          "description": "When 26% of guests encounter problems, the weak resolution capability (2.6/5) leaves them without effective solutions\u2014this is the single largest driver of suppressed satisfaction and likelihood to return, despite the strong core experience."
         },
         {
-          "title": "Core activity resonance",
-          "description": "The TopGolf experience is praised by 47 guests as genuinely fun and engaging, driving strong loyalty (NPS 8.7/10, LTR 4.4/5) that anchors the venue's potential despite operational challenges."
+          "title": "Staff Friendliness",
+          "description": "Warm, attentive staff are mentioned in 37 comments and named as standouts\u2014this is the venue's strongest asset and a proven differentiator that drives celebration memories and return intent, but only if consistency is protected."
         },
         {
-          "title": "Staff capability and consistency",
-          "description": "When fully engaged, staff deliver friendly, attentive, and generous service that guests specifically recognize and remember, yet inconsistent deployment creates service gaps that undermine venue potential."
+          "title": "Service Slowness and Inattentiveness",
+          "description": "Delayed drink service, ignored refill requests, and servers hard to locate (30 mentions) create unnecessary friction in an easy transaction, directly undercutting the venue's hospitality strength and leaving guests annoyed before problems even occur."
         }
       ],
       "recommendations": {
         "critical": {
-          "title": "Restore Safety and Inclusion",
+          "title": "Fix Issue Resolution",
           "items": [
-            "<strong>Cultural competency and inclusion training:</strong> Implement mandatory training on unconscious bias, professional communication, and creating an inclusive environment for all staff, with clear documentation that discriminatory behavior is unacceptable and subject to disciplinary action.",
-            "<strong>Incident investigation and accountability:</strong> Immediately investigate the reported discrimination incident with documented follow-up to affected guests, transparent discipline procedures for staff exhibiting prejudiced behavior, and demonstrated management commitment to safety.",
-            "<strong>Guest reporting channel for discrimination:</strong> Create a visible, confidential feedback mechanism for guests to report discrimination or unwelcome treatment, with rapid management escalation, documented investigation, and direct resolution with affected guests.",
-            "<strong>Leadership visibility and culture modeling:</strong> Ensure management visibly demonstrates inclusive behavior and genuine commitment to creating a safe, welcoming environment through consistent floor presence and proactive culture-building."
+            "<strong>Empower staff to resolve on-the-spot:</strong> Train all staff (especially servers) to identify, troubleshoot, and resolve common guest issues (equipment failures, billing problems, reservation mix-ups) without escalation, and equip them with authority to offer compensation (free game time, food replacement) when resolution can't be immediate.",
+            "<strong>Create a rapid-response protocol for unresolvable issues:</strong> For problems that require management intervention (broken screens, system errors), establish a 2-3 minute acknowledgment and 10-minute root-cause commitment, with staff proactively updating guests on status rather than leaving them uncertain.",
+            "<strong>Track resolution success and train to gaps:</strong> Log all guest-reported issues and whether they were resolved to satisfaction; use weekly patterns to identify which issue types need better troubleshooting training or equipment maintenance, and hold staff accountable to resolution targets.",
+            "<strong>Post-visit resolution follow-up:</strong> For guests who left with unresolved issues, reach out within 24 hours via email or phone to confirm the problem is now fixed or offer compensation\u2014show guests that the venue cares enough to make it right after the fact."
           ]
         },
         "secondary": {
-          "title": "Reduce Operational Issue Frequency",
+          "title": "Fix Service Slowness and Gaps",
           "items": [
-            "<strong>Equipment failure root cause analysis:</strong> Systematically identify why screens, scoring systems, and ball dispensers malfunction frequently (affecting 26% of visits), then implement targeted maintenance, replacement, or hardware fixes to prevent losing guest playing time.",
-            "<strong>Rapid response protocol for issues:</strong> Define maximum acceptable resolution time for common problems (e.g., 5-10 minutes for equipment, immediate service recovery), train all staff to execute, and measure daily compliance to reduce guest frustration.",
-            "<strong>Pre-shift equipment checks:</strong> Implement daily verification of all bays and equipment before peak hours, with contingency bays ready and faulty equipment taken offline, so guests don't encounter non-functional setups.",
-            "<strong>Meaningful recovery for unresolved issues:</strong> Empower staff to offer genuine recovery when problems occur (complimentary play credits, drink/food comps, direct management engagement) to shift weak 2.6/5 resolution ratings toward strong guest outcomes."
+            "<strong>Restore service workflow and responsiveness standards:</strong> Audit the current server-to-guest ratio, shift schedules, and order-to-delivery timelines; identify why servers are hard to locate even during low occupancy and redesign station assignments so every guest bay has a visible, responsive server.",
+            "<strong>Implement table check-ins every 5-7 minutes:</strong> Establish a standard that servers check on each bay at least every 5-7 minutes to take refill orders, clear plates, or address problems before guests have to flag someone down\u2014train servers that proactive checking, not just reactive responses, defines their role.",
+            "<strong>Simplify drink ordering and delivery:</strong> If 20+ minute drink waits are common, reconsider the ordering system\u2014pre-set drink options at tables, a mobile ordering system, or a dedicated drink station that delivers to bays faster than current workflow.",
+            "<strong>Measure and coach service standards weekly:</strong> Have managers observe and score each server's table check-in frequency, wait times, and responsiveness using a simple rubric; share results weekly so servers see where they're falling short and get immediate coaching."
           ]
         },
         "maintain": {
-          "title": "Protect the Core Entertainment Value",
+          "title": "Protect and Amplify Staff Friendliness",
           "items": [
-            "<strong>Invest in core experience reliability:</strong> Ensure TopGolf equipment remains up-to-date and competitive so guests can consistently access the engaging, fun experience they came for and that drives strong loyalty.",
-            "<strong>Recognize and reward engaged staff:</strong> Identify and celebrate staff who deliver the friendly, attentive service guests specifically praise, making excellence visible and building a culture where going above and beyond is valued and emulated.",
-            "<strong>Maintain facility pride and cleanliness:</strong> Continue the new venue appeal and well-maintained environment that guests appreciate, with visible standards that reinforce the modern, quality positioning guests are responding to.",
-            "<strong>Communicate venue commitment to excellence:</strong> Demonstrate ongoing investment in the venue and guest experience through visible improvements and consistent messaging that this is a valued location deserving of guest loyalty."
+            "<strong>Recognize and retain standout staff:</strong> Formally acknowledge servers like Diego who deliver exceptional hospitality\u2014share their examples in staff meetings, recognize them in newsletters, and ensure compensation and scheduling reflect their value so they stay and model behavior for others.",
+            "<strong>Hire and train for hospitality fit:</strong> When hiring new servers, prioritize warmth, attentiveness, and celebration-ready mindset above prior experience; train new staff by shadowing top performers so hospitality culture is baked in from day one, not left to chance.",
+            "<strong>Create a zero-tolerance policy for rudeness:</strong> While most staff are friendly, rudeness directly drives away repeat visitors\u2014establish a clear standard that dismissive or condescending behavior is unacceptable, and coach or remove staff who can't meet it despite training, so the venue's hospitality reputation stays intact.",
+            "<strong>Celebrate guest success stories:</strong> When staff enable memorable celebrations (birthdays, wins, group milestones), highlight those moments on social media or in-venue, crediting the staff\u2014this reinforces the culture and reminds guests what to expect when they return."
           ]
         }
       }

@@ -10,9 +10,9 @@ itself differs by output format.
 
 get_analysis() returns the "HTML-ready" shape (recommendation items are
 already `<li>...</li>` strings, matching what templates/venue-snapshot-browser.html
-expects - see create_single_venue_snapshot_report.py). Markdown reports call the
+expects - see create_single_venue_report.py). Markdown reports call the
 AI analysis independently and converts the inline HTML (`<strong>`, `<li>`)
-to Markdown - see create_single_venue_snapshot_report.py.
+to Markdown - see create_single_venue_report.py.
 
 There is no keyword/metric-based fallback narrative any more. If the AI
 analysis (ai_analysis.get_ai_analysis()) isn't available - CLI missing,
@@ -78,7 +78,7 @@ def get_analysis(data, precomputed_analysis=None):
 
     Recommendation items are HTML `<li>` strings in this return value (ready
     to drop into the HTML template) - Markdown consumers should not call
-    this function directly; see create_single_venue_snapshot_report.py.
+    this function directly; see create_single_venue_report.py.
 
     When AI analysis isn't available, returns:
 
@@ -190,7 +190,7 @@ def build_overall_assessment(data, metrics_registry=None):
 def build_metrics_context(data, metrics_registry):
     """Dates, metric displays, and assessments/status-classes shared by both
     output formats. Recommendation/ups/downs/impact content is NOT included
-    here - see get_analysis() (HTML) or create_single_venue_snapshot_report.py (Markdown),
+    here - see get_analysis() (HTML) or create_single_venue_report.py (Markdown),
     since the two formats need that content shaped differently."""
     start_date = data['date_range'][0]
     end_date = data['date_range'][1]
@@ -280,7 +280,7 @@ def build_metrics_context(data, metrics_registry):
 def render_html_report(data, metrics_registry, template, precomputed_analysis=None):
     """Render templates/venue-snapshot-browser.html for this venue's data.
 
-    Used by create_single_venue_snapshot_report.py (writes the .html file directly and
+    Used by create_single_venue_report.py (writes the .html file directly and
     feeds this same HTML string into headless Chromium for PDF generation
     via Playwright). Routing the PDF through this exact function - not a
     second template or a re-derived context - is what keeps the PDF's

@@ -219,7 +219,7 @@ def main():
         try:
             template = jinja_env.get_template('multi-venue-snapshot-browser.html')
             html = template.render(**report_data)
-            html_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_snapshot.html")
+            html_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}.html")
             with open(html_file, 'w', encoding='utf-8') as f:
                 f.write(html)
             print(f"[OK] HTML report: {html_file}")
@@ -231,7 +231,7 @@ def main():
         try:
             template = jinja_env.get_template('multi-venue-snapshot-report.md.j2')
             markdown = template.render(**report_data)
-            md_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_snapshot.md")
+            md_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}.md")
             with open(md_file, 'w', encoding='utf-8') as f:
                 f.write(markdown)
             print(f"[OK] Markdown report: {md_file}")
@@ -253,7 +253,7 @@ def main():
                 page.emulate_media(media="print")
                 # Wait for content to fully load before rendering PDF
                 page.set_content(html, wait_until="load")
-                pdf_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_snapshot.pdf")
+                pdf_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}.pdf")
                 page.pdf(
                     path=pdf_file,
                     format="Letter",

@@ -7,12 +7,12 @@ create_markdown_reports.py, and create_pdf_reports.py into a single entry point
 that handles all three formats.
 
 Usage:
-    python create_single_venue_snapshot_report.py <venue_data.json> [--format html|markdown|pdf|all] [--timestamp YYYYMMDD_HHMMSS] [--analysis <analysis_file>]
+    python create_single_venue_report.py <venue_data.json> [--format html|markdown|pdf|all] [--timestamp YYYYMMDD_HHMMSS] [--analysis <analysis_file>]
 
 Examples:
-    python create_single_venue_snapshot_report.py venue_data.json
-    python create_single_venue_snapshot_report.py venue_data.json --format all
-    python create_single_venue_snapshot_report.py venue_data.json --format html,pdf --timestamp 20260914_143022 --analysis ai_analysis_results.json
+    python create_single_venue_report.py venue_data.json
+    python create_single_venue_report.py venue_data.json --format all
+    python create_single_venue_report.py venue_data.json --format html,pdf --timestamp 20260914_143022 --analysis ai_analysis_results.json
 """
 import json
 import sys
@@ -86,11 +86,11 @@ for fmt in formats:
 # Check if files exist
 if not os.path.exists(json_file):
     print(f"Error: File not found: {json_file}")
-    print(f"\nUsage: python create_single_venue_snapshot_report.py <path_to_json_file> [--format html|markdown|pdf|all] [--timestamp YYYYMMDD_HHMMSS] [--analysis <analysis_file>]")
+    print(f"\nUsage: python create_single_venue_report.py <path_to_json_file> [--format html|markdown|pdf|all] [--timestamp YYYYMMDD_HHMMSS] [--analysis <analysis_file>]")
     print(f"\nExamples:")
-    print(f"  python create_single_venue_snapshot_report.py venue_data.json")
-    print(f"  python create_single_venue_snapshot_report.py venue_data.json --format all")
-    print(f"  python create_single_venue_snapshot_report.py venue_data.json --format html,pdf --timestamp 20260914_143022 --analysis ai_analysis_results.json")
+    print(f"  python create_single_venue_report.py venue_data.json")
+    print(f"  python create_single_venue_report.py venue_data.json --format all")
+    print(f"  python create_single_venue_report.py venue_data.json --format html,pdf --timestamp 20260914_143022 --analysis ai_analysis_results.json")
     print(f"\nNote: First run 'python generate_venue_data.py <csv_file>' to create venue_data.json")
     sys.exit(1)
 
@@ -234,9 +234,9 @@ for venue_key in sorted(venue_data.keys()):
 
     # Build filename base
     if timestamp:
-        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_{timestamp}_snapshot")
+        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_{timestamp}")
     else:
-        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_snapshot")
+        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}")
 
     # Generate HTML
     if 'html' in formats:

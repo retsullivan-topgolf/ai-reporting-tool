@@ -247,16 +247,16 @@ def main():
     # Step 4: Generate reports in selected format(s)
     print("\nSTEP 4: Creating reports in selected format(s)...")
     format_arg = ','.join(sorted(formats))
-    if not run_command('create_single_venue_snapshot_report.py', ['venue_data.json', '--format', format_arg, '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
+    if not run_command('create_single_venue_report.py', ['venue_data.json', '--format', format_arg, '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
         print("\nFailed to create reports. Aborting.")
         sys.exit(1)
     
     if 'html' in formats:
-        generated_files.append("  - HTML: ../reports/Topgolf_Venue_Report_*_snapshot.html")
+        generated_files.append("  - HTML: ../reports/Topgolf_Venue_Report_*.html")
     if 'markdown' in formats:
-        generated_files.append("  - Markdown: ../reports/Topgolf_Venue_Report_*_snapshot.md")
+        generated_files.append("  - Markdown: ../reports/Topgolf_Venue_Report_*.md")
     if 'pdf' in formats:
-        generated_files.append("  - PDF: ../reports/Topgolf_Venue_Report_*_snapshot.pdf")
+        generated_files.append("  - PDF: ../reports/Topgolf_Venue_Report_*.pdf")
 
     print(f"\n{'='*60}")
     print("[SUCCESS] All venue reports generated successfully!")

@@ -188,11 +188,11 @@ try:
             # Build filename with optional timestamp
             if timestamp:
                 filename = os.path.join(
-                    reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_{timestamp}_snapshot.pdf"
+                    reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_{timestamp}.pdf"
                 )
             else:
                 filename = os.path.join(
-                    reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_snapshot.pdf"
+                    reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}.pdf"
                 )
 
             write_pdf(page, html, filename)

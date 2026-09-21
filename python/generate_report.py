@@ -49,7 +49,7 @@ REPORT_TYPES = {
         'name': 'Single-Venue Snapshot',
         'description': 'Current period report for a single venue',
         'requires': ['venue'],
-        'script': 'create_single_venue_snapshot_report.py',
+        'script': 'create_single_venue_report.py',
     },
     'comparison': {
         'name': 'Single-Venue Comparison',
@@ -61,7 +61,7 @@ REPORT_TYPES = {
         'name': 'Multi-Venue Snapshot',
         'description': 'Current period report for all venues',
         'requires': ['start_date', 'end_date'],
-        'script': 'create_multi_venue_snapshot_report.py',
+        'script': 'create_multi_venue_report.py',
     },
     'multi-comparison': {
         'name': 'Multi-Venue Comparison',
@@ -397,7 +397,7 @@ def main():
     cmd_args = []
     
     if report_type == 'snapshot':
-        # Single-venue snapshot: generate_venue_data.py -> run_analyze_venues.py -> create_single_venue_snapshot_report.py
+        # Single-venue snapshot: generate_venue_data.py -> run_analyze_venues.py -> create_single_venue_report.py
         print("\n" + "="*60)
         print("STEP 1: Processing data and generating metrics...")
         print("="*60)
