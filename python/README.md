@@ -89,7 +89,7 @@ python generate_venue_reports.py ../example-data/survey.csv --format all
 **Output:**
 - Creates `venue_data.json` in the python folder
 - Creates `ai_analysis_results.json` in the python folder
-- Creates report files in `../reports/`: `Topgolf_Venue_Report_[VenueName]_YYYYMMDD_HHMMSS_1PAGE.{html,md,pdf}`
+- Creates report files in `../reports/`: `Topgolf_Venue_Report_[VenueName]_YYYYMMDD_HHMMSS_snapshot.{html,md,pdf}`
 
 ---
 
@@ -135,7 +135,7 @@ python create_single_venue_snapshot_report.py venue_data.json --format markdown,
 ```
 
 **Output:**
-- Creates report files in `../reports/`: `Topgolf_Venue_Report_[VenueName]_1PAGE.{html,md,pdf}`
+- Creates report files in `../reports/`: `Topgolf_Venue_Report_[VenueName]_snapshot.{html,md,pdf}`
 
 ### 4. `create_single_venue_comparison_report.py`
 Generates single-venue period comparison reports comparing metrics between two time periods.

@@ -252,11 +252,11 @@ def main():
         sys.exit(1)
     
     if 'html' in formats:
-        generated_files.append("  - HTML: ../reports/Topgolf_Venue_Report_*_1PAGE.html")
+        generated_files.append("  - HTML: ../reports/Topgolf_Venue_Report_*_snapshot.html")
     if 'markdown' in formats:
-        generated_files.append("  - Markdown: ../reports/Topgolf_Venue_Report_*_1PAGE.md")
+        generated_files.append("  - Markdown: ../reports/Topgolf_Venue_Report_*_snapshot.md")
     if 'pdf' in formats:
-        generated_files.append("  - PDF: ../reports/Topgolf_Venue_Report_*_1PAGE.pdf")
+        generated_files.append("  - PDF: ../reports/Topgolf_Venue_Report_*_snapshot.pdf")
 
     print(f"\n{'='*60}")
     print("[SUCCESS] All venue reports generated successfully!")

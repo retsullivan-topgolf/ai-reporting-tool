@@ -375,7 +375,7 @@ def main():
         try:
             template = jinja_env.get_template('venue-comparison-browser.html')
             html = template.render(**report_data)
-            html_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_1PAGE.html")
+            html_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_snapshot.html")
             with open(html_file, 'w', encoding='utf-8') as f:
                 f.write(html)
             print(f"[OK] HTML report: {html_file}")
@@ -387,7 +387,7 @@ def main():
         try:
             template = jinja_env.get_template('venue-comparison-report.md.j2')
             markdown = template.render(**report_data)
-            md_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_1PAGE.md")
+            md_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_snapshot.md")
             with open(md_file, 'w', encoding='utf-8') as f:
                 f.write(markdown)
             print(f"[OK] Markdown report: {md_file}")
@@ -409,7 +409,7 @@ def main():
                 page.emulate_media(media="print")
                 # Wait for content to fully load before rendering PDF
                 page.set_content(html, wait_until="load")
-                pdf_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_1PAGE.pdf")
+                pdf_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_snapshot.pdf")
                 page.pdf(
                     path=pdf_file,
                     format="Letter",

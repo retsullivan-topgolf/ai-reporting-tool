@@ -234,9 +234,9 @@ for venue_key in sorted(venue_data.keys()):
 
     # Build filename base
     if timestamp:
-        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_{timestamp}_1PAGE")
+        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_{timestamp}_snapshot")
     else:
-        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_1PAGE")
+        filename_base = os.path.join(reports_dir, f"Topgolf_Venue_Report_{venue_name.replace(' ', '_')}_snapshot")
 
     # Generate HTML
     if 'html' in formats:

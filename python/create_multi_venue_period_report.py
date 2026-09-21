@@ -1,22 +1,19 @@
 #!/usr/bin/env python3
 """
-Generate a multi-venue period comparison report comparing aggregated metrics
-across two time periods (current vs. previous month/quarter).
+Generate a multi-venue single period report aggregating metrics across all venues
+for a given time period and ranking them by composite performance score.
 
 This report shows:
-- Aggregated metrics for both periods with deltas and percent changes
-- Venue ranking comparison with ranking changes
-- Trend indicators for significant changes (±0.5 threshold)
-- Response count comparison with warnings for ±20% differences
-- Comment themes from current period only
-- Period-level AI analysis with comparison context
+- Aggregated metrics across all venues
+- Venue ranking by composite score (Combined NPS)
+- Comment themes aggregated from current period
+- Period-level AI analysis synthesizing insights across venues
 
 Usage:
-    python create_multi_venue_comparison_report.py <data_identifier> <current_start> <current_end> <previous_start> <previous_end> [--format html|markdown|pdf|all]
+    python create_multi_venue_period_report.py <csv_file> <start_date> <end_date> [--format html|markdown|pdf|all]
 
 Example:
-    python create_multi_venue_comparison_report.py Grand_Prairie 2026-01-01 2026-01-31 2025-12-01 2025-12-31
-    python create_multi_venue_comparison_report.py texas_venues 2026-01-01 2026-01-31 2025-12-01 2025-12-31
+    python create_multi_venue_period_report.py ../example-data/survey.csv 2026-01-01 2026-01-31
 """
 
 import json
@@ -24,11 +21,12 @@ import sys
 import os
 from datetime import datetime
 from pathlib import Path
+from collections import Counter
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from api import csv_parser, venue_processor, data_loader
+from api import csv_parser, venue_processor
 import report_engine
 import report_content
 from jinja2 import Environment, FileSystemLoader
@@ -69,7 +67,7 @@ def filter_rows_by_date_range(rows, start_date, end_date):
                     continue
         except:
             continue
-
+    
     return filtered
 
 
@@ -120,130 +118,80 @@ def extract_comment_themes(venue_data_list, max_themes=10):
     return sorted_themes[:max_themes]
 
 
-def get_trend_indicator(delta):
-    """Get trend indicator based on delta value (±0.5 threshold).
-    
-    Args:
-        delta: Metric delta (float or None)
-        
-    Returns:
-        Tuple of (indicator, css_class) where:
-        - indicator: '↑', '↓', or '→'
-        - css_class: 'up', 'down', or 'neutral'
-    """
-    if delta is None:
-        return '—', 'unavailable'
-    
-    if delta >= 0.5:
-        return '↑', 'up'
-    elif delta <= -0.5:
-        return '↓', 'down'
-    else:
-        return '→', 'neutral'
-
-
 def main():
     """Main entry point."""
     # Parse arguments
-    if len(sys.argv) < 6:
+    if len(sys.argv) < 4:
         print(__doc__)
         sys.exit(1)
     
-    data_identifier = sys.argv[1]
-    current_start = sys.argv[2]
-    current_end = sys.argv[3]
-    previous_start = sys.argv[4]
-    previous_end = sys.argv[5]
+    csv_file = sys.argv[1]
+    start_date = sys.argv[2]
+    end_date = sys.argv[3]
     
     # Optional format argument
     report_format = 'all'
-    if len(sys.argv) > 6:
-        if sys.argv[6] == '--format':
-            report_format = sys.argv[7] if len(sys.argv) > 7 else 'all'
+    if len(sys.argv) > 4:
+        if sys.argv[4] == '--format':
+            report_format = sys.argv[5] if len(sys.argv) > 5 else 'all'
     
-    print(f"Processing multi-venue period comparison report...")
-    print(f"  Data: {data_identifier}")
-    print(f"  Current period: {current_start} to {current_end}")
-    print(f"  Previous period: {previous_start} to {previous_end}")
+    # Validate CSV file
+    if not os.path.exists(csv_file):
+        print(f"Error: CSV file not found: {csv_file}")
+        sys.exit(1)
     
-    # Load survey data
+    print(f"Processing multi-venue period report...")
+    print(f"  Period: {start_date} to {end_date}")
+    
+    # Parse CSV
     try:
-        # Determine if data_identifier is a dataset name or venue name
-        # If it's a known dataset, use it; otherwise treat as venue name
-        available_datasets = data_loader.list_available_datasets()
-        if data_identifier in available_datasets:
-            # Use the specified dataset
-            rows, fieldnames = data_loader.load_survey_data(dataset=data_identifier)
-        else:
-            # Assume it's a venue name, load from texas_venues
-            rows, fieldnames = data_loader.load_survey_data(venue=data_identifier)
-        
+        rows, fieldnames = csv_parser.parse_csv(csv_file)
         schema_type = csv_parser.detect_schema(fieldnames)
         print(f"  Schema detected: {schema_type}")
-    except data_loader.DataLoaderError as e:
-        print(f"Error loading data: {e}")
-        sys.exit(1)
     except Exception as e:
-        print(f"Error processing data: {e}")
+        print(f"Error parsing CSV: {e}")
         sys.exit(1)
     
-    # Filter by date ranges
-    current_rows = filter_rows_by_date_range(rows, current_start, current_end)
-    previous_rows = filter_rows_by_date_range(rows, previous_start, previous_end)
+    # Filter by date range
+    period_rows = filter_rows_by_date_range(rows, start_date, end_date)
     
-    if not current_rows:
-        print(f"Error: No data found for current period ({current_start} to {current_end})")
+    if not period_rows:
+        print(f"Error: No data found for period ({start_date} to {end_date})")
         sys.exit(1)
     
-    if not previous_rows:
-        print(f"Warning: No data found for previous period ({previous_start} to {previous_end})")
+    print(f"  Total responses in period: {len(period_rows)}")
     
-    print(f"  Current period responses: {len(current_rows)}")
-    print(f"  Previous period responses: {len(previous_rows)}")
+    # Calculate period summary (aggregates across all venues)
+    period_summary = venue_processor.calculate_period_summary(period_rows, schema_type, start_date, end_date)
     
-    # Calculate period summaries
-    current_summary = venue_processor.calculate_period_summary(current_rows, schema_type, current_start, current_end)
-    previous_summary = venue_processor.calculate_period_summary(previous_rows, schema_type, previous_start, previous_end) if previous_rows else None
-    
-    if current_summary['venues_count'] == 0:
-        print(f"Error: No venues found in current period data")
+    if period_summary['venues_count'] == 0:
+        print(f"Error: No venues found in period data")
         sys.exit(1)
     
-    print(f"  Current venues: {current_summary['venues_count']}")
-    if previous_summary:
-        print(f"  Previous venues: {previous_summary['venues_count']}")
+    print(f"  Venues: {period_summary['venues_count']}")
+    print(f"  Aggregated NPS: {period_summary['metrics_avg'].get('nps_avg', 'N/A')}")
+    print(f"  Aggregated LTR: {period_summary['metrics_avg'].get('ltr_avg', 'N/A')}")
     
-    # Compare periods
-    comparison = venue_processor.compare_periods(current_summary, previous_summary) if previous_summary else {}
-    
-    # Extract comment themes from current period only
-    current_venue_data_list = [
+    # Extract comment themes
+    venue_data_list = [
         venue_processor.process_venue_data(
-            [r for r in current_rows if r.get('Venue', '').strip() == venue['venue']],
+            [r for r in period_rows if r.get('Venue', '').strip() == venue['venue']],
             schema_type
         )
-        for venue in current_summary['venues_ranked']
+        for venue in period_summary['venues_ranked']
     ]
     
-    comment_themes = extract_comment_themes(current_venue_data_list)
+    comment_themes = extract_comment_themes(venue_data_list)
     
     # Build report data
     report_data = {
-        'current_period': current_summary['period'],
-        'current_period_type': current_summary['period_type'],
-        'current_date_range': current_summary['date_range'],
-        'current_total_responses': current_summary['total_responses'],
-        'current_venues_count': current_summary['venues_count'],
-        'current_metrics_avg': current_summary['metrics_avg'],
-        'current_venues_ranked': current_summary['venues_ranked'],
-        'previous_period': previous_summary['period'] if previous_summary else None,
-        'previous_period_type': previous_summary['period_type'] if previous_summary else None,
-        'previous_date_range': previous_summary['date_range'] if previous_summary else None,
-        'previous_total_responses': previous_summary['total_responses'] if previous_summary else None,
-        'previous_venues_count': previous_summary['venues_count'] if previous_summary else None,
-        'previous_metrics_avg': previous_summary['metrics_avg'] if previous_summary else None,
-        'previous_venues_ranked': previous_summary['venues_ranked'] if previous_summary else None,
-        'comparison': comparison,
+        'period': period_summary['period'],
+        'period_type': period_summary['period_type'],
+        'date_range': period_summary['date_range'],
+        'total_responses': period_summary['total_responses'],
+        'venues_count': period_summary['venues_count'],
+        'metrics_avg': period_summary['metrics_avg'],
+        'venues_ranked': period_summary['venues_ranked'],
         'comment_themes': comment_themes,
         'metrics_registry': report_engine.load_metrics_registry()
     }
@@ -258,30 +206,20 @@ def main():
     # Load Jinja2 environment
     TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')
     jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
-
-    # Register strftime filter for date formatting in templates
-    def strftime_filter(value, format_str):
-        if isinstance(value, str) and value.lower() == 'now':
-            return datetime.now().strftime(format_str)
-        elif isinstance(value, datetime):
-            return value.strftime(format_str)
-        return str(value)
-
-    jinja_env.filters['strftime'] = strftime_filter
-
+    
     # Generate reports
     reports_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'reports')
     os.makedirs(reports_dir, exist_ok=True)
     
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    period_safe = f"{current_summary['period']}_vs_{previous_summary['period'] if previous_summary else 'baseline'}".replace(' ', '_').replace('/', '_')
+    period_safe = period_summary['period'].replace(' ', '_').replace('/', '_')
     
     # HTML report
     if report_format in ['html', 'all']:
         try:
-            template = jinja_env.get_template('multi-venue-comparison-browser.html')
+            template = jinja_env.get_template('multi-venue-snapshot-browser.html')
             html = template.render(**report_data)
-            html_file = os.path.join(reports_dir, f"Topgolf_Period_Comparison_{period_safe}_{timestamp}_snapshot.html")
+            html_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_snapshot.html")
             with open(html_file, 'w', encoding='utf-8') as f:
                 f.write(html)
             print(f"[OK] HTML report: {html_file}")
@@ -291,9 +229,9 @@ def main():
     # Markdown report
     if report_format in ['markdown', 'all']:
         try:
-            template = jinja_env.get_template('multi-venue-comparison-report.md.j2')
+            template = jinja_env.get_template('multi-venue-snapshot-report.md.j2')
             markdown = template.render(**report_data)
-            md_file = os.path.join(reports_dir, f"Topgolf_Period_Comparison_{period_safe}_{timestamp}_snapshot.md")
+            md_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_snapshot.md")
             with open(md_file, 'w', encoding='utf-8') as f:
                 f.write(markdown)
             print(f"[OK] Markdown report: {md_file}")
@@ -305,7 +243,7 @@ def main():
         try:
             from playwright.sync_api import sync_playwright
             
-            template = jinja_env.get_template('multi-venue-comparison-pdf.html')
+            template = jinja_env.get_template('multi-venue-snapshot-pdf.html')
             html = template.render(**report_data)
             
             with sync_playwright() as p:
@@ -315,7 +253,7 @@ def main():
                 page.emulate_media(media="print")
                 # Wait for content to fully load before rendering PDF
                 page.set_content(html, wait_until="load")
-                pdf_file = os.path.join(reports_dir, f"Topgolf_Period_Comparison_{period_safe}_{timestamp}_snapshot.pdf")
+                pdf_file = os.path.join(reports_dir, f"Topgolf_Multi_Venue_Period_{period_safe}_{timestamp}_snapshot.pdf")
                 page.pdf(
                     path=pdf_file,
                     format="Letter",

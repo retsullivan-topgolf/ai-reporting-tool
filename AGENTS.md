@@ -114,9 +114,9 @@ python create_multi_venue_comparison_report.py texas_venues 2026-01-01 2026-01-3
 - Input CSVs: `api/qualtrics/` (managed by data_loader)
 - JSON metrics: `venue_data.json` (python folder)
 - AI analysis cache: `ai_analysis_results.json` (python folder)
-- Output HTML: `../reports/Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_1PAGE.html`
-- Output Markdown: `../reports/Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_1PAGE.md`
-- Output PDF: `../reports/Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_1PAGE.pdf`
+- Output HTML: `../reports/Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_snapshot.html`
+- Output Markdown: `../reports/Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_snapshot.md`
+- Output PDF: `../reports/Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_snapshot.pdf`
 
 ## Report Generation Workflow
 
@@ -175,7 +175,7 @@ python create_single_venue_comparison_report.py Grand_Prairie "Grand Prairie" 20
 - AI analysis with comparison context
 - Comments from current period only
 
-**Output:** `Topgolf_Venue_Period_Comparison_<venue>_<timestamp>_1PAGE.{html,md,pdf}`
+**Output:** `Topgolf_Venue_Period_Comparison_<venue>_<timestamp>_snapshot.{html,md,pdf}`
 
 ### Report Type 2: Multi-Venue Single Period
 Aggregate metrics across all venues for a given time period, ranked by composite performance score.
@@ -196,7 +196,7 @@ python create_multi_venue_snapshot_report.py Grand_Prairie 2026-01-01 2026-01-31
 - Comment themes aggregated from all venues
 - Handles missing F&B data gracefully (redistributes weights)
 
-**Output:** `Topgolf_Multi_Venue_Period_<period>_<timestamp>_1PAGE.{html,md,pdf}`
+**Output:** `Topgolf_Multi_Venue_Period_<period>_<timestamp>_snapshot.{html,md,pdf}`
 
 ### Report Type 3: Multi-Venue Period Comparison
 Compare aggregated metrics across all venues between two time periods with ranking changes.
@@ -218,7 +218,7 @@ python create_multi_venue_comparison_report.py Grand_Prairie 2026-01-01 2026-01-
 - Response count comparison with warnings for ±20% differences
 - Comment themes from current period only
 
-**Output:** `Topgolf_Period_Comparison_<periods>_<timestamp>_1PAGE.{html,md,pdf}`
+**Output:** `Topgolf_Period_Comparison_<periods>_<timestamp>_snapshot.{html,md,pdf}`
 
 ### Composite Score Calculation
 
@@ -262,10 +262,10 @@ Changes ≥ ±0.5 points are highlighted as "significant":
 - `reports/` - Generated reports (created automatically)
 
 ### Generated Reports
-- Single-venue: `Topgolf_Venue_Report_*_1PAGE.{html,md,pdf}`
-- Venue period comparison: `Topgolf_Venue_Period_Comparison_*_1PAGE.{html,md,pdf}`
-- Multi-venue single period: `Topgolf_Multi_Venue_Period_*_1PAGE.{html,md,pdf}`
-- Multi-venue period comparison: `Topgolf_Period_Comparison_*_1PAGE.{html,md,pdf}`
+- Single-venue: `Topgolf_Venue_Report_*_snapshot.{html,md,pdf}`
+- Venue period comparison: `Topgolf_Venue_Period_Comparison_*_snapshot.{html,md,pdf}`
+- Multi-venue single period: `Topgolf_Multi_Venue_Period_*_snapshot.{html,md,pdf}`
+- Multi-venue period comparison: `Topgolf_Period_Comparison_*_snapshot.{html,md,pdf}`
 
 ---
 

@@ -109,7 +109,7 @@ ai-reporting-tool/
 
 - **Input**: Survey data loaded by `api.data_loader` from `api/qualtrics/`
 - **Intermediate**: `python/venue_data.json` (metrics), `python/ai_analysis_results.json` (AI analysis)
-- **Output**: Reports in `reports/` as `Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_1PAGE.{html,md,pdf}`
+- **Output**: Reports in `reports/` as `Topgolf_Venue_Report_*_YYYYMMDD_HHMMSS_snapshot.{html,md,pdf}`
 
 ## Report Contents
 
