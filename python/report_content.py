@@ -256,45 +256,24 @@ def build_metrics_context(data, metrics_registry):
 
     # Add optional F&B metrics (if present in data)
     fb_metrics = ['food_value', 'food_speed', 'food_quality', 'beverage_value', 'beverage_speed', 'beverage_quality']
-    fb_values = []
-    food_values = []
-    beverage_values = []
-    
     for metric in fb_metrics:
         data_field = f'{metric}_avg'
         if data_field in data and data[data_field] is not None:
             context[f'{metric}_avg_display'] = f"{data[data_field]:.1f}"
             context[f'{metric}_assessment'] = report_engine.get_assessment(metric, data[data_field], metrics_registry)
             context[f'{metric}_assessment_class'] = report_engine.get_assessment_class(metric, data[data_field], metrics_registry)
-            fb_values.append(data[data_field])
-            
-            # Separate food and beverage values for their respective averages
-            if metric.startswith('food_'):
-                food_values.append(data[data_field])
-            elif metric.startswith('beverage_'):
-                beverage_values.append(data[data_field])
 
-    # Calculate Food Average if we have any Food metrics
-    if food_values:
-        food_average = sum(food_values) / len(food_values)
-        context['food_avg_display'] = f"{food_average:.1f}"
-        context['food_assessment'] = report_engine.get_assessment('food', food_average, metrics_registry)
-        context['food_assessment_class'] = report_engine.get_assessment_class('food', food_average, metrics_registry)
-
-    # Calculate Beverage Average if we have any Beverage metrics
-    if beverage_values:
-        beverage_average = sum(beverage_values) / len(beverage_values)
-        context['beverage_avg_display'] = f"{beverage_average:.1f}"
-        context['beverage_assessment'] = report_engine.get_assessment('beverage', beverage_average, metrics_registry)
-        context['beverage_assessment_class'] = report_engine.get_assessment_class('beverage', beverage_average, metrics_registry)
-
-    # Calculate F&B Average if we have any F&B metrics
-    if fb_values:
-        fb_average = sum(fb_values) / len(fb_values)
-        context['fb_average'] = fb_average
-        context['fb_average_display'] = f"{fb_average:.1f}"
-        context['fb_average_assessment'] = report_engine.get_assessment('fb_average', fb_average, metrics_registry)
-        context['fb_average_assessment_class'] = report_engine.get_assessment_class('fb_average', fb_average, metrics_registry)
+    # Food/Beverage/F&B averages are computed once in venue_processor.py
+    # (part of venue_data.json) rather than re-derived here, so the report
+    # and the AI analysis pipeline always agree on the same numbers.
+    for metric, data_field in (('food', 'food_avg'), ('beverage', 'beverage_avg'), ('fb_average', 'fb_average')):
+        if data.get(data_field) is not None:
+            value = data[data_field]
+            context[f'{data_field}_display'] = f"{value:.1f}"
+            context[f'{metric}_assessment'] = report_engine.get_assessment(metric, value, metrics_registry)
+            context[f'{metric}_assessment_class'] = report_engine.get_assessment_class(metric, value, metrics_registry)
+            if metric == 'fb_average':
+                context['fb_average'] = value
 
     return context
 

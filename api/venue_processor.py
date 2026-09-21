@@ -208,11 +208,14 @@ def process_venue_data(rows: List[Dict[str, str]], schema_name: str) -> Optional
         # Comments
         comment = csv_parser.get_field(row, 'comment', schema_name)
         if comment:
-            results['comments'].append({
+            comment_entry = {
                 'ltr': ltr_val if ltr_val is not None else 0,
                 'fun': fun_val if fun_val is not None else 0,
                 'text': comment
-            })
+            }
+            if schema_name == 'real':
+                comment_entry['nps'] = nps_val if nps_val is not None else 0
+            results['comments'].append(comment_entry)
             
             if ltr_val is not None and ltr_val >= 4:
                 results['high_ltr_comments'].append(comment)
@@ -274,6 +277,22 @@ def process_venue_data(rows: List[Dict[str, str]], schema_name: str) -> Optional
             round(sum(results['beverage_quality_scores']) / len(results['beverage_quality_scores']), 1)
             if results['beverage_quality_scores'] else None
         )
+        
+        # Food average (of whichever food metrics are present)
+        food_values = [v for v in (
+            results['food_value_avg'], results['food_speed_avg'], results['food_quality_avg']
+        ) if v is not None]
+        results['food_avg'] = round(sum(food_values) / len(food_values), 1) if food_values else None
+        
+        # Beverage average (of whichever beverage metrics are present)
+        beverage_values = [v for v in (
+            results['beverage_value_avg'], results['beverage_speed_avg'], results['beverage_quality_avg']
+        ) if v is not None]
+        results['beverage_avg'] = round(sum(beverage_values) / len(beverage_values), 1) if beverage_values else None
+        
+        # Combined Food & Beverage average (of whichever of the 6 F&B metrics are present)
+        fb_values = food_values + beverage_values
+        results['fb_average'] = round(sum(fb_values) / len(fb_values), 1) if fb_values else None
     
     # Clean up temporary score lists
     for key in list(results.keys()):

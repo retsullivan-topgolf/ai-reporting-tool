@@ -33,7 +33,9 @@ Optional (if present in data):
 - `beverage_value_avg` (0-5 scale) - beverage offering value
 - `beverage_speed_avg` (0-5 scale) - beverage service speed
 - `beverage_quality_avg` (0-5 scale) - beverage quality
-- `fb_average` (0-5 scale) - computed average of all F&B metrics
+- `food_avg` (0-5 scale) - computed average of the food metrics (value, speed, quality)
+- `beverage_avg` (0-5 scale) - computed average of the beverage metrics (value, speed, quality)
+- `fb_average` (0-5 scale) - computed average of all F&B metrics (food + beverage combined)
 
 If no source information is available, ask the user to provide the required information before continuing.
 
@@ -94,7 +96,7 @@ Example sythesized characterisation: "Strong Fun and Helpfulness scores indicate
 
 **`metric_flags`**: One entry per metric that's worth calling out. Each entry must include:
 
-- `metric`: one of `ltr`, `fun`, `helpful`, `issues`, `resolution`, `nps`, `price_value`, `food_value`, `food_speed`, `food_quality`, `beverage_value`, `beverage_speed`, `beverage_quality`, `fb_average`
+- `metric`: one of `ltr`, `fun`, `helpful`, `issues`, `resolution`, `nps`, `price_value`, `food_value`, `food_speed`, `food_quality`, `beverage_value`, `beverage_speed`, `beverage_quality`, `food`, `beverage`, `fb_average`
 - `polarity`: `"positive"` or `"negative"`
 - `magnitude`: 0-100, representing how much this metric matters to overall guest satisfaction for this venue
 - `note`: one sentence, cite the actual number

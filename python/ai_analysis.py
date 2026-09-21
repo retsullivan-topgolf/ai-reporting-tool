@@ -139,10 +139,12 @@ def _build_metrics_payload(data):
             metrics[data_field] = data[data_field]
             assessment_tiers[metric] = report_engine.get_assessment(metric, data[data_field], registry)
 
-    # Add F&B Average if present
-    if "fb_average" in data and data["fb_average"] is not None:
-        metrics["fb_average"] = data["fb_average"]
-        assessment_tiers["fb_average"] = report_engine.get_assessment("fb_average", data["fb_average"], registry)
+    # Add Food/Beverage/F&B averages if present
+    for metric in ["food", "beverage", "fb_average"]:
+        data_field = "fb_average" if metric == "fb_average" else f"{metric}_avg"
+        if data_field in data and data[data_field] is not None:
+            metrics[data_field] = data[data_field]
+            assessment_tiers[metric] = report_engine.get_assessment(metric, data[data_field], registry)
 
     return {
         "venue": data["venue"],

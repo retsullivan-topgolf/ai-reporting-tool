@@ -19,6 +19,7 @@ Required:
   - `text`: the guest's free-text comment
   - `ltr`: that guest's Likelihood to Return score (1-5)
   - `fun`: that guest's Fun score (0-5)
+  - `nps`: that guest's Combined NPS score (1-10), present only for the 'real' schema
 - `metric_flags`: list of metric flags from Step 1, each containing:
   - `metric`: the metric name
   - `polarity`: the metric polarity (positive or negative)
@@ -36,7 +37,7 @@ If no comments are provided or comments lack the required fields, ask the user t
 Always use:
 
 - The actual comment text itself, not pattern-matching against a fixed keyword list
-- The venue's LTR and Fun scores to understand whether a theme appeared in generally happy or unhappy experiences
+- The venue's LTR, NPS (when present), and Fun scores to understand whether a theme appeared in generally happy or unhappy experiences
 - Specific, recurring details (named games, facility problems, safety issues, visit phases like parking or food) rather than generic labels
 - Mention count as a baseline but not the only driver of magnitude
 
