@@ -142,7 +142,16 @@ def main():
     
     # Load survey data
     try:
-        rows, fieldnames = data_loader.load_survey_data(data_identifier)
+        # Determine if data_identifier is a dataset name or venue name
+        # If it's a known dataset, use it; otherwise treat as venue name
+        available_datasets = data_loader.list_available_datasets()
+        if data_identifier in available_datasets:
+            # Use the specified dataset
+            rows, fieldnames = data_loader.load_survey_data(dataset=data_identifier)
+        else:
+            # Assume it's a venue name, load from texas_venues
+            rows, fieldnames = data_loader.load_survey_data(venue=data_identifier)
+        
         schema_type = csv_parser.detect_schema(fieldnames)
         print(f"  Schema detected: {schema_type}")
     except data_loader.DataLoaderError as e:
@@ -206,6 +215,16 @@ def main():
     # Load Jinja2 environment
     TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')
     jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
+
+    # Register strftime filter for date formatting in templates
+    def strftime_filter(value, format_str):
+        if isinstance(value, str) and value.lower() == 'now':
+            return datetime.now().strftime(format_str)
+        elif isinstance(value, datetime):
+            return value.strftime(format_str)
+        return str(value)
+
+    jinja_env.filters['strftime'] = strftime_filter
     
     # Generate reports
     reports_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'reports')

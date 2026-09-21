@@ -3,18 +3,18 @@
 Generate venue metrics from survey data.
 
 This script:
-1. Loads survey data by identifier (e.g., 'Grand_Prairie', 'texas_venues')
+1. Loads survey data (defaults to texas_venues, can filter by venue)
 2. Detects the schema type (POC or Real)
 3. Parses and validates the data using the API
 4. Aggregates metrics by venue
 5. Saves the result to venue_data.json
 
 Usage:
-    python generate_venue_data.py Grand_Prairie
-    python generate_venue_data.py texas_venues
-    
-To see available datasets:
-    python generate_venue_data.py --list
+    python generate_venue_data.py                    # Load all venues from texas_venues
+    python generate_venue_data.py "Grand Prairie"    # Load only Grand Prairie from texas_venues
+    python generate_venue_data.py --dataset Grand_Prairie  # Load from Grand_Prairie.csv (backward compat)
+    python generate_venue_data.py --list             # List available datasets
+    python generate_venue_data.py --venues           # List available venues
 """
 
 import json
@@ -41,41 +41,76 @@ def main():
             sys.exit(1)
         return
     
-    # Get dataset identifier from command line argument
-    if len(sys.argv) > 1:
-        data_identifier = sys.argv[1]
-    else:
-        # Show available datasets and ask user to choose
+    # Handle --venues flag to show available venues
+    if len(sys.argv) > 1 and sys.argv[1] == '--venues':
         try:
-            datasets = data_loader.list_available_datasets()
-            if not datasets:
-                print("Error: No datasets available")
+            venues = data_loader.list_available_venues()
+            print("Available venues in texas_venues:")
+            for venue in venues:
+                print(f"  - {venue}")
+        except data_loader.DataLoaderError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+        return
+    
+    # Parse command line arguments
+    dataset = None
+    venue = None
+    
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg == '--dataset':
+            if i + 1 < len(sys.argv):
+                dataset = sys.argv[i + 1]
+                i += 2
+            else:
+                print("Error: --dataset requires a value")
+                sys.exit(1)
+        else:
+            # Treat as venue name
+            venue = arg
+            i += 1
+    
+    # If no venue specified, ask user
+    if venue is None and dataset is None:
+        try:
+            venues = data_loader.list_available_venues()
+            if not venues:
+                print("Error: No venues available")
                 sys.exit(1)
             
-            print("Available datasets:")
-            for i, dataset in enumerate(datasets, 1):
-                print(f"  {i}) {dataset}")
+            print("Available venues in texas_venues:")
+            for i, v in enumerate(venues, 1):
+                print(f"  {i}) {v}")
             
-            choice = input(f"\nSelect dataset (1-{len(datasets)}): ").strip()
-            try:
-                choice_num = int(choice)
-                if 1 <= choice_num <= len(datasets):
-                    data_identifier = datasets[choice_num - 1]
-                else:
-                    print("Invalid choice")
+            choice = input(f"\nSelect venue (1-{len(venues)}) or press Enter for all: ").strip()
+            if choice:
+                try:
+                    choice_num = int(choice)
+                    if 1 <= choice_num <= len(venues):
+                        venue = venues[choice_num - 1]
+                    else:
+                        print("Invalid choice")
+                        sys.exit(1)
+                except ValueError:
+                    print("Invalid input")
                     sys.exit(1)
-            except ValueError:
-                print("Invalid input")
-                sys.exit(1)
         except data_loader.DataLoaderError as e:
             print(f"Error: {e}")
             sys.exit(1)
 
-    print(f"Loading dataset: {data_identifier}")
+    # Display what we're loading
+    if dataset:
+        print(f"Loading dataset: {dataset}")
+    elif venue:
+        print(f"Loading venue: {venue} from texas_venues")
+    else:
+        print(f"Loading all venues from texas_venues")
 
     try:
         # Step 1: Load survey data using data_loader
-        rows, fieldnames = data_loader.load_survey_data(data_identifier)
+        rows, fieldnames = data_loader.load_survey_data(dataset=dataset, venue=venue)
         print(f"Loaded {len(rows)} rows from dataset")
 
         # Step 2: Detect schema

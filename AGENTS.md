@@ -9,7 +9,7 @@ All Python scripts have been moved to the `python/` directory for better organiz
 - **generate_venue_reports.py** - Master orchestrator for single-venue reports: runs all steps in one command (recommended). Processes data → generates metrics → runs AI analysis once → generates report formats. After processing the data, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
 
 #### Data Processing
-- **generate_venue_data.py** - Loads survey data by identifier → generates JSON metrics
+- **generate_venue_data.py** - Loads survey data (defaults to all venues from texas_venues, can filter by venue) → generates JSON metrics
 
 #### AI Analysis
 - **analyze_venues.py** - Core module implementing the 3-stage AI analysis pipeline (metrics_analysis → comment_analysis → synthesis)
@@ -33,11 +33,11 @@ All Python scripts have been moved to the `python/` directory for better organiz
 ### Running Scripts
 
 **Data Loader Abstraction:**
-All scripts use the `api.data_loader` module to load survey data by identifier (e.g., `Grand_Prairie`, `texas_venues`). This abstraction allows easy transition to a real API when available without changing script code. Data identifiers correspond to CSV files in `api/qualtrics/` (e.g., `Grand_Prairie` → `Grand_Prairie.csv`).
+All scripts use the `api.data_loader` module to load survey data. The module defaults to loading all data from `texas_venues.csv` (the complete dataset) and supports filtering by venue. This abstraction allows easy transition to a real API when available without changing script code.
 
-**Available Datasets:**
-- `Grand_Prairie` - Single venue data (Grand Prairie only)
-- `texas_venues` - Multi-venue data (Austin, Dallas, El Paso, Ft Worth, Grand Prairie, San Antonio, The Colony)
+**Available Datasets & Venues:**
+- `texas_venues` - Multi-venue data (Austin, Dallas, El Paso, Ft Worth, Grand Prairie, San Antonio, The Colony) - **DEFAULT**
+- `Grand_Prairie` - Single venue data (Grand Prairie only) - for backward compatibility
 
 List available datasets:
 ```bash
@@ -45,19 +45,45 @@ cd python
 python generate_venue_data.py --list
 ```
 
+List available venues in texas_venues:
+```bash
+cd python
+python generate_venue_data.py --venues
+```
+
+**Load All Venues (from texas_venues):**
+```bash
+cd python
+python generate_venue_data.py
+# Press Enter when prompted to load all venues
+```
+
+**Load Single Venue (from texas_venues):**
+```bash
+cd python
+python generate_venue_data.py "Grand Prairie"
+# Or select from interactive menu
+```
+
+**Load from Specific Dataset (backward compatible):**
+```bash
+cd python
+python generate_venue_data.py --dataset Grand_Prairie
+```
+
 **Single-Venue Reports (Recommended):**
 ```bash
 cd python
-python generate_venue_reports.py Grand_Prairie
+python generate_venue_reports.py "Grand Prairie"
 # You'll be prompted: 1) HTML  2) Markdown  3) PDF  4) All
 # Or skip the prompt:
-python generate_venue_reports.py Grand_Prairie --format all
+python generate_venue_reports.py "Grand Prairie" --format all
 ```
 
 **Or run individually (with precomputed analysis):**
 ```bash
 cd python
-python generate_venue_data.py Grand_Prairie
+python generate_venue_data.py "Grand Prairie"
 python run_analyze_venues.py venue_data.json
 python create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json
 ```
@@ -65,7 +91,7 @@ python create_single_venue_snapshot_report.py venue_data.json --format all --ana
 **Or run without precomputed analysis (backward compatible - slower):**
 ```bash
 cd python
-python generate_venue_data.py Grand_Prairie
+python generate_venue_data.py "Grand Prairie"
 python create_single_venue_snapshot_report.py venue_data.json --format all
 ```
 
@@ -82,12 +108,12 @@ python create_single_venue_snapshot_report.py venue_data.json --format all
 **Quick way (recommended):**
 ```bash
 cd python
-python generate_venue_reports.py Grand_Prairie
+python generate_venue_reports.py "Grand Prairie"
 ```
 You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-f`) to choose non-interactively - useful for scripting - with any of: `html`, `markdown`, `pdf`, `both` (html+markdown, legacy alias), `all` (all three), or a comma-separated combo like `html,pdf`. A non-interactive session (piped input, no real terminal) skips the prompt and defaults to all three automatically.
 
 **Manual steps (recommended with AI analysis):**
-1. Run `python/generate_venue_data.py Grand_Prairie` to create `python/venue_data.json`
+1. Run `python/generate_venue_data.py "Grand Prairie"` to create `python/venue_data.json`
 2. Run `python/run_analyze_venues.py venue_data.json` to create `python/ai_analysis_results.json` (runs AI analysis once)
 3. Run `python/create_single_venue_snapshot_report.py venue_data.json --format all --analysis ai_analysis_results.json` to generate reports in `reports/`
 
@@ -110,8 +136,11 @@ Compare a single venue's performance between two time periods (current vs. previ
 **Usage:**
 ```bash
 cd python
+# Load from texas_venues (default) and filter by venue
+python create_single_venue_comparison_report.py "Grand Prairie" "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+
+# Or load from specific dataset (backward compatible)
 python create_single_venue_comparison_report.py Grand_Prairie "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
-python create_single_venue_comparison_report.py texas_venues "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
 ```
 
 **Features:**
@@ -128,8 +157,11 @@ Aggregate metrics across all venues for a given time period, ranked by composite
 **Usage:**
 ```bash
 cd python
-python create_multi_venue_snapshot_report.py Grand_Prairie 2026-01-01 2026-01-31 --format all
+# Load from texas_venues (default) - processes all venues
 python create_multi_venue_snapshot_report.py texas_venues 2026-01-01 2026-01-31 --format all
+
+# Or load from specific dataset (backward compatible)
+python create_multi_venue_snapshot_report.py Grand_Prairie 2026-01-01 2026-01-31 --format all
 ```
 
 **Features:**
@@ -146,8 +178,11 @@ Compare aggregated metrics across all venues between two time periods with ranki
 **Usage:**
 ```bash
 cd python
-python create_multi_venue_comparison_report.py Grand_Prairie 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+# Load from texas_venues (default) - processes all venues
 python create_multi_venue_comparison_report.py texas_venues 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+
+# Or load from specific dataset (backward compatible)
+python create_multi_venue_comparison_report.py Grand_Prairie 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
 ```
 
 **Features:**

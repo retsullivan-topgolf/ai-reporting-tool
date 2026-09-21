@@ -168,7 +168,16 @@ def main():
     
     # Load survey data
     try:
-        rows, fieldnames = data_loader.load_survey_data(data_identifier)
+        # Determine if data_identifier is a dataset name or venue name
+        # If it's a known dataset, use it; otherwise treat as venue name
+        available_datasets = data_loader.list_available_datasets()
+        if data_identifier in available_datasets:
+            # Use the specified dataset
+            rows, fieldnames = data_loader.load_survey_data(dataset=data_identifier)
+        else:
+            # Assume it's a venue name, load from texas_venues
+            rows, fieldnames = data_loader.load_survey_data(venue=data_identifier)
+        
         schema_type = csv_parser.detect_schema(fieldnames)
         print(f"  Schema detected: {schema_type}")
     except data_loader.DataLoaderError as e:

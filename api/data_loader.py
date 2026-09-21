@@ -10,11 +10,20 @@ needing to know file paths or API endpoints.
 Usage:
     from api import data_loader
     
-    # Load data by identifier
-    rows, fieldnames = data_loader.load_survey_data('Grand_Prairie')
+    # Load all data (texas_venues by default)
+    rows, fieldnames = data_loader.load_survey_data()
+    
+    # Load data for a specific venue (filters from texas_venues)
+    rows, fieldnames = data_loader.load_survey_data(venue='Grand Prairie')
+    
+    # Load a specific dataset (for backward compatibility)
+    rows, fieldnames = data_loader.load_survey_data(dataset='Grand_Prairie')
     
     # List available datasets
     datasets = data_loader.list_available_datasets()
+    
+    # List available venues
+    venues = data_loader.list_available_venues()
 """
 
 import os
@@ -64,16 +73,21 @@ def list_available_datasets() -> List[str]:
         raise DataLoaderError(f"Failed to list datasets: {str(e)}")
 
 
-def load_survey_data(data_identifier: str) -> Tuple[List[Dict], List[str]]:
-    """Load survey data by identifier.
+def load_survey_data(dataset: Optional[str] = None, venue: Optional[str] = None) -> Tuple[List[Dict], List[str]]:
+    """Load survey data by dataset or venue.
     
-    Currently loads from api/qualtrics/{data_identifier}.csv.
+    Default behavior: Loads all data from texas_venues.csv (the complete dataset).
+    
     When the real API is available, this function will be updated to call
     the API endpoint instead, without requiring changes to calling code.
     
     Args:
-        data_identifier: Dataset identifier (e.g., 'Grand_Prairie', 'texas_venues')
-                        This can be a filename without extension or an API ID.
+        dataset: (Optional) Dataset identifier (e.g., 'Grand_Prairie', 'texas_venues')
+                 If provided, loads from api/qualtrics/{dataset}.csv
+                 If not provided, defaults to 'texas_venues'
+        venue: (Optional) Venue name to filter by (e.g., 'Grand Prairie')
+               Only used when dataset is not specified.
+               Filters rows from texas_venues where Venue column matches.
     
     Returns:
         Tuple of (rows, fieldnames) where:
@@ -84,20 +98,36 @@ def load_survey_data(data_identifier: str) -> Tuple[List[Dict], List[str]]:
         DataLoaderError: If data cannot be loaded
         
     Examples:
-        >>> rows, fieldnames = load_survey_data('Grand_Prairie')
-        >>> len(rows)
-        42
-        >>> 'Venue' in fieldnames
+        >>> # Load all data (texas_venues)
+        >>> rows, fieldnames = load_survey_data()
+        >>> len(rows) > 60000
         True
+        
+        >>> # Load data for a specific venue
+        >>> rows, fieldnames = load_survey_data(venue='Grand Prairie')
+        >>> all(row.get('Venue') == 'Grand Prairie' for row in rows)
+        True
+        
+        >>> # Load a specific dataset (backward compatible)
+        >>> rows, fieldnames = load_survey_data(dataset='Grand_Prairie')
+        >>> len(rows)
+        475
     """
     qualtrics_dir = _get_qualtrics_dir()
     
+    # Determine which dataset to load
+    if dataset is None:
+        # Default to texas_venues (the complete dataset)
+        dataset = 'texas_venues'
+    
     # Construct the CSV file path
     # Handle both with and without .csv extension
-    if data_identifier.lower().endswith('.csv'):
-        filename = data_identifier
+    if dataset.lower().endswith('.csv'):
+        filename = dataset
+        dataset_name = dataset[:-4]
     else:
-        filename = f"{data_identifier}.csv"
+        filename = f"{dataset}.csv"
+        dataset_name = dataset
     
     file_path = os.path.join(qualtrics_dir, filename)
     
@@ -105,27 +135,68 @@ def load_survey_data(data_identifier: str) -> Tuple[List[Dict], List[str]]:
     if not os.path.exists(file_path):
         available = list_available_datasets()
         raise DataLoaderError(
-            f"Dataset not found: {data_identifier}\n"
+            f"Dataset not found: {dataset}\n"
             f"Available datasets: {', '.join(available)}"
         )
     
     try:
         # Use csv_parser to load and parse the CSV
         rows, fieldnames = csv_parser.parse_csv(file_path)
+        
+        # If venue filter is specified, filter the rows
+        if venue is not None:
+            rows = [row for row in rows if row.get('Venue', '').strip() == venue.strip()]
+            if not rows:
+                available_venues = list_available_venues(dataset_name)
+                raise DataLoaderError(
+                    f"No data found for venue '{venue}' in dataset '{dataset_name}'\n"
+                    f"Available venues: {', '.join(available_venues)}"
+                )
+        
         return rows, fieldnames
     except csv_parser.CSVParseError as e:
-        raise DataLoaderError(f"Failed to load dataset '{data_identifier}': {str(e)}")
+        raise DataLoaderError(f"Failed to load dataset '{dataset}': {str(e)}")
+    except DataLoaderError:
+        raise
     except Exception as e:
-        raise DataLoaderError(f"Unexpected error loading dataset '{data_identifier}': {str(e)}")
+        raise DataLoaderError(f"Unexpected error loading dataset '{dataset}': {str(e)}")
 
 
-def load_survey_data_with_identifier(data_identifier: str) -> Tuple[List[Dict], List[str], str]:
-    """Load survey data and return the actual identifier used.
-    
-    Useful when you want to know which dataset was actually loaded.
+def list_available_venues(dataset: str = 'texas_venues') -> List[str]:
+    """List all available venues in a dataset.
     
     Args:
-        data_identifier: Dataset identifier
+        dataset: Dataset identifier (default: 'texas_venues')
+    
+    Returns:
+        Sorted list of unique venue names
+        
+    Raises:
+        DataLoaderError: If dataset cannot be loaded
+    """
+    try:
+        rows, fieldnames = load_survey_data(dataset=dataset)
+        
+        # Extract unique venues from the Venue column
+        venues = set()
+        for row in rows:
+            venue = row.get('Venue', '').strip()
+            if venue:
+                venues.add(venue)
+        
+        return sorted(venues)
+    except Exception as e:
+        raise DataLoaderError(f"Failed to list venues from dataset '{dataset}': {str(e)}")
+
+
+def load_survey_data_with_identifier(data_identifier: str = None, venue: str = None) -> Tuple[List[Dict], List[str], str]:
+    """Load survey data and return the actual identifier/venue used.
+    
+    Useful when you want to know which dataset/venue was actually loaded.
+    
+    Args:
+        data_identifier: Dataset identifier (optional, defaults to 'texas_venues')
+        venue: Venue name to filter by (optional)
     
     Returns:
         Tuple of (rows, fieldnames, actual_identifier)
@@ -133,12 +204,18 @@ def load_survey_data_with_identifier(data_identifier: str) -> Tuple[List[Dict], 
     Raises:
         DataLoaderError: If data cannot be loaded
     """
-    rows, fieldnames = load_survey_data(data_identifier)
+    rows, fieldnames = load_survey_data(dataset=data_identifier, venue=venue)
     
-    # Normalize identifier (remove .csv if present)
-    if data_identifier.lower().endswith('.csv'):
+    # Determine the actual identifier used
+    if data_identifier is None:
+        actual_identifier = 'texas_venues'
+    elif data_identifier.lower().endswith('.csv'):
         actual_identifier = data_identifier[:-4]
     else:
         actual_identifier = data_identifier
+    
+    # If venue was specified, append it to the identifier
+    if venue is not None:
+        actual_identifier = f"{actual_identifier}:{venue}"
     
     return rows, fieldnames, actual_identifier

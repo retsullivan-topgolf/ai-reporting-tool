@@ -6,14 +6,14 @@ Generate professional venue reports from survey data with AI-powered analysis.
 
 ```bash
 cd python
-python generate_venue_reports.py Grand_Prairie
+python generate_venue_reports.py "Grand Prairie"
 ```
 
 Choose your report format(s): HTML, Markdown, PDF, or All. Reports are generated in the `reports/` directory.
 
-To see available datasets:
+To see available venues:
 ```bash
-python generate_venue_data.py --list
+python generate_venue_data.py --venues
 ```
 
 ## Features
@@ -51,12 +51,14 @@ python generate_venue_data.py --list
 
 ```bash
 cd python
-python generate_venue_reports.py Grand_Prairie
+
+# Generate report for a single venue (loads from texas_venues)
+python generate_venue_reports.py "Grand Prairie"
 # Choose format: 1) HTML  2) Markdown  3) PDF  4) All
 
 # Or skip the prompt:
-python generate_venue_reports.py Grand_Prairie --format all
-python generate_venue_reports.py texas_venues --format html,pdf
+python generate_venue_reports.py "Grand Prairie" --format all
+python generate_venue_reports.py "Austin" --format html,pdf
 ```
 
 ### Step-by-Step Generation
@@ -65,7 +67,9 @@ python generate_venue_reports.py texas_venues --format html,pdf
 cd python
 
 # Step 1: Load survey data and generate metrics
-python generate_venue_data.py Grand_Prairie
+python generate_venue_data.py "Grand Prairie"
+# Or load all venues:
+python generate_venue_data.py
 
 # Step 2: Run AI analysis (optional but recommended)
 python run_analyze_venues.py venue_data.json
