@@ -258,7 +258,17 @@ def main():
     # Load Jinja2 environment
     TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')
     jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
-    
+
+    # Register strftime filter for date formatting in templates
+    def strftime_filter(value, format_str):
+        if isinstance(value, str) and value.lower() == 'now':
+            return datetime.now().strftime(format_str)
+        elif isinstance(value, datetime):
+            return value.strftime(format_str)
+        return str(value)
+
+    jinja_env.filters['strftime'] = strftime_filter
+
     # Generate reports
     reports_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'reports')
     os.makedirs(reports_dir, exist_ok=True)

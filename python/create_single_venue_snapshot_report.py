@@ -118,6 +118,18 @@ jinja_env_markdown = Environment(
     lstrip_blocks=True,
 )
 
+# Register strftime filter for date formatting in templates
+def strftime_filter(value, format_str):
+    from datetime import datetime
+    if isinstance(value, str) and value.lower() == 'now':
+        return datetime.now().strftime(format_str)
+    elif isinstance(value, datetime):
+        return value.strftime(format_str)
+    return str(value)
+
+jinja_env.filters['strftime'] = strftime_filter
+jinja_env_markdown.filters['strftime'] = strftime_filter
+
 # Reports directory
 reports_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'reports')
 os.makedirs(reports_dir, exist_ok=True)
