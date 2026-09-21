@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 """
-Generate all venue reports in one command.
-This script runs generate_reports.py, then whichever of create_html_reports.py
-/ create_markdown_reports.py / create_pdf_reports.py the user asks for.
+Generate single-venue snapshot reports in one command.
+
+This script orchestrates the complete workflow:
+1. Processes CSV data → generates venue_data.json
+2. Runs AI analysis → generates ai_analysis_results.json
+3. Creates reports in selected format(s) (HTML, Markdown, PDF, or all)
+
+Usage:
+    python generate_venue_reports.py <csv_file> [--format html|markdown|pdf|all] [--timeout SECONDS]
+
+Examples:
+    python generate_venue_reports.py ../example-data/survey.csv
+    python generate_venue_reports.py ../example-data/survey.csv --format all
+    python generate_venue_reports.py ../example-data/survey.csv --format html,pdf
 """
 import subprocess
 import sys
@@ -194,14 +205,14 @@ def main():
     # Check if CSV file exists
     if not os.path.exists(csv_file):
         print(f"Error: CSV file not found: {csv_file}")
-        print(f"\nUsage: python generate_all_reports.py <path_to_csv_file> [--format {_format_help()}] [--timeout SECONDS]")
+        print(f"\nUsage: python generate_venue_reports.py <path_to_csv_file> [--format {_format_help()}] [--timeout SECONDS]")
         print(f"\nExamples:")
-        print(f"  python generate_all_reports.py ../example-data/topgolf_qualtrics_week_responses.csv")
-        print(f"  python generate_all_reports.py ../example-data/topgolf_qualtrics_30_responses_DALLAS.csv --format pdf")
-        print(f"  python generate_all_reports.py ../example-data/topgolf_qualtrics_week_responses.csv --timeout 600")
+        print(f"  python generate_venue_reports.py ../example-data/topgolf_qualtrics_week_responses.csv")
+        print(f"  python generate_venue_reports.py ../example-data/topgolf_qualtrics_30_responses_DALLAS.csv --format pdf")
+        print(f"  python generate_venue_reports.py ../example-data/topgolf_qualtrics_week_responses.csv --timeout 600")
         sys.exit(1)
 
-    print(f"Generating all reports from: {csv_file}\n")
+    print(f"Generating venue reports from: {csv_file}\n")
     if timeout:
         print(f"Claude timeout set to: {timeout} seconds\n")
 
@@ -210,16 +221,16 @@ def main():
     if timeout:
         env_overrides['CLAUDE_TIMEOUT_SECONDS'] = str(timeout)
 
-    # Step 1: Generate reports (creates venue_data.json)
-    print("STEP 1: Processing CSV data and generating metrics...")
-    if not run_command('generate_reports.py', [csv_file], env_overrides):
-        print("\nFailed to generate reports from CSV. Aborting.")
+    # Step 1: Generate venue data (creates venue_data.json)
+    print("STEP 1: Processing data and generating metrics...")
+    if not run_command('generate_venue_data.py', [csv_file], env_overrides):
+        print("\nFailed to generate venue data. Aborting.")
         sys.exit(1)
 
     # Step 2: Generate AI analysis once for all venues
     print("\nSTEP 2: Generating AI analysis for all venues...")
     analysis_file = 'ai_analysis_results.json'
-    if not run_command('generate_ai_analysis.py', ['venue_data.json', '--output', analysis_file], env_overrides):
+    if not run_command('run_analyze_venues.py', ['venue_data.json', '--output', analysis_file], env_overrides):
         print("\nFailed to generate AI analysis. Aborting.")
         sys.exit(1)
 
@@ -233,29 +244,22 @@ def main():
     # Generate timestamp once for all report formats
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    # Step 4: Generate reports in selected format(s)
+    print("\nSTEP 4: Creating reports in selected format(s)...")
+    format_arg = ','.join(sorted(formats))
+    if not run_command('create_single_venue_snapshot_report.py', ['venue_data.json', '--format', format_arg, '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
+        print("\nFailed to create reports. Aborting.")
+        sys.exit(1)
+    
     if 'html' in formats:
-        print("\nSTEP 4: Creating HTML reports from metrics...")
-        if not run_command('create_html_reports.py', ['venue_data.json', '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
-            print("\nFailed to create HTML reports. Aborting.")
-            sys.exit(1)
-        generated_files.append("  - Reports: ../reports/Topgolf_Venue_Report_*_1PAGE.html")
-
+        generated_files.append("  - HTML: ../reports/Topgolf_Venue_Report_*_1PAGE.html")
     if 'markdown' in formats:
-        print("\nSTEP 4: Creating Markdown reports from metrics...")
-        if not run_command('create_markdown_reports.py', ['venue_data.json', '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
-            print("\nFailed to create Markdown reports. Aborting.")
-            sys.exit(1)
-        generated_files.append("  - Reports: ../reports/Topgolf_Venue_Report_*_1PAGE.md")
-
+        generated_files.append("  - Markdown: ../reports/Topgolf_Venue_Report_*_1PAGE.md")
     if 'pdf' in formats:
-        print("\nSTEP 4: Creating PDF reports from metrics...")
-        if not run_command('create_pdf_reports.py', ['venue_data.json', '--timestamp', timestamp, '--analysis', analysis_file], env_overrides):
-            print("\nFailed to create PDF reports. Aborting.")
-            sys.exit(1)
-        generated_files.append("  - Reports: ../reports/Topgolf_Venue_Report_*_1PAGE.pdf")
+        generated_files.append("  - PDF: ../reports/Topgolf_Venue_Report_*_1PAGE.pdf")
 
     print(f"\n{'='*60}")
-    print("[SUCCESS] All reports generated successfully!")
+    print("[SUCCESS] All venue reports generated successfully!")
     print(f"{'='*60}")
     print(f"\nGenerated files:")
     print(f"  - Metrics: venue_data.json")

@@ -61,7 +61,7 @@ that stage's own guideline doc plus its own input payload. That means:
 - Any change to a venue's underlying metrics or comments (new CSV pull)
   naturally produces new cache keys for the stages that read that data.
 Set AI_ANALYSIS_FORCE_REFRESH=1 in the environment to bypass the cache for a
-run without deleting it. Run `python ai_analysis.py --clear-cache` to wipe it.
+run without deleting it. Run `python analyze_venues.py --clear-cache` to wipe it.
 """
 import hashlib
 import json
@@ -244,13 +244,13 @@ def _read_stage_cache(stage, cache_key, venue, validator):
         result = entry["result"]
     except Exception as e:
         print(
-            f"[ai_analysis] {stage} cache entry for venue '{venue}' at {path} is unreadable "
+            f"[analyze_venues] {stage} cache entry for venue '{venue}' at {path} is unreadable "
             f"({e}); ignoring it and re-running this stage."
         )
         return None
     if not validator(result):
         print(
-            f"[ai_analysis] {stage} cache entry for venue '{venue}' at {path} no longer "
+            f"[analyze_venues] {stage} cache entry for venue '{venue}' at {path} no longer "
             "matches the expected schema; ignoring it and re-running this stage."
         )
         return None
@@ -274,15 +274,15 @@ def _write_stage_cache(stage, cache_key, venue, result):
     except Exception as e:
         # Caching is an optimization, not a correctness requirement - a
         # write failure (e.g. read-only filesystem) shouldn't fail the run.
-        print(f"[ai_analysis] Could not write {stage} cache entry for venue '{venue}': {e}")
+        print(f"[analyze_venues] Could not write {stage} cache entry for venue '{venue}': {e}")
 
 
 def clear_cache():
     if os.path.exists(CACHE_DIR):
         shutil.rmtree(CACHE_DIR)
-        print(f"[ai_analysis] Cleared cache at {CACHE_DIR}")
+        print(f"[analyze_venues] Cleared cache at {CACHE_DIR}")
     else:
-        print(f"[ai_analysis] No cache to clear at {CACHE_DIR}")
+        print(f"[analyze_venues] No cache to clear at {CACHE_DIR}")
 
 
 def _invoke_claude(prompt, stage, venue):
@@ -345,18 +345,18 @@ def _run_stage(stage, skill_text, payload, validator, venue, use_cache, force_re
     if use_cache and not force_refresh:
         cached = _read_stage_cache(stage, cache_key, venue, validator)
         if cached is not None:
-            print(f"[ai_analysis] Using cached {stage} result for venue '{venue}' (key {cache_key[:12]}...)")
+            print(f"[analyze_venues] Using cached {stage} result for venue '{venue}' (key {cache_key[:12]}...)")
             return cached, None
 
     prompt = skill_text + "\n\nInput:\n" + json.dumps(payload, indent=2)
     result, error = _invoke_claude(prompt, stage, venue)
     if result is None:
-        print(f"[ai_analysis] {stage} stage failed for venue '{venue}': {error}")
+        print(f"[analyze_venues] {stage} stage failed for venue '{venue}': {error}")
         return None, f"{stage} stage: {error}"
 
     if not validator(result):
         message = f"{stage} stage: Claude CLI response did not match the expected schema"
-        print(f"[ai_analysis] {message} (venue '{venue}').")
+        print(f"[analyze_venues] {message} (venue '{venue}').")
         return None, message
 
     _write_stage_cache(stage, cache_key, venue, result)
@@ -451,4 +451,4 @@ if __name__ == "__main__":
         clear_cache()
     else:
         print(__doc__)
-        print("Usage: python ai_analysis.py --clear-cache")
+        print("Usage: python analyze_venues.py --clear-cache")

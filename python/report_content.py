@@ -27,7 +27,7 @@ either way.
 import html
 from datetime import datetime
 
-from ai_analysis import get_ai_analysis
+from analyze_venues import get_ai_analysis
 import report_engine
 
 

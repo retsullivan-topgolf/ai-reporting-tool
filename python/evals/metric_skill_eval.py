@@ -2,7 +2,7 @@
 """
 Stage 1 eval runner: .claude/single-venue-report/metrics_analysis.md
 
-Runs a CSV through the real generate_reports.py, builds the exact payload
+Runs a CSV through the real generate_venue_data.py, builds the exact payload
 ai_analysis.py sends for the metrics_analysis stage, calls the real skill
 via the real `claude` CLI, and reports both the raw output and a set of
 mechanically-checkable rule checks. See EVALS.md.

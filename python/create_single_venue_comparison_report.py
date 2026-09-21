@@ -10,10 +10,10 @@ This report shows:
 - Comments from current period only
 
 Usage:
-    python create_venue_period_comparison_report.py <csv_file> <venue_name> <current_start> <current_end> <previous_start> <previous_end> [--format html|markdown|pdf|all]
+    python create_single_venue_comparison_report.py <csv_file> <venue_name> <current_start> <current_end> <previous_start> <previous_end> [--format html|markdown|pdf|all]
 
 Example:
-    python create_venue_period_comparison_report.py ../example-data/survey.csv "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31
+    python create_single_venue_comparison_report.py ../example-data/survey.csv "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31
 """
 
 import json
@@ -354,7 +354,7 @@ def main():
     # HTML report
     if report_format in ['html', 'all']:
         try:
-            template = jinja_env.get_template('period-venue-comparison-browser.html')
+            template = jinja_env.get_template('venue-comparison-browser.html')
             html = template.render(**report_data)
             html_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_1PAGE.html")
             with open(html_file, 'w', encoding='utf-8') as f:
@@ -366,7 +366,7 @@ def main():
     # Markdown report
     if report_format in ['markdown', 'all']:
         try:
-            template = jinja_env.get_template('period-venue-comparison-report.md.j2')
+            template = jinja_env.get_template('venue-comparison-report.md.j2')
             markdown = template.render(**report_data)
             md_file = os.path.join(reports_dir, f"Topgolf_Venue_Period_Comparison_{venue_safe}_{timestamp}_1PAGE.md")
             with open(md_file, 'w', encoding='utf-8') as f:
@@ -380,7 +380,7 @@ def main():
         try:
             from playwright.sync_api import sync_playwright
             
-            template = jinja_env.get_template('period-venue-comparison-pdf.html')
+            template = jinja_env.get_template('venue-comparison-pdf.html')
             html = template.render(**report_data)
             
             with sync_playwright() as p:

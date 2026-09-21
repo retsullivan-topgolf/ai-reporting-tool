@@ -3,7 +3,7 @@ Shared helpers for the skill eval runners (metric_skill_eval.py,
 comment_skill_eval.py, synthesis_skill_eval.py). See EVALS.md for the
 overall picture.
 
-This module deliberately reuses ai_analysis.py's existing payload
+This module deliberately reuses analyze_venues.py's existing payload
 builders, skill text constants, claude CLI invocation, and schema
 validators rather than reimplementing them, so the eval suite can't
 silently drift from what production actually sends/expects.
@@ -15,14 +15,14 @@ from pathlib import Path
 
 EVALS_DIR = Path(__file__).resolve().parent
 PYTHON_DIR = EVALS_DIR.parent
-GENERATE_REPORTS_SCRIPT = PYTHON_DIR / "generate_reports.py"
+GENERATE_VENUE_DATA_SCRIPT = PYTHON_DIR / "generate_venue_data.py"
 
 # Make `import ai_analysis` / `import report_engine` work regardless of the
 # caller's cwd.
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
-import ai_analysis  # noqa: E402  (import after sys.path setup, see above)
+import analyze_venues  # noqa: E402  (import after sys.path setup, see above)
 
 
 # --------------------------------------------------------------------------
@@ -49,12 +49,12 @@ def run_dir_for(config, run_id):
 
 
 # --------------------------------------------------------------------------
-# CSV -> venue_data.json (via the real generate_reports.py, not a
+# CSV -> venue_data.json (via the real generate_venue_data.py, not a
 # reimplementation of its parsing logic)
 # --------------------------------------------------------------------------
 
 def generate_venue_data(csv_path, run_dir):
-    """Run the real generate_reports.py against csv_path, with its cwd set
+    """Run the real generate_venue_data.py against csv_path, with its cwd set
     to run_dir so the generated venue_data.json lands there instead of
     clobbering the project's real python/venue_data.json. Returns the
     parsed dict of {venue_key: venue_dict}."""
@@ -63,20 +63,20 @@ def generate_venue_data(csv_path, run_dir):
         raise FileNotFoundError(f"CSV not found: {csv_path}")
 
     result = subprocess.run(
-        [sys.executable, str(GENERATE_REPORTS_SCRIPT), str(csv_path)],
+        [sys.executable, str(GENERATE_VENUE_DATA_SCRIPT), str(csv_path)],
         cwd=str(run_dir),
         capture_output=True,
         text=True,
     )
     if result.returncode != 0:
         raise RuntimeError(
-            f"generate_reports.py failed (exit {result.returncode}):\n{result.stderr}"
+            f"generate_venue_data.py failed (exit {result.returncode}):\n{result.stderr}"
         )
 
     venue_data_path = run_dir / "venue_data.json"
     if not venue_data_path.exists():
         raise RuntimeError(
-            f"generate_reports.py did not produce {venue_data_path}:\n{result.stdout}"
+            f"generate_venue_data.py did not produce {venue_data_path}:\n{result.stdout}"
         )
 
     with open(venue_data_path, "r", encoding="utf-8") as f:
@@ -98,7 +98,7 @@ def load_venue(csv_path, venue_key, run_dir):
 
 def invoke_skill(skill_text, payload, stage, venue_name):
     prompt = skill_text + "\n\nInput:\n" + json.dumps(payload, indent=2)
-    return ai_analysis._invoke_claude(prompt, stage, venue_name)
+    return analyze_venues._invoke_claude(prompt, stage, venue_name)
 
 
 # --------------------------------------------------------------------------

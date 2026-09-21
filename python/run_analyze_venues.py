@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Generate AI analysis for all venues in venue_data.json and save to a JSON file.
+Run AI analysis for all venues in venue_data.json and save to a JSON file.
 
 This script runs the AI analysis pipeline once for all venues, caching the
 results so that multiple report formats (HTML, Markdown, PDF) can reuse the
 same analysis without re-running the expensive Claude API calls.
 
 Usage:
-    python generate_ai_analysis.py venue_data.json
-    python generate_ai_analysis.py venue_data.json --output ai_analysis_results.json
+    python run_analyze_venues.py venue_data.json
+    python run_analyze_venues.py venue_data.json --output ai_analysis_results.json
 """
 import json
 import sys
 import os
 
-from ai_analysis import get_ai_analysis
+from analyze_venues import get_ai_analysis
 
 
 def main():
@@ -38,11 +38,11 @@ def main():
     # Check if input file exists
     if not os.path.exists(json_file):
         print(f"Error: File not found: {json_file}")
-        print(f"\nUsage: python generate_ai_analysis.py <path_to_json_file> [--output <output_file>]")
+        print(f"\nUsage: python run_analyze_venues.py <path_to_json_file> [--output <output_file>]")
         print(f"\nExamples:")
-        print(f"  python generate_ai_analysis.py venue_data.json")
-        print(f"  python generate_ai_analysis.py venue_data.json --output ai_analysis_results.json")
-        print(f"\nNote: First run 'python generate_reports.py <csv_file>' to create venue_data.json")
+        print(f"  python run_analyze_venues.py venue_data.json")
+        print(f"  python run_analyze_venues.py venue_data.json --output ai_analysis_results.json")
+        print(f"\nNote: First run 'python generate_venue_data.py <csv_file>' to create venue_data.json")
         sys.exit(1)
     
     print(f"Reading venue data from: {json_file}")

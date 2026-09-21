@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Generate venue metrics from CSV survey data.
+Generate venue metrics from survey data.
 
 This script:
-1. Reads a CSV file from the qualtrics folder
+1. Reads a CSV file from the data folder
 2. Detects the schema type (POC or Real)
 3. Parses and validates the data using the API
 4. Aggregates metrics by venue
 5. Saves the result to venue_data.json
 
 Usage:
-    python generate_reports.py ../qualtrics/Grand_Prarie.csv
-    python generate_reports.py ../qualtrics/texas_venues.csv
+    python generate_venue_data.py ../example-data/survey.csv
+    python generate_venue_data.py ../example-data/texas_venues.csv
 """
 
 import json
@@ -35,10 +35,10 @@ def main():
     # Check if file exists
     if not os.path.exists(csv_file):
         print(f"Error: File not found: {csv_file}")
-        print(f"\nUsage: python generate_reports.py <path_to_csv_file>")
+        print(f"\nUsage: python generate_venue_data.py <path_to_csv_file>")
         print(f"\nExamples:")
-        print(f"  python generate_reports.py ../qualtrics/Grand_Prarie.csv")
-        print(f"  python generate_reports.py ../qualtrics/texas_venues.csv")
+        print(f"  python generate_venue_data.py ../example-data/survey.csv")
+        print(f"  python generate_venue_data.py ../example-data/texas_venues.csv")
         sys.exit(1)
 
     print(f"Reading data from: {csv_file}")

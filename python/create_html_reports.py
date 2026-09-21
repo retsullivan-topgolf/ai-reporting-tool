@@ -39,12 +39,12 @@ if not os.path.exists(json_file):
     print(f"\nExamples:")
     print(f"  python create_html_reports.py venue_data.json")
     print(f"  python create_html_reports.py venue_data.json --timestamp 20260914_143022 --analysis ai_analysis_results.json")
-    print(f"\nNote: First run 'python generate_reports.py <csv_file>' to create venue_data.json")
+    print(f"\nNote: First run 'python generate_venue_data.py <csv_file>' to create venue_data.json")
     sys.exit(1)
 
 if analysis_file and not os.path.exists(analysis_file):
     print(f"Error: Analysis file not found: {analysis_file}")
-    print(f"Run 'python generate_ai_analysis.py venue_data.json' first to create it.")
+    print(f"Run 'python run_analyze_venues.py venue_data.json' first to create it.")
     sys.exit(1)
 
 print(f"Reading data from: {json_file}")

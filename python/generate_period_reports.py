@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unified orchestrator for all report types: single-venue, venue period comparison,
+Unified orchestrator for period-based reports: venue period comparison,
 multi-venue aggregation, and multi-venue period comparison.
 
 This script provides an interactive menu to guide users through report generation,
@@ -8,16 +8,16 @@ with smart date handling and parameter validation. It automatically discovers
 available CSV files in the example-data directory.
 
 Usage:
-    python generate_all_period_reports.py [<csv_file>] [--format html|markdown|pdf|all] [--no-prompt]
+    python generate_period_reports.py [<csv_file>] [--format html|markdown|pdf|all] [--no-prompt]
 
 Examples:
-    python generate_all_period_reports.py
+    python generate_period_reports.py
     # Shows menu to select from available CSV files
     
-    python generate_all_period_reports.py ../example-data/survey.csv
+    python generate_period_reports.py ../example-data/survey.csv
     # Uses specified CSV file
     
-    python generate_all_period_reports.py --format all --no-prompt
+    python generate_period_reports.py --format all --no-prompt
     # Auto-selects first CSV, generates all report types with all formats
 """
 
@@ -80,7 +80,7 @@ def execute_report_from_config(config):
             print("Generating reports for all venues")
 
         format_arg = f"--format {output_format}" if output_format != "all" else ""
-        cmd = f"python generate_all_reports.py {csv_file} {format_arg}"
+        cmd = f"python generate_venue_reports.py {csv_file} {format_arg}"
         return run_command(cmd, "Single-venue report generation")
 
     elif report_type == "venue_period_comparison":
@@ -97,7 +97,7 @@ def execute_report_from_config(config):
             sys.exit(1)
 
         format_arg = f"--format {output_format}" if output_format != "all" else ""
-        cmd = f"python create_venue_period_comparison_report.py {csv_file} \"{venue}\" {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
+        cmd = f"python create_single_venue_comparison_report.py {csv_file} \"{venue}\" {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
         return run_command(cmd, f"Venue period comparison for {venue}")
 
     elif report_type == "multi_venue_single_period":
@@ -110,7 +110,7 @@ def execute_report_from_config(config):
             sys.exit(1)
 
         format_arg = f"--format {output_format}" if output_format != "all" else ""
-        cmd = f"python create_multi_venue_period_report.py {csv_file} {start_date} {end_date} {format_arg}"
+        cmd = f"python create_multi_venue_snapshot_report.py {csv_file} {start_date} {end_date} {format_arg}"
         return run_command(cmd, "Multi-venue single period report")
 
     elif report_type == "multi_venue_period_comparison":
@@ -126,7 +126,7 @@ def execute_report_from_config(config):
             sys.exit(1)
 
         format_arg = f"--format {output_format}" if output_format != "all" else ""
-        cmd = f"python create_period_comparison_report.py {csv_file} {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
+        cmd = f"python create_multi_venue_comparison_report.py {csv_file} {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
         return run_command(cmd, "Multi-venue period comparison")
 
     else:
@@ -374,7 +374,7 @@ def report_type_1_single_venue(csv_file, output_format):
             # Generate for all venues
             print("\nGenerating reports for all venues...")
             format_arg = f"--format {output_format}" if output_format != "all" else ""
-            cmd = f"python generate_all_reports.py {csv_file} {format_arg}"
+            cmd = f"python generate_venue_reports.py {csv_file} {format_arg}"
             return run_command(cmd, "Single-venue report generation for all venues")
         elif 1 <= choice_num <= len(venues):
             # Generate for specific venue
@@ -387,16 +387,16 @@ def report_type_1_single_venue(csv_file, output_format):
             # 3. Generate reports
             
             # First, generate all venue data
-            print("Step 1: Processing CSV data...")
-            cmd_generate = f"python generate_reports.py {csv_file}"
+            print("Step 1: Processing data...")
+            cmd_generate = f"python generate_venue_data.py {csv_file}"
             result = subprocess.run(cmd_generate, shell=True, cwd=os.path.dirname(os.path.abspath(__file__)))
             if result.returncode != 0:
-                print("[ERROR] Failed to process CSV data")
+                print("[ERROR] Failed to process data")
                 return False
             
             # Run AI analysis
             print("Step 2: Running AI analysis...")
-            cmd_analysis = f"python generate_ai_analysis.py venue_data.json"
+            cmd_analysis = f"python run_analyze_venues.py venue_data.json"
             result = subprocess.run(cmd_analysis, shell=True, cwd=os.path.dirname(os.path.abspath(__file__)))
             if result.returncode != 0:
                 print("[ERROR] Failed to run AI analysis")
@@ -451,7 +451,7 @@ def report_type_2_venue_period_comparison(csv_file, output_format):
     previous_start, previous_end, _ = get_period_dates("previous")
     
     format_arg = f"--format {output_format}" if output_format != "all" else ""
-    cmd = f"python create_venue_period_comparison_report.py {csv_file} \"{venue_name}\" {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
+    cmd = f"python create_single_venue_comparison_report.py {csv_file} \"{venue_name}\" {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
     
     return run_command(cmd, f"Venue period comparison for {venue_name}")
 
@@ -467,7 +467,7 @@ def report_type_3_multi_venue_single_period(csv_file, output_format):
     start_date, end_date, period_type = get_period_dates("period")
     
     format_arg = f"--format {output_format}" if output_format != "all" else ""
-    cmd = f"python create_multi_venue_period_report.py {csv_file} {start_date} {end_date} {format_arg}"
+    cmd = f"python create_multi_venue_snapshot_report.py {csv_file} {start_date} {end_date} {format_arg}"
     
     return run_command(cmd, f"Multi-venue {period_type} report")
 
@@ -484,7 +484,7 @@ def report_type_4_multi_venue_period_comparison(csv_file, output_format):
     previous_start, previous_end, _ = get_period_dates("previous")
     
     format_arg = f"--format {output_format}" if output_format != "all" else ""
-    cmd = f"python create_period_comparison_report.py {csv_file} {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
+    cmd = f"python create_multi_venue_comparison_report.py {csv_file} {current_start} {current_end} {previous_start} {previous_end} {format_arg}"
     
     return run_command(cmd, "Multi-venue period comparison")
 
@@ -494,21 +494,21 @@ def show_report_menu():
     print("\n" + "="*60)
     print("REPORT TYPE SELECTION")
     print("="*60)
-    print("\n1) SINGLE-VENUE REPORTS (Existing)")
+    print("\n1) SINGLE-VENUE REPORTS")
     print("   Choose a specific venue or generate for all venues")
     print("   Shows performance for a single time period")
     print("   Includes AI analysis for each venue")
     
-    print("\n2) VENUE PERIOD COMPARISON (New)")
+    print("\n2) VENUE PERIOD COMPARISON")
     print("   Compare one venue's metrics between two time periods")
     print("   Shows trends and changes for that specific venue")
     
-    print("\n3) MULTI-VENUE SINGLE PERIOD (New)")
+    print("\n3) MULTI-VENUE SINGLE PERIOD")
     print("   Aggregate metrics across all venues for one time period")
     print("   Shows venue ranking by composite score")
     print("   Includes comment themes")
     
-    print("\n4) MULTI-VENUE PERIOD COMPARISON (New)")
+    print("\n4) MULTI-VENUE PERIOD COMPARISON")
     print("   Compare aggregated metrics across two time periods")
     print("   Shows ranking changes and trends across all venues")
     

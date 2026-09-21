@@ -6,20 +6,27 @@ All Python scripts have been moved to the `python/` directory for better organiz
 ### Scripts in `python/` folder:
 
 #### Report Generation (Main Entry Points)
-- **generate_all_period_reports.py** - NEW: Unified orchestrator for all report types with interactive menu. Guides users through selecting report type, time period, and output format. Supports single-venue reports, venue period comparison, multi-venue aggregation, and multi-venue period comparison.
-- **generate_all_reports.py** - Master orchestrator for single-venue reports: runs all steps in one command (recommended). Processes CSV → generates metrics → runs AI analysis once → generates report formats. After processing the CSV, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
+- **generate_period_reports.py** - Unified orchestrator for all report types with interactive menu. Guides users through selecting report type, time period, and output format. Supports single-venue reports, venue period comparison, multi-venue aggregation, and multi-venue period comparison.
+- **generate_venue_reports.py** - Master orchestrator for single-venue reports: runs all steps in one command (recommended). Processes data → generates metrics → runs AI analysis once → generates report formats. After processing the data, it asks which report format(s) to generate - HTML, Markdown, PDF, or All - or takes `--format` to skip the prompt.
 
-#### Single-Venue Report Scripts
-- **generate_reports.py** - Processes CSV survey data → generates JSON metrics
-- **generate_ai_analysis.py** - Runs AI analysis pipeline once for all venues and saves results to JSON. Called by `generate_all_reports.py` to avoid re-running expensive API calls for each report format.
+#### Data Processing
+- **generate_venue_data.py** - Processes survey data → generates JSON metrics
+
+#### AI Analysis
+- **analyze_venues.py** - Core module implementing the 3-stage AI analysis pipeline (metrics_analysis → comment_analysis → synthesis)
+- **run_analyze_venues.py** - Orchestrator that runs AI analysis for all venues and caches results to JSON. Called by `generate_venue_reports.py` to avoid re-running expensive API calls for each report format.
 - **create_html_reports.py** - Generates HTML reports from JSON data and precomputed AI analysis
 - **create_markdown_reports.py** - Generates Markdown reports from JSON data and precomputed AI analysis (same analysis as the HTML report - see `report_content.py`)
 - **create_pdf_reports.py** - Generates PDF reports from JSON data and precomputed AI analysis by rendering the same HTML through headless Chromium (Playwright), so the PDF matches the HTML report's styling/layout exactly. One-time setup: `pip install playwright` then `playwright install chromium`.
 
-#### Period-Based Report Scripts (NEW)
-- **create_venue_period_comparison_report.py** - NEW: Compare a single venue's metrics between two time periods (current vs. previous month/quarter). Shows deltas, percent changes, and trend indicators.
-- **create_multi_venue_period_report.py** - NEW: Aggregate metrics across all venues for a single time period. Shows venue ranking by composite score and comment themes.
-- **create_period_comparison_report.py** - NEW: Compare aggregated metrics across all venues between two time periods. Shows ranking changes and trends.
+#### Report Builder Scripts
+**Snapshot Reports (single period):**
+- **create_single_venue_snapshot_report.py** - Unified builder for single-venue snapshots. Generates HTML, Markdown, and/or PDF formats from venue_data.json. Supports `--format html|markdown|pdf|all` to choose which formats to generate.
+- **create_multi_venue_snapshot_report.py** - Multi-venue snapshot (HTML, Markdown, PDF)
+
+**Comparison Reports (two periods):**
+- **create_single_venue_comparison_report.py** - Single venue period comparison (HTML, Markdown, PDF). Shows deltas, percent changes, and trend indicators.
+- **create_multi_venue_comparison_report.py** - Multi-venue period comparison (HTML, Markdown, PDF). Shows ranking changes and trends.
 
 #### Shared Utilities
 - **report_content.py** - Shared, format-agnostic analysis/context logic used by `create_html_reports.py`, `create_markdown_reports.py`, and `create_pdf_reports.py`
@@ -29,10 +36,10 @@ All Python scripts have been moved to the `python/` directory for better organiz
 
 ### Running Scripts
 
-**NEW: Unified Orchestrator (Recommended for all report types):**
+**Unified Orchestrator (Recommended for all report types):**
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/your_file.csv
+python generate_period_reports.py ../example-data/your_file.csv
 ```
 This presents an interactive menu to select:
 1. **Single-Venue Reports** - One report per venue (existing functionality)
@@ -48,24 +55,24 @@ The script guides you through:
 **Non-interactive mode:**
 ```bash
 cd python
-python generate_all_period_reports.py ../example-data/your_file.csv --format all --no-prompt
+python generate_period_reports.py ../example-data/your_file.csv --format all --no-prompt
 ```
 
-**Single-Venue Reports Only (existing workflow):**
+**Single-Venue Reports Only:**
 ```bash
 cd python
-python generate_all_reports.py ../example-data/your_file.csv
+python generate_venue_reports.py ../example-data/your_file.csv
 # You'll be prompted: 1) HTML  2) Markdown  3) PDF  4) All
 # Or skip the prompt:
-python generate_all_reports.py ../example-data/your_file.csv --format all
-python generate_all_reports.py ../example-data/your_file.csv --format html,pdf
+python generate_venue_reports.py ../example-data/your_file.csv --format all
+python generate_venue_reports.py ../example-data/your_file.csv --format html,pdf
 ```
 
 **Or run individually (with precomputed analysis):**
 ```bash
 cd python
-python generate_reports.py ../example-data/your_file.csv
-python generate_ai_analysis.py venue_data.json
+python generate_venue_data.py ../example-data/your_file.csv
+python run_analyze_venues.py venue_data.json
 python create_html_reports.py venue_data.json --analysis ai_analysis_results.json
 python create_markdown_reports.py venue_data.json --analysis ai_analysis_results.json
 python create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json
@@ -74,7 +81,7 @@ python create_pdf_reports.py venue_data.json --analysis ai_analysis_results.json
 **Or run without precomputed analysis (backward compatible - slower):**
 ```bash
 cd python
-python generate_reports.py ../example-data/your_file.csv
+python generate_venue_data.py ../example-data/your_file.csv
 python create_html_reports.py venue_data.json
 python create_markdown_reports.py venue_data.json
 python create_pdf_reports.py venue_data.json
@@ -93,14 +100,14 @@ python create_pdf_reports.py venue_data.json
 **Quick way (recommended):**
 ```bash
 cd python
-python generate_all_reports.py ../example-data/your_file.csv
+python generate_venue_reports.py ../example-data/your_file.csv
 ```
 You'll be prompted to choose HTML, Markdown, PDF, or All. Pass `--format` (or `-f`) to choose non-interactively - useful for scripting - with any of: `html`, `markdown`, `pdf`, `both` (html+markdown, legacy alias), `all` (all three), or a comma-separated combo like `html,pdf`. A non-interactive session (piped input, no real terminal) skips the prompt and defaults to all three automatically.
 
 **Manual steps (recommended with AI analysis):**
-1. Place CSV survey file in `example-data/` folder
-2. Run `python/generate_reports.py <csv_file>` to create `python/venue_data.json`
-3. Run `python/generate_ai_analysis.py venue_data.json` to create `python/ai_analysis_results.json` (runs AI analysis once)
+1. Place survey data file in `example-data/` folder
+2. Run `python/generate_venue_data.py <data_file>` to create `python/venue_data.json`
+3. Run `python/run_analyze_venues.py venue_data.json` to create `python/ai_analysis_results.json` (runs AI analysis once)
 4. Run any of:
    - `python/create_html_reports.py venue_data.json --analysis ai_analysis_results.json`
    - `python/create_markdown_reports.py venue_data.json --analysis ai_analysis_results.json`
@@ -126,7 +133,7 @@ Compare a single venue's performance between two time periods (current vs. previ
 **Usage:**
 ```bash
 cd python
-python create_venue_period_comparison_report.py ../example-data/survey.csv "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+python create_single_venue_comparison_report.py ../example-data/survey.csv "Grand Prairie" 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
 ```
 
 **Features:**
@@ -143,7 +150,7 @@ Aggregate metrics across all venues for a given time period, ranked by composite
 **Usage:**
 ```bash
 cd python
-python create_multi_venue_period_report.py ../example-data/survey.csv 2026-01-01 2026-01-31 --format all
+python create_multi_venue_snapshot_report.py ../example-data/survey.csv 2026-01-01 2026-01-31 --format all
 ```
 
 **Features:**
@@ -160,7 +167,7 @@ Compare aggregated metrics across all venues between two time periods with ranki
 **Usage:**
 ```bash
 cd python
-python create_period_comparison_report.py ../example-data/survey.csv 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
+python create_multi_venue_comparison_report.py ../example-data/survey.csv 2026-01-01 2026-01-31 2025-12-01 2025-12-31 --format all
 ```
 
 **Features:**
