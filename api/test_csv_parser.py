@@ -64,12 +64,6 @@ class TestParseCSV(unittest.TestCase):
 class TestDetectSchema(unittest.TestCase):
     """Tests for detect_schema() function."""
     
-    def test_detect_poc_schema(self):
-        """Test detection of POC schema."""
-        fieldnames = ['Venue', 'VisitDate', 'Q1_LTR', 'Q2_FUN', 'Q3_HELPFUL', 'Q4_ISSUES', 'Q5_ISSUE_RESOLUTION', 'Q6_COMMENT']
-        result = csv_parser.detect_schema(fieldnames)
-        self.assertEqual(result, 'poc')
-    
     def test_detect_real_schema(self):
         """Test detection of Real schema."""
         fieldnames = ['Venue', 'Visit Date (+00:00 GMT)', 'Combined NPS', 'F&B Matrix_Food Value', 'Likelihood to Return']
@@ -85,16 +79,6 @@ class TestDetectSchema(unittest.TestCase):
 
 class TestGetField(unittest.TestCase):
     """Tests for get_field() function."""
-    
-    def test_get_field_poc_schema(self):
-        """Test field extraction with POC schema."""
-        row = {'Venue': 'Grand Prairie', 'Q1_LTR': '8', 'Q2_FUN': '5 - Extremely fun'}
-        
-        result = csv_parser.get_field(row, 'venue', 'poc')
-        self.assertEqual(result, 'Grand Prairie')
-        
-        result = csv_parser.get_field(row, 'ltr', 'poc')
-        self.assertEqual(result, '8')
     
     def test_get_field_missing_field(self):
         """Test handling of missing field."""

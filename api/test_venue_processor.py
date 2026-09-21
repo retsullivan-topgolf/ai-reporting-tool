@@ -66,14 +66,6 @@ class TestCalculateCompositeScore(unittest.TestCase):
         score = venue_processor.calculate_composite_score(venue_data, 'real')
         self.assertIsNotNone(score)
         self.assertGreater(score, 0)
-    
-    def test_poc_schema(self):
-        """Test composite score with POC schema (no F&B data)."""
-        venue_data = {
-            'ltr_avg': 8.0,
-            'fun_avg': 4.2,
-            'resolution_avg': 4.5
-        }
         
         score = venue_processor.calculate_composite_score(venue_data, 'poc')
         self.assertIsNotNone(score)

@@ -11,70 +11,7 @@ Each schema defines:
 - Mapping from CSV column names to logical field names
 """
 
-# POC Schema (Original format)
-POC_SCHEMA = {
-    "name": "poc",
-    "description": "Proof of Concept survey format",
-    "fields": {
-        "venue": {
-            "csv_column": "Venue",
-            "type": "string",
-            "required": True,
-            "description": "Venue name"
-        },
-        "visit_date": {
-            "csv_column": "VisitDate",
-            "type": "date",
-            "required": True,
-            "description": "Date of visit"
-        },
-        "ltr": {
-            "csv_column": "Q1_LTR",
-            "type": "integer",
-            "range": [1, 10],
-            "required": True,
-            "description": "Likelihood to Return (1-10 scale)"
-        },
-        "fun": {
-            "csv_column": "Q2_FUN",
-            "type": "categorical",
-            "values": ["5 - Extremely fun", "4 - Very fun", "3 - Moderately fun", "2 - Slightly fun", "1 - Not at all fun"],
-            "numeric_map": {"5 - Extremely fun": 5, "4 - Very fun": 4, "3 - Moderately fun": 3, "2 - Slightly fun": 2, "1 - Not at all fun": 1},
-            "required": True,
-            "description": "Fun experience rating"
-        },
-        "helpful": {
-            "csv_column": "Q3_HELPFUL",
-            "type": "categorical",
-            "values": ["5 - Extremely helpful", "4 - Very helpful", "3 - Moderately helpful", "2 - Slightly helpful", "1 - Not at all helpful"],
-            "numeric_map": {"5 - Extremely helpful": 5, "4 - Very helpful": 4, "3 - Moderately helpful": 3, "2 - Slightly helpful": 2, "1 - Not at all helpful": 1},
-            "required": True,
-            "description": "Staff helpfulness rating"
-        },
-        "issues": {
-            "csv_column": "Q4_ISSUES",
-            "type": "boolean",
-            "values": ["yes", "no"],
-            "required": True,
-            "description": "Whether issues occurred during visit"
-        },
-        "resolution": {
-            "csv_column": "Q5_ISSUE_RESOLUTION",
-            "type": "categorical",
-            "values": ["5 - Extremely satisfied", "4 - Very satisfied", "3 - Moderately satisfied", "2 - Slightly satisfied", "1 - Extremely dissatisfied"],
-            "numeric_map": {"5 - Extremely satisfied": 5, "4 - Very satisfied": 4, "3 - Moderately satisfied": 3, "2 - Slightly satisfied": 2, "1 - Extremely dissatisfied": 1},
-            "required": False,
-            "description": "Issue resolution satisfaction (only if issues=yes)"
-        },
-        "comment": {
-            "csv_column": "Q6_COMMENT",
-            "type": "string",
-            "required": False,
-            "description": "Open-ended comment"
-        }
-    },
-    "detection_rule": "Has Q1_LTR, Q2_FUN, Q3_HELPFUL, Q4_ISSUES, Q5_ISSUE_RESOLUTION, Q6_COMMENT columns"
-}
+
 
 # Real Schema (Production format)
 REAL_SCHEMA = {
@@ -196,7 +133,6 @@ REAL_SCHEMA = {
 
 # Schema registry for easy lookup
 SCHEMAS = {
-    "poc": POC_SCHEMA,
     "real": REAL_SCHEMA
 }
 
