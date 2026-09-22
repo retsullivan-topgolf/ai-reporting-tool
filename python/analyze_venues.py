@@ -76,6 +76,7 @@ CLAUDE_TIMEOUT_SECONDS = 600  # per stage, not for the whole 3-stage pipeline (5
 
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.cache', 'ai_analysis')
 SKILLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.claude', 'single-venue-report')
+CLAUDE_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.claude')
 
 
 def _load_skill(filename):
@@ -84,11 +85,63 @@ def _load_skill(filename):
         return f.read()
 
 
+def _load_skill_variant(variant_dir, filename):
+    """Load a skill file from a specific .claude/<variant_dir>/ folder."""
+    path = os.path.join(CLAUDE_ROOT, variant_dir, filename)
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def _compose_synthesis_skill(report_type='snapshot'):
+    """Build the Stage 3 synthesis prompt by substituting each <!-- SKILL:x --> placeholder
+    in the template with that report_type's section-skill content.
+
+    For Phase 0 (snapshot only), this loads the template and injects the existing
+    snapshot skill files. Later phases will add comparison and multi-venue variants.
+
+    Args:
+        report_type: 'snapshot', 'comparison', 'multi-snapshot', 'multi-comparison'
+
+    Returns:
+        Composed synthesis skill text (full prompt to pass to Claude)
+    """
+    # Configuration: (template_source_dir, section_skill_dir, section_filename_suffix)
+    _SYNTHESIS_CONFIG = {
+        'snapshot': ('single-venue-report', 'single-venue-report', '-skill.md'),
+    }
+
+    # Section names in snapshot variant (order doesn't matter; placeholder names are what matter)
+    _SECTION_NAMES = {
+        'snapshot': ['venue-overview', 'ups-downs', 'impact-drivers', 'recommendations'],
+    }
+
+    # Map section names to placeholder keys (for future variants, names may differ from placeholder keys)
+    _PLACEHOLDER_KEYS = {
+        'venue-overview': 'venue-overview',
+        'ups-downs': 'ups-downs',
+        'impact-drivers': 'impact-drivers',
+        'recommendations': 'recommendations',
+    }
+
+    if report_type not in _SYNTHESIS_CONFIG:
+        raise ValueError(f"Unsupported report_type: {report_type}. Only 'snapshot' is supported in Phase 0.")
+
+    template_dir, section_dir, suffix = _SYNTHESIS_CONFIG[report_type]
+    template = _load_skill_variant(template_dir, 'synthesis_template.md')
+
+    for name in _SECTION_NAMES[report_type]:
+        section_text = _load_skill_variant(section_dir, f"{name}{suffix}")
+        placeholder = f"<!-- SKILL:{_PLACEHOLDER_KEYS[name]} -->"
+        template = template.replace(placeholder, section_text)
+
+    return template
+
+
 # Loaded once at import time (small files) so a missing/renamed skill doc
 # fails fast and loudly instead of deep inside a subprocess call.
 METRICS_ANALYSIS_SKILL = _load_skill('metrics_analysis.md')
 COMMENT_ANALYSIS_SKILL = _load_skill('comment_analysis.md')
-SYNTHESIS_SKILL = _load_skill('synthesis.md')
+SYNTHESIS_SKILL = _compose_synthesis_skill('snapshot')  # Compose from template + skills
 
 _metrics_registry_cache = None
 
