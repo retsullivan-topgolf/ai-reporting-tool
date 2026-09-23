@@ -231,6 +231,7 @@ def _build_comment_payload(data, metric_flags):
 
 
 def _validate_metrics_analysis(result):
+    """Validate single-venue metrics_analysis output."""
     if not isinstance(result, dict):
         return False
     if "characterization" not in result or "metric_flags" not in result:
@@ -243,33 +244,93 @@ def _validate_metrics_analysis(result):
     )
 
 
+def _validate_metrics_analysis_multi(result):
+    """Validate multi-venue metrics_analysis output."""
+    if not isinstance(result, dict):
+        return False
+    # Multi-venue metrics_analysis returns: characterization, network_metrics, venue_outliers
+    if "characterization" not in result:
+        return False
+    if "network_metrics" not in result or not isinstance(result["network_metrics"], list):
+        return False
+    # network_metrics is list of dicts with: metric, polarity, magnitude, network_avg, range, note
+    for metric in result["network_metrics"]:
+        if not isinstance(metric, dict):
+            return False
+        required_keys = {"metric", "polarity", "magnitude", "network_avg", "range", "note"}
+        if not all(k in metric for k in required_keys):
+            return False
+    if "venue_outliers" not in result or not isinstance(result["venue_outliers"], list):
+        return False
+    # venue_outliers is list of dicts with: venue, rank, nps, note
+    for outlier in result["venue_outliers"]:
+        if not isinstance(outlier, dict):
+            return False
+        required_keys = {"venue", "rank", "note"}
+        if not all(k in outlier for k in required_keys):
+            return False
+    return True
+
+
 def _validate_comment_analysis(result):
+    """Validate comment_analysis output (works for both single-venue and multi-venue).
+
+    Single-venue returns: label, polarity, mention_count, magnitude, summary
+    Multi-venue returns: label, polarity, mention_count, magnitude, network_summary, venue_breakdown, representative_detail
+    """
     if not isinstance(result, dict):
         return False
     if "themes" not in result or not isinstance(result["themes"], list):
         return False
     return all(
         isinstance(theme, dict)
-        and all(k in theme for k in ("label", "polarity", "mention_count", "magnitude", "summary"))
+        and all(k in theme for k in ("label", "polarity", "mention_count", "magnitude"))
+        and any(k in theme for k in ("summary", "network_summary"))  # Accept either field
         for theme in result["themes"]
     )
 
 
 def _validate_synthesis(analysis):
+    """Validate synthesis output (works for both single-venue and multi-venue).
+
+    Single-venue: overview, ups, downs, impact, recommendations
+    Multi-venue: also includes venue_ranking, and venue_specific in recommendations
+    """
     if not isinstance(analysis, dict):
         return False
     required_top = ["overview", "ups", "downs", "impact", "recommendations"]
     if not all(key in analysis for key in required_top):
         return False
+
     rec = analysis["recommendations"]
     if not all(key in rec for key in ["critical", "secondary", "maintain"]):
         return False
-    for section in rec.values():
-        if "title" not in section or "items" not in section:
+
+    # Validate recommendations sections (critical, secondary, maintain all have title and items)
+    for key in ["critical", "secondary", "maintain"]:
+        section = rec[key]
+        if not isinstance(section, dict) or "title" not in section or "items" not in section:
             return False
+
+    # Validate impact drivers (each has title and description)
+    if not isinstance(analysis["impact"], list):
+        return False
     for driver in analysis["impact"]:
-        if "title" not in driver or "description" not in driver:
+        if not isinstance(driver, dict) or "title" not in driver or "description" not in driver:
             return False
+
+    # Multi-venue specific: venue_ranking (optional, but if present must have structure)
+    if "venue_ranking" in analysis:
+        if not isinstance(analysis["venue_ranking"], list):
+            return False
+        for venue in analysis["venue_ranking"]:
+            if not isinstance(venue, dict) or "venue" not in venue:
+                return False
+
+    # Multi-venue specific: venue_specific in recommendations (optional, but if present must be list)
+    if "venue_specific" in rec and not isinstance(rec["venue_specific"], list):
+        return False
+
     return True
 
 
@@ -582,15 +643,19 @@ def get_aggregated_ai_analysis(aggregated_data, use_cache=True):
     # Stage 1: Metrics Analysis
     metrics_result, error = _run_stage(
         "metrics_analysis_multi", metrics_analysis_skill, metrics_payload,
-        _validate_metrics_analysis, "network", use_cache, force_refresh,
+        _validate_metrics_analysis_multi, "network", use_cache, force_refresh,
     )
     if metrics_result is None:
         return None, error
 
     # Build comment payload for multi-venue
+    # Note: Multi-venue metrics_analysis returns "network_metrics" (not "metric_flags")
+    # Transform it to the format expected by comment_analysis
+    metric_flags = metrics_result.get("network_metrics", [])
+
     comment_payload = {
         "venues": aggregated_data.get("venues", []),
-        "metric_flags": metrics_result.get("metric_flags", []),
+        "metric_flags": metric_flags,
     }
 
     # Stage 2: Comment Analysis

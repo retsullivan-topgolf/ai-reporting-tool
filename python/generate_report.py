@@ -61,7 +61,7 @@ REPORT_TYPES = {
         'name': 'Multi-Venue Snapshot',
         'description': 'Current period report for all venues',
         'requires': ['start_date', 'end_date'],
-        'script': 'create_multi_venue_report.py',
+        'script': 'create_multi_venue_snapshot_report.py',
     },
     'multi-comparison': {
         'name': 'Multi-Venue Comparison',

@@ -210,11 +210,11 @@ def main():
     print(f"  Running multi-venue AI analysis...")
     aggregated_data = {
         'venues': [{
-            'venue': venue_name,
+            'venue': venue_data['venue'],
             'responses': venue_data['responses'],
             'metrics': {k: v for k, v in venue_data.items() if k not in ['venue', 'responses', 'comments']},
             'comments': venue_data.get('comments', [])
-        } for venue_name, venue_data in venue_data_dict.items()]
+        } for venue_data in venue_data_list]
     }
 
     ai_result, error = analyze_venues.get_aggregated_ai_analysis(aggregated_data)
