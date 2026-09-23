@@ -438,7 +438,7 @@ def main():
             params['prev_end'],
             '--format', output_format
         ]
-    
+
     elif report_type == 'multi-snapshot':
         # Multi-venue snapshot
         cmd_args = [
@@ -447,7 +447,7 @@ def main():
             params['end_date'],
             '--format', output_format
         ]
-    
+
     elif report_type == 'multi-comparison':
         # Multi-venue comparison
         cmd_args = [
@@ -458,6 +458,15 @@ def main():
             params['prev_end'],
             '--format', output_format
         ]
+
+    # comparison/multi-snapshot/multi-comparison call analyze_venues.py's AI
+    # pipeline in-process rather than through run_analyze_venues.py, so
+    # --force-analysis is threaded through via the same env var
+    # analyze_venues.py already checks on every stage call, instead of a
+    # script argument like the snapshot branch's `--force` above.
+    if report_type in ('comparison', 'multi-snapshot', 'multi-comparison') and args['force_analysis']:
+        print("(--force-analysis: bypassing cache)")
+        os.environ['AI_ANALYSIS_FORCE_REFRESH'] = '1'
     
     # Run the appropriate script
     if report_type != 'snapshot':  # snapshot already ran its scripts above

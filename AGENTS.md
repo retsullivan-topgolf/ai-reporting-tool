@@ -661,7 +661,7 @@ All skill files are in `.claude/single-venue-report/`:
 
 - **3 API calls per venue** (one per stage)
 - **Caching**: Subsequent runs with same data are instant
-- **Timeout**: 600 seconds per stage (5 minutes)
+- **Timeout**: 900 seconds per stage (15 minutes)
 - **Batch processing**: All venues processed sequentially
 
 To optimize for large batches:

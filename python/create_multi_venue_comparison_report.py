@@ -31,6 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from api import csv_parser, venue_processor, data_loader
 import report_engine
 import report_content
+import analyze_venues
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -226,7 +227,16 @@ def main():
     ]
     
     comment_themes = extract_comment_themes(current_venue_data_list)
-    
+
+    # Extract previous period's venue data too (needed for AI comparison analysis)
+    previous_venue_data_list = [
+        venue_processor.process_venue_data(
+            [r for r in previous_rows if r.get('Venue', '').strip() == venue['venue']],
+            schema_type
+        )
+        for venue in previous_summary['venues_ranked']
+    ] if previous_summary else []
+
     # Build report data
     report_data = {
         'current_period': current_summary['period'],
@@ -248,12 +258,44 @@ def main():
         'metrics_registry': report_engine.load_metrics_registry()
     }
     
-    # TODO: Add period-level AI analysis when implemented
-    # For now, mark as unavailable
-    report_data['analysis'] = {
-        'ai_available': False,
-        'unavailable_reason': 'Period-level AI analysis not yet implemented'
-    }
+    # Run period-level AI analysis (requires both periods)
+    if previous_summary:
+        print(f"  Running multi-venue comparison AI analysis...")
+        current_aggregated_data = {
+            'venues': [{
+                'venue': venue_data['venue'],
+                'responses': venue_data['responses'],
+                'metrics': {k: v for k, v in venue_data.items() if k not in ['venue', 'responses', 'comments']},
+                'comments': venue_data.get('comments', [])
+            } for venue_data in current_venue_data_list]
+        }
+        previous_aggregated_data = {
+            'venues': [{
+                'venue': venue_data['venue'],
+                'responses': venue_data['responses'],
+                'metrics': {k: v for k, v in venue_data.items() if k not in ['venue', 'responses', 'comments']},
+                'comments': venue_data.get('comments', [])
+            } for venue_data in previous_venue_data_list]
+        }
+
+        ai_result, error = analyze_venues.get_multi_venue_comparison_ai_analysis(
+            current_aggregated_data, previous_aggregated_data
+        )
+        if ai_result is not None:
+            print(f"  [OK] AI analysis completed")
+            report_data['analysis'] = report_content._format_analysis_as_html(ai_result)
+            report_data['analysis']['ai_available'] = True
+        else:
+            print(f"  [WARNING] AI analysis unavailable: {error}")
+            report_data['analysis'] = {
+                'ai_available': False,
+                'unavailable_reason': error or 'Unknown error'
+            }
+    else:
+        report_data['analysis'] = {
+            'ai_available': False,
+            'unavailable_reason': 'Comparison AI analysis requires data for both the current and previous period'
+        }
     
     # Load Jinja2 environment
     TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')

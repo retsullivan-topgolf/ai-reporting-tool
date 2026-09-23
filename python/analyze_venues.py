@@ -72,7 +72,7 @@ from datetime import datetime, timezone
 
 import report_engine
 
-CLAUDE_TIMEOUT_SECONDS = 600  # per stage, not for the whole 3-stage pipeline (5 minutes)
+CLAUDE_TIMEOUT_SECONDS = 900  # per stage, not for the whole 3-stage pipeline (15 minutes)
 
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.cache', 'ai_analysis')
 SKILLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.claude', 'single-venue-report')
@@ -698,6 +698,84 @@ def get_period_ai_analysis(period_data, use_cache=True):
         (analysis, None) on success, or (None, reason) if unavailable
     """
     return get_aggregated_ai_analysis(period_data, use_cache=use_cache)
+
+
+def get_multi_venue_comparison_ai_analysis(current_data, previous_data, use_cache=True):
+    """Run the 3-stage AI analysis pipeline for a multi-venue period comparison.
+
+    Stage 1 (metrics_analysis) and Stage 2 (comment_analysis) each run twice -
+    once for the current period's aggregated data, once for the previous
+    period's - then Stage 3 (synthesis) runs once over both periods' results
+    using the 'multi-comparison' synthesis skill, which frames findings by
+    change/direction and includes venue ranking movement.
+
+    Args:
+        current_data: Aggregated current-period data, same shape as
+            get_aggregated_ai_analysis's aggregated_data: {"venues": [...]}
+        previous_data: Aggregated previous-period data, same shape
+
+    Returns:
+        (analysis, None) on success, or (None, reason) if any stage fails
+    """
+    force_refresh = os.environ.get("AI_ANALYSIS_FORCE_REFRESH", "").strip().lower() in ("1", "true", "yes")
+
+    metrics_analysis_skill = _load_skill_variant('multi-venue-report', 'metrics_analysis.md')
+    comment_analysis_skill = _load_skill_variant('multi-venue-report', 'comment_analysis.md')
+
+    def _run_period(period_data, label):
+        metrics_payload = {"venues": period_data.get("venues", [])}
+        metrics_result, error = _run_stage(
+            "metrics_analysis_multi", metrics_analysis_skill, metrics_payload,
+            _validate_metrics_analysis_multi, f"network_{label}", use_cache, force_refresh,
+        )
+        if metrics_result is None:
+            return None, None, error
+
+        # Multi-venue metrics_analysis returns "network_metrics" (not "metric_flags")
+        metric_flags = metrics_result.get("network_metrics", [])
+        comment_payload = {
+            "venues": period_data.get("venues", []),
+            "metric_flags": metric_flags,
+        }
+        comment_result, error = _run_stage(
+            "comment_analysis_multi", comment_analysis_skill, comment_payload,
+            _validate_comment_analysis, f"network_{label}", use_cache, force_refresh,
+        )
+        if comment_result is None:
+            return None, None, error
+
+        return metrics_result, comment_result, None
+
+    metrics_current, comment_current, error = _run_period(current_data, "current")
+    if metrics_current is None:
+        return None, error
+
+    metrics_previous, comment_previous, error = _run_period(previous_data, "previous")
+    if metrics_previous is None:
+        return None, error
+
+    synthesis_payload = {
+        "venues": current_data.get("venues", []),
+        "metrics_analysis": {
+            "current": metrics_current,
+            "previous": metrics_previous,
+        },
+        "comment_analysis": {
+            "current": comment_current,
+            "previous": comment_previous,
+        },
+    }
+
+    synthesis_skill = _compose_synthesis_skill('multi-comparison')
+
+    synthesis_result, error = _run_stage(
+        "synthesis_multi_comparison", synthesis_skill, synthesis_payload,
+        _validate_synthesis, "network", use_cache, force_refresh,
+    )
+    if synthesis_result is None:
+        return None, error
+
+    return synthesis_result, None
 
 
 if __name__ == "__main__":
