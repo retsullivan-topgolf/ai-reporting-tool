@@ -112,12 +112,16 @@ def _compose_synthesis_skill(report_type='snapshot'):
     _SYNTHESIS_CONFIG = {
         'snapshot': ('single-venue-report', 'single-venue-report', '-skill.md'),
         'comparison': ('single-venue-report', 'comparison-report', '-comparison-skill.md'),
+        'multi-snapshot': ('multi-venue-report', 'multi-venue-report', '-skill.md'),
+        'multi-comparison': ('multi-venue-report', 'multi-venue-comparison-report', '-comparison-skill.md'),
     }
 
     # Section names per variant
     _SECTION_NAMES = {
         'snapshot': ['venue-overview', 'ups-downs', 'impact-drivers', 'recommendations'],
         'comparison': ['venue-overview', 'ups-downs', 'impact-drivers', 'recommendations'],
+        'multi-snapshot': ['multi-venue-overview', 'multi-venue-ranking', 'multi-venue-ups-downs', 'multi-venue-impact-drivers', 'multi-venue-recommendations'],
+        'multi-comparison': ['multi-venue-overview', 'multi-venue-ranking', 'multi-venue-ups-downs', 'multi-venue-impact-drivers', 'multi-venue-recommendations'],
     }
 
     # Map section names to placeholder keys
@@ -126,10 +130,15 @@ def _compose_synthesis_skill(report_type='snapshot'):
         'ups-downs': 'ups-downs',
         'impact-drivers': 'impact-drivers',
         'recommendations': 'recommendations',
+        'multi-venue-overview': 'venue-overview',
+        'multi-venue-ranking': 'ranking',
+        'multi-venue-ups-downs': 'ups-downs',
+        'multi-venue-impact-drivers': 'impact-drivers',
+        'multi-venue-recommendations': 'recommendations',
     }
 
     if report_type not in _SYNTHESIS_CONFIG:
-        raise ValueError(f"Unsupported report_type: {report_type}. Supported: 'snapshot', 'comparison'.")
+        raise ValueError(f"Unsupported report_type: {report_type}. Supported: 'snapshot', 'comparison', 'multi-snapshot', 'multi-comparison'.")
 
     template_dir, section_dir, suffix = _SYNTHESIS_CONFIG[report_type]
     template = _load_skill_variant(template_dir, 'synthesis_template.md')
@@ -527,32 +536,103 @@ def get_ai_analysis(data, report_type='snapshot', previous_data=None, use_cache=
     return synthesis_result, None
 
 
+def get_aggregated_ai_analysis(aggregated_data, use_cache=True):
+    """Run the 3-stage AI analysis pipeline for multi-venue aggregated data.
+
+    This analyzes metrics and comments aggregated across all venues,
+    producing network-wide findings, venue rankings, and recommendations.
+
+    Args:
+        aggregated_data: Dict with aggregated metrics and comments across all venues:
+            {
+                "venues": [
+                    {"venue": "Grand Prairie", "responses": 45, "metrics": {...}, "comments": [...]},
+                    ...
+                ]
+            }
+        use_cache: Whether to use cached results
+
+    Returns:
+        (analysis, None) on success with structure:
+            {
+              "overview": str,
+              "ups": [str, ...],
+              "downs": [str, ...],
+              "impact": [{"title": str, "description": str}, ...],
+              "venue_ranking": [{"rank": int, "venue": str, "nps": float, ...}, ...],
+              "recommendations": {
+                "critical": {...},
+                "secondary": {...},
+                "maintain": {...},
+                "venue_specific": [...]
+              }
+            }
+
+        (None, reason) if any stage fails
+    """
+    force_refresh = os.environ.get("AI_ANALYSIS_FORCE_REFRESH", "").strip().lower() in ("1", "true", "yes")
+
+    # Load multi-venue Stage 1 and Stage 2 skills
+    metrics_analysis_skill = _load_skill_variant('multi-venue-report', 'metrics_analysis.md')
+    comment_analysis_skill = _load_skill_variant('multi-venue-report', 'comment_analysis.md')
+
+    # Build metrics payload for multi-venue
+    metrics_payload = {"venues": aggregated_data.get("venues", [])}
+
+    # Stage 1: Metrics Analysis
+    metrics_result, error = _run_stage(
+        "metrics_analysis_multi", metrics_analysis_skill, metrics_payload,
+        _validate_metrics_analysis, "network", use_cache, force_refresh,
+    )
+    if metrics_result is None:
+        return None, error
+
+    # Build comment payload for multi-venue
+    comment_payload = {
+        "venues": aggregated_data.get("venues", []),
+        "metric_flags": metrics_result.get("metric_flags", []),
+    }
+
+    # Stage 2: Comment Analysis
+    comment_result, error = _run_stage(
+        "comment_analysis_multi", comment_analysis_skill, comment_payload,
+        _validate_comment_analysis, "network", use_cache, force_refresh,
+    )
+    if comment_result is None:
+        return None, error
+
+    # Stage 3: Synthesis (multi-venue)
+    synthesis_payload = {
+        "venues": aggregated_data.get("venues", []),
+        "metrics_analysis": metrics_result,
+        "comment_analysis": comment_result,
+    }
+
+    synthesis_skill = _compose_synthesis_skill('multi-snapshot')
+
+    synthesis_result, error = _run_stage(
+        "synthesis_multi", synthesis_skill, synthesis_payload,
+        _validate_synthesis, "network", use_cache, force_refresh,
+    )
+    if synthesis_result is None:
+        return None, error
+
+    return synthesis_result, None
+
+
 def get_period_ai_analysis(period_data, use_cache=True):
     """Run AI analysis on aggregated period data (multiple venues).
-    
-    This is a placeholder for period-level analysis. The actual implementation
-    would require:
-    1. Creating period-level skill documents in .claude/multi-venue-report/
-    2. Adapting the 3-stage pipeline for aggregated data
-    3. Handling comment themes across multiple venues
-    
-    For now, returns a placeholder indicating analysis is not yet implemented.
-    
+
+    This is a wrapper around get_aggregated_ai_analysis() for backward compatibility.
+
     Args:
         period_data: Dict with aggregated metrics, venue rankings, and comments
-        use_cache: Whether to use cached results (not yet implemented)
-        
+        use_cache: Whether to use cached results
+
     Returns:
         (analysis, None) on success, or (None, reason) if unavailable
     """
-    # TODO: Implement period-level AI analysis
-    # This would involve:
-    # - Loading period-level skill documents
-    # - Building period-level payloads from aggregated data
-    # - Running the 3-stage pipeline adapted for multi-venue data
-    # - Caching results separately from venue-level analysis
-    
-    return None, "Period-level AI analysis not yet implemented"
+    return get_aggregated_ai_analysis(period_data, use_cache=use_cache)
 
 
 if __name__ == "__main__":

@@ -30,6 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from api import csv_parser, venue_processor, data_loader
 import report_engine
 import report_content
+import analyze_venues
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -205,12 +206,28 @@ def main():
         'metrics_registry': report_engine.load_metrics_registry()
     }
     
-    # TODO: Add period-level AI analysis when implemented
-    # For now, mark as unavailable
-    report_data['analysis'] = {
-        'ai_available': False,
-        'unavailable_reason': 'Period-level AI analysis not yet implemented'
+    # Run multi-venue AI analysis
+    print(f"  Running multi-venue AI analysis...")
+    aggregated_data = {
+        'venues': [{
+            'venue': venue_name,
+            'responses': venue_data['responses'],
+            'metrics': {k: v for k, v in venue_data.items() if k not in ['venue', 'responses', 'comments']},
+            'comments': venue_data.get('comments', [])
+        } for venue_name, venue_data in venue_data_dict.items()]
     }
+
+    ai_result, error = analyze_venues.get_aggregated_ai_analysis(aggregated_data)
+    if ai_result is not None:
+        print(f"  [OK] AI analysis completed")
+        report_data['analysis'] = report_content._format_analysis_as_html(ai_result)
+        report_data['analysis']['ai_available'] = True
+    else:
+        print(f"  [WARNING] AI analysis unavailable: {error}")
+        report_data['analysis'] = {
+            'ai_available': False,
+            'unavailable_reason': error or 'Unknown error'
+        }
     
     # Load Jinja2 environment
     TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'templates')
