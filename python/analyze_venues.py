@@ -96,11 +96,14 @@ def _compose_synthesis_skill(report_type='snapshot'):
     """Build the Stage 3 synthesis prompt by substituting each <!-- SKILL:x --> placeholder
     in the template with that report_type's section-skill content.
 
-    For Phase 0 (snapshot only), this loads the template and injects the existing
-    snapshot skill files. Later phases will add comparison and multi-venue variants.
+    Supports:
+    - 'snapshot': Single-venue single-period (Phase 0+)
+    - 'comparison': Single-venue period comparison (Phase 1+)
+    - 'multi-snapshot': Multi-venue single-period (Phase 2+)
+    - 'multi-comparison': Multi-venue period comparison (Phase 2b+)
 
     Args:
-        report_type: 'snapshot', 'comparison', 'multi-snapshot', 'multi-comparison'
+        report_type: One of the supported types above
 
     Returns:
         Composed synthesis skill text (full prompt to pass to Claude)
@@ -108,14 +111,16 @@ def _compose_synthesis_skill(report_type='snapshot'):
     # Configuration: (template_source_dir, section_skill_dir, section_filename_suffix)
     _SYNTHESIS_CONFIG = {
         'snapshot': ('single-venue-report', 'single-venue-report', '-skill.md'),
+        'comparison': ('single-venue-report', 'comparison-report', '-comparison-skill.md'),
     }
 
-    # Section names in snapshot variant (order doesn't matter; placeholder names are what matter)
+    # Section names per variant
     _SECTION_NAMES = {
         'snapshot': ['venue-overview', 'ups-downs', 'impact-drivers', 'recommendations'],
+        'comparison': ['venue-overview', 'ups-downs', 'impact-drivers', 'recommendations'],
     }
 
-    # Map section names to placeholder keys (for future variants, names may differ from placeholder keys)
+    # Map section names to placeholder keys
     _PLACEHOLDER_KEYS = {
         'venue-overview': 'venue-overview',
         'ups-downs': 'ups-downs',
@@ -124,7 +129,7 @@ def _compose_synthesis_skill(report_type='snapshot'):
     }
 
     if report_type not in _SYNTHESIS_CONFIG:
-        raise ValueError(f"Unsupported report_type: {report_type}. Only 'snapshot' is supported in Phase 0.")
+        raise ValueError(f"Unsupported report_type: {report_type}. Supported: 'snapshot', 'comparison'.")
 
     template_dir, section_dir, suffix = _SYNTHESIS_CONFIG[report_type]
     template = _load_skill_variant(template_dir, 'synthesis_template.md')
@@ -416,12 +421,18 @@ def _run_stage(stage, skill_text, payload, validator, venue, use_cache, force_re
     return result, None
 
 
-def get_ai_analysis(data, use_cache=True):
+def get_ai_analysis(data, report_type='snapshot', previous_data=None, use_cache=True):
     """Run the 3-stage AI analysis pipeline (metrics_analysis ->
     comment_analysis -> synthesis) for one venue's data.
 
+    Args:
+        data: Current-period venue data
+        report_type: 'snapshot' (single period) or 'comparison' (two periods)
+        previous_data: Required when report_type='comparison'; previous period's data
+        use_cache: Whether to use cached results
+
     Returns (analysis, None) on success, where analysis matches the schema
-    produced by .claude/single-venue-report/synthesis.md (overview/ups/downs/impact/
+    produced by the appropriate synthesis skill (overview/ups/downs/impact/
     recommendations). Returns (None, reason) if any stage fails - reason is
     a short, human-readable string safe to show directly in a report (e.g.
     in place of the AI-generated overview) rather than just logged to the
@@ -435,32 +446,79 @@ def get_ai_analysis(data, use_cache=True):
     variable, to force fresh calls for every stage even when cache entries
     exist.
     """
+    if report_type not in ('snapshot', 'comparison'):
+        return None, f"Unsupported report_type: {report_type}. Use 'snapshot' or 'comparison'."
+
+    if report_type == 'comparison' and previous_data is None:
+        return None, "report_type='comparison' requires previous_data parameter"
+
     venue = data.get("venue")
     force_refresh = os.environ.get("AI_ANALYSIS_FORCE_REFRESH", "").strip().lower() in ("1", "true", "yes")
 
-    metrics_result, error = _run_stage(
+    # Stage 1: Metrics Analysis
+    metrics_current, error = _run_stage(
         "metrics_analysis", METRICS_ANALYSIS_SKILL, _build_metrics_payload(data),
         _validate_metrics_analysis, venue, use_cache, force_refresh,
     )
-    if metrics_result is None:
+    if metrics_current is None:
         return None, error
 
-    comment_result, error = _run_stage(
+    # Stage 2: Comment Analysis (current period)
+    comment_current, error = _run_stage(
         "comment_analysis", COMMENT_ANALYSIS_SKILL,
-        _build_comment_payload(data, metrics_result.get("metric_flags", [])),
+        _build_comment_payload(data, metrics_current.get("metric_flags", [])),
         _validate_comment_analysis, venue, use_cache, force_refresh,
     )
-    if comment_result is None:
+    if comment_current is None:
         return None, error
 
-    synthesis_payload = {
-        "venue": venue,
-        "responses": data["responses"],
-        "metrics_analysis": metrics_result,
-        "comment_analysis": comment_result,
-    }
+    # For comparison reports, run Stage 1+2 on previous period too
+    metrics_previous = None
+    comment_previous = None
+    if report_type == 'comparison':
+        metrics_previous, error = _run_stage(
+            "metrics_analysis", METRICS_ANALYSIS_SKILL, _build_metrics_payload(previous_data),
+            _validate_metrics_analysis, venue, use_cache, force_refresh,
+        )
+        if metrics_previous is None:
+            return None, error
+
+        comment_previous, error = _run_stage(
+            "comment_analysis", COMMENT_ANALYSIS_SKILL,
+            _build_comment_payload(previous_data, metrics_previous.get("metric_flags", [])),
+            _validate_comment_analysis, venue, use_cache, force_refresh,
+        )
+        if comment_previous is None:
+            return None, error
+
+    # Stage 3: Synthesis
+    # Build synthesis payload based on report type
+    if report_type == 'snapshot':
+        synthesis_payload = {
+            "venue": venue,
+            "responses": data["responses"],
+            "metrics_analysis": metrics_current,
+            "comment_analysis": comment_current,
+        }
+    else:  # comparison
+        synthesis_payload = {
+            "venue": venue,
+            "responses": data["responses"],
+            "metrics_analysis": {
+                "current": metrics_current,
+                "previous": metrics_previous,
+            },
+            "comment_analysis": {
+                "current": comment_current,
+                "previous": comment_previous,
+            },
+        }
+
+    # Compose synthesis skill for the report type
+    synthesis_skill = _compose_synthesis_skill(report_type)
+
     synthesis_result, error = _run_stage(
-        "synthesis", SYNTHESIS_SKILL, synthesis_payload,
+        "synthesis", synthesis_skill, synthesis_payload,
         _validate_synthesis, venue, use_cache, force_refresh,
     )
     if synthesis_result is None:

@@ -51,11 +51,17 @@ def _format_analysis_as_html(ai_result):
     }
 
 
-def get_analysis(data, precomputed_analysis=None):
+def get_analysis(data, report_type='snapshot', previous_data=None, precomputed_analysis=None):
     """Get the overview/ups/downs/impact/recommendations content for a venue
     from the AI-based analysis (via Claude Code CLI) - it's the only source
     for this narrative, since it's the only one that actually reads the
     guest comments rather than just the aggregate metrics.
+
+    Args:
+        data: Current-period venue data
+        report_type: 'snapshot' (single period) or 'comparison' (two periods)
+        previous_data: Required when report_type='comparison'; previous period's data
+        precomputed_analysis: Optional pre-generated analysis (to avoid re-running API calls)
 
     If precomputed_analysis is provided (from a pre-generated analysis file),
     use that instead of calling get_ai_analysis(). This allows multiple report
@@ -98,11 +104,11 @@ def get_analysis(data, precomputed_analysis=None):
                 'ai_available': False,
                 'unavailable_reason': precomputed_analysis.get('unavailable_reason', 'Unknown error'),
             }
-    
+
     # Fall back to computing analysis on-the-fly (for backward compatibility)
-    ai_result, error = get_ai_analysis(data)
+    ai_result, error = get_ai_analysis(data, report_type=report_type, previous_data=previous_data)
     if ai_result is not None:
-        print(f"[analysis] Using AI-generated analysis for {data['venue']}")
+        print(f"[analysis] Using AI-generated analysis for {data['venue']} (report_type={report_type})")
         return _format_analysis_as_html(ai_result)
 
     print(f"[analysis] AI analysis unavailable for {data['venue']}: {error}")

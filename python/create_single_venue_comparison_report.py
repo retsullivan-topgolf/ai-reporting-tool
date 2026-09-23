@@ -321,9 +321,9 @@ def main():
     # Build comparison data
     comparison_data = build_comparison_data(current_data, previous_data)
     
-    # Get AI analysis for current period (with comparison context)
-    print(f"  Running AI analysis...")
-    ai_analysis = report_content.get_analysis(current_data)
+    # Get AI analysis for comparison (runs Stage 1+2 for both periods, Stage 3 with comparison context)
+    print(f"  Running AI analysis for comparison...")
+    ai_analysis = report_content.get_analysis(current_data, report_type='comparison', previous_data=previous_data)
     
     if not ai_analysis.get('ai_available'):
         print(f"  Warning: AI analysis unavailable: {ai_analysis.get('unavailable_reason')}")
